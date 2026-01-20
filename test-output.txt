@@ -1,0 +1,1110 @@
+============================= test session starts ==============================
+platform linux -- Python 3.11.14, pytest-9.0.2, pluggy-1.6.0
+rootdir: /home/runner/work/RivalSearchMCP/RivalSearchMCP
+configfile: pyproject.toml
+testpaths: tests
+plugins: cov-7.0.0, asyncio-1.3.0, anyio-4.12.1
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 64 items
+
+tests/tools/test_content_operations.py ..........                        [ 15%]
+tests/tools/test_document_analysis.py ....                               [ 21%]
+tests/tools/test_github_search.py F..F                                   [ 28%]
+tests/tools/test_map_website.py .......                                  [ 39%]
+tests/tools/test_news_aggregation.py ....                                [ 45%]
+tests/tools/test_research_agent.py .FFFFFFFFF                            [ 60%]
+tests/tools/test_research_topic.py ......                                [ 70%]
+tests/tools/test_scientific_research.py .........                        [ 84%]
+tests/tools/test_social_search.py F....                                  [ 92%]
+tests/tools/test_web_search.py .....                                     [100%]
+
+=================================== FAILURES ===================================
+______________________________ test_github_basic _______________________________
+
+    async def test_github_basic():
+        """Test basic GitHub repository search."""
+        async with create_client() as client:
+            result = await client.call_tool(
+                "github_search",
+                {
+                    "query": "web framework",
+                    "max_results": 5
+                }
+            )
+    
+            output = result.content[0].text
+    
+            # Handle potential rate limiting
+            if "rate limit" in output.lower() or "error" in output.lower():
+                print(f"⚠️  GitHub API rate limited - test passed (graceful handling)")
+                assert len(output) > 50, "Error message too short"
+            else:
+>               assert len(output) > 300, f"GitHub output too short: {len(output)} chars"
+E               AssertionError: GitHub output too short: 119 chars
+E               assert 119 > 300
+E                +  where 119 = len('# 🐙 GitHub Repository Search: *web framework*\n\n**Found 0 repositories**\n\n---\n\n*Search completed on 2026-01-20 03:48:33*')
+
+tests/tools/test_github_search.py:34: AssertionError
+----------------------------- Captured stderr call -----------------------------
+2026-01-20 03:48:32,790 - INFO - Custom routes registered successfully
+2026-01-20 03:48:32,790 - INFO - Starting RivalSearchMCP in development mode (stdio)
+
+
+╭──────────────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│                                                                              │
+│                         ▄▀▀ ▄▀█ █▀▀ ▀█▀ █▀▄▀█ █▀▀ █▀█                        │
+│                         █▀  █▀█ ▄▄█  █  █ ▀ █ █▄▄ █▀▀                        │
+│                                                                              │
+│                                                                              │
+│                                FastMCP 2.14.3                                │
+│                            https://gofastmcp.com                             │
+│                                                                              │
+│                    🖥  Server:      RivalSearchMCP                            │
+│                    🚀 Deploy free: https://fastmcp.cloud                     │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────────────────────────────────────────────────────────────╮
+│                          ✨ FastMCP 3.0 is coming!                           │
+│       Pin `fastmcp < 3` in production, then upgrade when you're ready.       │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+
+[01/20/26 03:48:32] INFO     Starting MCP server 'RivalSearchMCP' server.py:2507
+                             with transport 'stdio'                             
+2026-01-20 03:48:32,838 - INFO - GitHub search for: web framework
+2026-01-20 03:48:33,051 - ERROR - GitHub search failed: Client error '403 rate limit exceeded' for url 'https://api.github.com/search/repositories?q=web+framework&sort=stars&order=desc&per_page=5'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403
+_____________________________ test_github_quality ______________________________
+
+    async def test_github_quality():
+        """Test that GitHub returns quality repository information."""
+        async with create_client() as client:
+            result = await client.call_tool(
+                "github_search",
+                {
+                    "query": "TypeScript",
+                    "language": "TypeScript",
+                    "max_results": 5
+                }
+            )
+    
+            output = result.content[0].text
+    
+            # Handle rate limiting
+            if "rate limit" in output.lower():
+                print(f"⚠️  GitHub rate limited")
+                assert len(output) > 50, "Error handling too minimal"
+            else:
+>               assert len(output) > 200, f"GitHub quality output: {len(output)} chars"
+E               AssertionError: GitHub quality output: 116 chars
+E               assert 116 > 200
+E                +  where 116 = len('# 🐙 GitHub Repository Search: *TypeScript*\n\n**Found 0 repositories**\n\n---\n\n*Search completed on 2026-01-20 03:48:46*')
+
+tests/tools/test_github_search.py:103: AssertionError
+----------------------------- Captured stderr call -----------------------------
+2026-01-20 03:48:46,027 - INFO - Custom routes registered successfully
+2026-01-20 03:48:46,027 - INFO - Starting RivalSearchMCP in development mode (stdio)
+
+
+╭──────────────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│                                                                              │
+│                         ▄▀▀ ▄▀█ █▀▀ ▀█▀ █▀▄▀█ █▀▀ █▀█                        │
+│                         █▀  █▀█ ▄▄█  █  █ ▀ █ █▄▄ █▀▀                        │
+│                                                                              │
+│                                                                              │
+│                                FastMCP 2.14.3                                │
+│                            https://gofastmcp.com                             │
+│                                                                              │
+│                    🖥  Server:      RivalSearchMCP                            │
+│                    🚀 Deploy free: https://fastmcp.cloud                     │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────────────────────────────────────────────────────────────╮
+│                          ✨ FastMCP 3.0 is coming!                           │
+│       Pin `fastmcp < 3` in production, then upgrade when you're ready.       │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+
+[01/20/26 03:48:46] INFO     Starting MCP server 'RivalSearchMCP' server.py:2507
+                             with transport 'stdio'                             
+2026-01-20 03:48:46,075 - INFO - GitHub search for: TypeScript
+2026-01-20 03:48:46,299 - ERROR - GitHub search failed: Client error '403 rate limit exceeded' for url 'https://api.github.com/search/repositories?q=TypeScript+language%3ATypeScript&sort=stars&order=desc&per_page=5'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403
+__________________________ test_workflow_basic_depth ___________________________
+
+    async def test_workflow_basic_depth():
+        """Test research_workflow with basic research depth."""
+        async with create_client() as client:
+            result = await client.call_tool(
+                "research_agent",
+                {
+                    "topic": "JavaScript",
+                    "max_sources": 5,
+                    "research_depth": "basic",
+                    "enable_ai_insights": True
+                }
+            )
+    
+            output = result.content[0].text
+            # AI agent mode produces rich output
+>           assert len(output) > 500, f"Basic research too short: {len(output)} chars"
+E           AssertionError: Basic research too short: 110 chars
+E           assert 110 > 500
+E            +  where 110 = len('# 📋 Research Analysis: *JavaScript*\n\n❌ **Error:** User not found.\n\n*Analysis attempted on 2026-01-20 03:49:53*')
+
+tests/tools/test_research_agent.py:58: AssertionError
+----------------------------- Captured stderr call -----------------------------
+2026-01-20 03:49:52,959 - INFO - Custom routes registered successfully
+2026-01-20 03:49:52,959 - INFO - Starting RivalSearchMCP in development mode (stdio)
+
+
+╭──────────────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│                                                                              │
+│                         ▄▀▀ ▄▀█ █▀▀ ▀█▀ █▀▄▀█ █▀▀ █▀█                        │
+│                         █▀  █▀█ ▄▄█  █  █ ▀ █ █▄▄ █▀▀                        │
+│                                                                              │
+│                                                                              │
+│                                FastMCP 2.14.3                                │
+│                            https://gofastmcp.com                             │
+│                                                                              │
+│                    🖥  Server:      RivalSearchMCP                            │
+│                    🚀 Deploy free: https://fastmcp.cloud                     │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────────────────────────────────────────────────────────────╮
+│                          ✨ FastMCP 3.0 is coming!                           │
+│       Pin `fastmcp < 3` in production, then upgrade when you're ready.       │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+
+[01/20/26 03:49:52] INFO     Starting MCP server 'RivalSearchMCP' server.py:2507
+                             with transport 'stdio'                             
+[01/20/26 03:49:53] DEBUG    Sending INFO to client: 🔬 Starting context.py:1044
+                             AI-enhanced research on: JavaScript                
+                    DEBUG    Sending INFO to client: 📊 Research context.py:1044
+                             ID: research_20260120_034953                       
+2026-01-20 03:49:53,010 - INFO - Fetching free models with tool support from OpenRouter...
+[01/20/26 03:49:53] INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🔬 Starting AI-enhanced research on:              
+                             JavaScript', 'extra': None}                        
+                    INFO     Received INFO from server: {'msg':    logging.py:44
+                             '📊 Research ID:                                   
+                             research_20260120_034953', 'extra':                
+                             None}                                              
+2026-01-20 03:49:53,105 - INFO - Found 16 free fallback models with tool support
+2026-01-20 03:49:53,105 - INFO - Primary model (hardcoded): meta-llama/llama-3.3-70b-instruct:free
+2026-01-20 03:49:53,105 - INFO - Fallback models (dynamic): ['qwen/qwen3-coder:free', 'google/gemini-2.0-flash-exp:free']
+                    DEBUG    Sending INFO to client: 🤖 AI Agent context.py:1044
+                             initialized with 3 models (top 3 of                
+                             3)                                                 
+                    DEBUG    Sending INFO to client: 🎯 Primary  context.py:1044
+                             model:                                             
+                             meta-llama/llama-3.3-70b-instruct:f                
+                             ree                                                
+                    INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🤖 AI Agent initialized with 3                    
+                             models (top 3 of 3)', 'extra': None}               
+                    INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🎯 Primary model:                                 
+                             meta-llama/llama-3.3-70b-instruct:fre              
+                             e', 'extra': None}                                 
+                    DEBUG    Sending ERROR to client: ❌         context.py:1044
+                             Research workflow failed for                       
+                             'JavaScript': User not found.                      
+2026-01-20 03:49:53,326 - ERROR - Research workflow failed for 'JavaScript': User not found.
+                    ERROR    Received ERROR from server: {'msg':   logging.py:44
+                             "❌ Research workflow failed for                   
+                             'JavaScript': User not found.",                    
+                             'extra': None}                                     
+______________________ test_workflow_comprehensive_depth _______________________
+
+    async def test_workflow_comprehensive_depth():
+        """Test research_workflow with comprehensive research depth."""
+        async with create_client() as client:
+>           result = await client.call_tool(
+                "research_agent",
+                {
+                    "topic": "AI",
+                    "max_sources": 5,
+                    "research_depth": "comprehensive",
+                    "enable_ai_insights": True
+                }
+            )
+
+tests/tools/test_research_agent.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <fastmcp.client.client.Client object at 0x7fa5c1015090>
+name = 'research_agent'
+arguments = {'enable_ai_insights': True, 'max_sources': 5, 'research_depth': 'comprehensive', 'topic': 'AI'}
+
+    async def call_tool(
+        self,
+        name: str,
+        arguments: dict[str, Any] | None = None,
+        *,
+        timeout: datetime.timedelta | float | int | None = None,
+        progress_handler: ProgressHandler | None = None,
+        raise_on_error: bool = True,
+        meta: dict[str, Any] | None = None,
+        task: bool = False,
+        task_id: str | None = None,
+        ttl: int = 60000,
+    ) -> CallToolResult | ToolTask:
+        """Call a tool on the server.
+    
+        Unlike call_tool_mcp, this method raises a ToolError if the tool call results in an error.
+    
+        Args:
+            name (str): The name of the tool to call.
+            arguments (dict[str, Any] | None, optional): Arguments to pass to the tool. Defaults to None.
+            timeout (datetime.timedelta | float | int | None, optional): The timeout for the tool call. Defaults to None.
+            progress_handler (ProgressHandler | None, optional): The progress handler to use for the tool call. Defaults to None.
+            raise_on_error (bool, optional): Whether to raise an exception if the tool call results in an error. Defaults to True.
+            meta (dict[str, Any] | None, optional): Additional metadata to include with the request.
+                This is useful for passing contextual information (like user IDs, trace IDs, or preferences)
+                that shouldn't be tool arguments but may influence server-side processing. The server
+                can access this via `context.request_context.meta`. Defaults to None.
+            task (bool): If True, execute as background task (SEP-1686). Defaults to False.
+            task_id (str | None): Optional client-provided task ID (auto-generated if not provided).
+            ttl (int): Time to keep results available in milliseconds (default 60s).
+    
+        Returns:
+            CallToolResult | ToolTask: The content returned by the tool if task=False,
+                or a ToolTask object if task=True. If the tool returns structured
+                outputs, they are returned as a dataclass (if an output schema
+                is available) or a dictionary; otherwise, a list of content
+                blocks is returned. Note: to receive both structured and
+                unstructured outputs, use call_tool_mcp instead and access the
+                raw result object.
+    
+        Raises:
+            ToolError: If the tool call results in an error.
+            RuntimeError: If called while the client is not connected.
+        """
+        if task:
+            return await self._call_tool_as_task(name, arguments, task_id, ttl)
+    
+        result = await self.call_tool_mcp(
+            name=name,
+            arguments=arguments or {},
+            timeout=timeout,
+            progress_handler=progress_handler,
+            meta=meta,
+        )
+>       return await self._parse_call_tool_result(
+            name, result, raise_on_error=raise_on_error
+        )
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/fastmcp/client/client.py:1430: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <fastmcp.client.client.Client object at 0x7fa5c1015090>
+name = 'research_agent'
+result = CallToolResult(meta=None, content=[TextContent(type='text', text="Tool execution failed: 1 validation error for call[r...ps://errors.pydantic.dev/2.12/v/string_too_short", annotations=None, meta=None)], structuredContent=None, isError=True)
+raise_on_error = True
+
+    async def _parse_call_tool_result(
+        self, name: str, result: mcp.types.CallToolResult, raise_on_error: bool = False
+    ) -> CallToolResult:
+        """Parse an mcp.types.CallToolResult into our CallToolResult dataclass.
+    
+        Args:
+            name: Tool name (for schema lookup)
+            result: Raw MCP protocol result
+            raise_on_error: Whether to raise ToolError on errors
+    
+        Returns:
+            CallToolResult: Parsed result with structured data
+        """
+        data = None
+        if result.isError and raise_on_error:
+            msg = cast(mcp.types.TextContent, result.content[0]).text
+>           raise ToolError(msg)
+E           fastmcp.exceptions.ToolError: Tool execution failed: 1 validation error for call[research_agent]
+E           topic
+E             String should have at least 3 characters [type=string_too_short, input_value='AI', input_type=str]
+E               For further information visit https://errors.pydantic.dev/2.12/v/string_too_short
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/fastmcp/client/client.py:1317: ToolError
+----------------------------- Captured stderr call -----------------------------
+2026-01-20 03:49:57,105 - INFO - Custom routes registered successfully
+2026-01-20 03:49:57,105 - INFO - Starting RivalSearchMCP in development mode (stdio)
+
+
+╭──────────────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│                                                                              │
+│                         ▄▀▀ ▄▀█ █▀▀ ▀█▀ █▀▄▀█ █▀▀ █▀█                        │
+│                         █▀  █▀█ ▄▄█  █  █ ▀ █ █▄▄ █▀▀                        │
+│                                                                              │
+│                                                                              │
+│                                FastMCP 2.14.3                                │
+│                            https://gofastmcp.com                             │
+│                                                                              │
+│                    🖥  Server:      RivalSearchMCP                            │
+│                    🚀 Deploy free: https://fastmcp.cloud                     │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────────────────────────────────────────────────────────────╮
+│                          ✨ FastMCP 3.0 is coming!                           │
+│       Pin `fastmcp < 3` in production, then upgrade when you're ready.       │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+
+[01/20/26 03:49:57] INFO     Starting MCP server 'RivalSearchMCP' server.py:2507
+                             with transport 'stdio'                             
+Failed tools/call: ValidationError: 1 validation error for call[research_agent]
+topic
+  String should have at least 3 characters [type=string_too_short, input_value='AI', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_too_short
+Operation failed: tools/call after 0.18ms: 1 validation error for call[research_agent]
+topic
+  String should have at least 3 characters [type=string_too_short, input_value='AI', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_too_short
+Error in tools/call: ValidationError: 1 validation error for call[research_agent]
+topic
+  String should have at least 3 characters [type=string_too_short, input_value='AI', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_too_short
+__________________________ test_workflow_expert_depth __________________________
+
+    async def test_workflow_expert_depth():
+        """Test research_workflow with expert research depth."""
+        async with create_client() as client:
+            result = await client.call_tool(
+                "research_agent",
+                {
+                    "topic": "databases",
+                    "max_sources": 5,
+                    "research_depth": "expert",
+                    "enable_ai_insights": True
+                }
+            )
+    
+            output = result.content[0].text
+    
+            # Handle rate limits
+            if "rate limit" in output.lower():
+                print(f"⚠️  OpenRouter rate limited")
+                assert len(output) > 50, "Error handling too minimal"
+            else:
+>               assert len(output) > 500, f"Expert research too short: {len(output)} chars"
+E               AssertionError: Expert research too short: 109 chars
+E               assert 109 > 500
+E                +  where 109 = len('# 📋 Research Analysis: *databases*\n\n❌ **Error:** User not found.\n\n*Analysis attempted on 2026-01-20 03:50:01*')
+
+tests/tools/test_research_agent.py:108: AssertionError
+----------------------------- Captured stderr call -----------------------------
+2026-01-20 03:50:00,982 - INFO - Custom routes registered successfully
+2026-01-20 03:50:00,982 - INFO - Starting RivalSearchMCP in development mode (stdio)
+
+
+╭──────────────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│                                                                              │
+│                         ▄▀▀ ▄▀█ █▀▀ ▀█▀ █▀▄▀█ █▀▀ █▀█                        │
+│                         █▀  █▀█ ▄▄█  █  █ ▀ █ █▄▄ █▀▀                        │
+│                                                                              │
+│                                                                              │
+│                                FastMCP 2.14.3                                │
+│                            https://gofastmcp.com                             │
+│                                                                              │
+│                    🖥  Server:      RivalSearchMCP                            │
+│                    🚀 Deploy free: https://fastmcp.cloud                     │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────────────────────────────────────────────────────────────╮
+│                          ✨ FastMCP 3.0 is coming!                           │
+│       Pin `fastmcp < 3` in production, then upgrade when you're ready.       │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+
+[01/20/26 03:50:01] INFO     Starting MCP server 'RivalSearchMCP' server.py:2507
+                             with transport 'stdio'                             
+                    DEBUG    Sending INFO to client: 🔬 Starting context.py:1044
+                             AI-enhanced research on: databases                 
+                    DEBUG    Sending INFO to client: 📊 Research context.py:1044
+                             ID: research_20260120_035001                       
+2026-01-20 03:50:01,032 - INFO - Fetching free models with tool support from OpenRouter...
+[01/20/26 03:50:01] INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🔬 Starting AI-enhanced research on:              
+                             databases', 'extra': None}                         
+                    INFO     Received INFO from server: {'msg':    logging.py:44
+                             '📊 Research ID:                                   
+                             research_20260120_035001', 'extra':                
+                             None}                                              
+2026-01-20 03:50:01,128 - INFO - Found 16 free fallback models with tool support
+2026-01-20 03:50:01,128 - INFO - Primary model (hardcoded): meta-llama/llama-3.3-70b-instruct:free
+2026-01-20 03:50:01,128 - INFO - Fallback models (dynamic): ['qwen/qwen3-coder:free', 'google/gemini-2.0-flash-exp:free']
+                    DEBUG    Sending INFO to client: 🤖 AI Agent context.py:1044
+                             initialized with 3 models (top 3 of                
+                             3)                                                 
+                    DEBUG    Sending INFO to client: 🎯 Primary  context.py:1044
+                             model:                                             
+                             meta-llama/llama-3.3-70b-instruct:f                
+                             ree                                                
+                    INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🤖 AI Agent initialized with 3                    
+                             models (top 3 of 3)', 'extra': None}               
+                    INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🎯 Primary model:                                 
+                             meta-llama/llama-3.3-70b-instruct:fre              
+                             e', 'extra': None}                                 
+                    DEBUG    Sending ERROR to client: ❌         context.py:1044
+                             Research workflow failed for                       
+                             'databases': User not found.                       
+2026-01-20 03:50:01,366 - ERROR - Research workflow failed for 'databases': User not found.
+                    ERROR    Received ERROR from server: {'msg':   logging.py:44
+                             "❌ Research workflow failed for                   
+                             'databases': User not found.",                     
+                             'extra': None}                                     
+__________________________ test_workflow_max_sources ___________________________
+
+    async def test_workflow_max_sources():
+        """Test research_workflow with different max_sources values."""
+        async with create_client() as client:
+            # Only test one value to keep test fast
+            result = await client.call_tool(
+                "research_agent",
+                {
+                    "topic": "programming",
+                    "max_sources": 5,
+                    "research_depth": "basic",
+                    "enable_ai_insights": True
+                }
+            )
+    
+            output = result.content[0].text
+    
+            # Handle rate limits
+            if "rate limit" in output.lower():
+                print(f"⚠️  OpenRouter rate limited")
+                assert len(output) > 50, "Error handling too minimal"
+            else:
+>               assert len(output) > 400, f"Output too short: {len(output)} chars"
+E               AssertionError: Output too short: 111 chars
+E               assert 111 > 400
+E                +  where 111 = len('# 📋 Research Analysis: *programming*\n\n❌ **Error:** User not found.\n\n*Analysis attempted on 2026-01-20 03:50:05*')
+
+tests/tools/test_research_agent.py:134: AssertionError
+----------------------------- Captured stderr call -----------------------------
+2026-01-20 03:50:05,172 - INFO - Custom routes registered successfully
+2026-01-20 03:50:05,172 - INFO - Starting RivalSearchMCP in development mode (stdio)
+
+
+╭──────────────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│                                                                              │
+│                         ▄▀▀ ▄▀█ █▀▀ ▀█▀ █▀▄▀█ █▀▀ █▀█                        │
+│                         █▀  █▀█ ▄▄█  █  █ ▀ █ █▄▄ █▀▀                        │
+│                                                                              │
+│                                                                              │
+│                                FastMCP 2.14.3                                │
+│                            https://gofastmcp.com                             │
+│                                                                              │
+│                    🖥  Server:      RivalSearchMCP                            │
+│                    🚀 Deploy free: https://fastmcp.cloud                     │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────────────────────────────────────────────────────────────╮
+│                          ✨ FastMCP 3.0 is coming!                           │
+│       Pin `fastmcp < 3` in production, then upgrade when you're ready.       │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+
+[01/20/26 03:50:05] INFO     Starting MCP server 'RivalSearchMCP' server.py:2507
+                             with transport 'stdio'                             
+                    DEBUG    Sending INFO to client: 🔬 Starting context.py:1044
+                             AI-enhanced research on:                           
+                             programming                                        
+                    DEBUG    Sending INFO to client: 📊 Research context.py:1044
+                             ID: research_20260120_035005                       
+2026-01-20 03:50:05,222 - INFO - Fetching free models with tool support from OpenRouter...
+[01/20/26 03:50:05] INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🔬 Starting AI-enhanced research on:              
+                             programming', 'extra': None}                       
+                    INFO     Received INFO from server: {'msg':    logging.py:44
+                             '📊 Research ID:                                   
+                             research_20260120_035005', 'extra':                
+                             None}                                              
+2026-01-20 03:50:05,323 - INFO - Found 16 free fallback models with tool support
+2026-01-20 03:50:05,323 - INFO - Primary model (hardcoded): meta-llama/llama-3.3-70b-instruct:free
+2026-01-20 03:50:05,323 - INFO - Fallback models (dynamic): ['qwen/qwen3-coder:free', 'google/gemini-2.0-flash-exp:free']
+                    DEBUG    Sending INFO to client: 🤖 AI Agent context.py:1044
+                             initialized with 3 models (top 3 of                
+                             3)                                                 
+                    DEBUG    Sending INFO to client: 🎯 Primary  context.py:1044
+                             model:                                             
+                             meta-llama/llama-3.3-70b-instruct:f                
+                             ree                                                
+                    INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🤖 AI Agent initialized with 3                    
+                             models (top 3 of 3)', 'extra': None}               
+                    INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🎯 Primary model:                                 
+                             meta-llama/llama-3.3-70b-instruct:fre              
+                             e', 'extra': None}                                 
+                    DEBUG    Sending ERROR to client: ❌         context.py:1044
+                             Research workflow failed for                       
+                             'programming': User not found.                     
+2026-01-20 03:50:05,540 - ERROR - Research workflow failed for 'programming': User not found.
+                    ERROR    Received ERROR from server: {'msg':   logging.py:44
+                             "❌ Research workflow failed for                   
+                             'programming': User not found.",                   
+                             'extra': None}                                     
+__________________________ test_workflow_with_trends ___________________________
+
+    async def test_workflow_with_trends():
+        """Test research_workflow with trends analysis included."""
+        async with create_client() as client:
+            result = await client.call_tool(
+                "research_agent",
+                {
+                    "topic": "web",
+                    "max_sources": 5,
+                    "include_trends": True,
+                    "research_depth": "basic",
+                    "enable_ai_insights": True
+                }
+            )
+    
+            output = result.content[0].text
+    
+            # Handle rate limits
+            if "rate limit" in output.lower():
+                print(f"⚠️  OpenRouter rate limited")
+            else:
+>               assert len(output) > 300, f"Output: {len(output)} chars"
+E               AssertionError: Output: 103 chars
+E               assert 103 > 300
+E                +  where 103 = len('# 📋 Research Analysis: *web*\n\n❌ **Error:** User not found.\n\n*Analysis attempted on 2026-01-20 03:50:09*')
+
+tests/tools/test_research_agent.py:159: AssertionError
+----------------------------- Captured stderr call -----------------------------
+2026-01-20 03:50:09,311 - INFO - Custom routes registered successfully
+2026-01-20 03:50:09,311 - INFO - Starting RivalSearchMCP in development mode (stdio)
+
+
+╭──────────────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│                                                                              │
+│                         ▄▀▀ ▄▀█ █▀▀ ▀█▀ █▀▄▀█ █▀▀ █▀█                        │
+│                         █▀  █▀█ ▄▄█  █  █ ▀ █ █▄▄ █▀▀                        │
+│                                                                              │
+│                                                                              │
+│                                FastMCP 2.14.3                                │
+│                            https://gofastmcp.com                             │
+│                                                                              │
+│                    🖥  Server:      RivalSearchMCP                            │
+│                    🚀 Deploy free: https://fastmcp.cloud                     │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────────────────────────────────────────────────────────────╮
+│                          ✨ FastMCP 3.0 is coming!                           │
+│       Pin `fastmcp < 3` in production, then upgrade when you're ready.       │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+
+[01/20/26 03:50:09] INFO     Starting MCP server 'RivalSearchMCP' server.py:2507
+                             with transport 'stdio'                             
+                    DEBUG    Sending INFO to client: 🔬 Starting context.py:1044
+                             AI-enhanced research on: web                       
+                    DEBUG    Sending INFO to client: 📊 Research context.py:1044
+                             ID: research_20260120_035009                       
+2026-01-20 03:50:09,361 - INFO - Fetching free models with tool support from OpenRouter...
+[01/20/26 03:50:09] INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🔬 Starting AI-enhanced research on:              
+                             web', 'extra': None}                               
+                    INFO     Received INFO from server: {'msg':    logging.py:44
+                             '📊 Research ID:                                   
+                             research_20260120_035009', 'extra':                
+                             None}                                              
+2026-01-20 03:50:09,467 - INFO - Found 16 free fallback models with tool support
+2026-01-20 03:50:09,467 - INFO - Primary model (hardcoded): meta-llama/llama-3.3-70b-instruct:free
+2026-01-20 03:50:09,467 - INFO - Fallback models (dynamic): ['qwen/qwen3-coder:free', 'google/gemini-2.0-flash-exp:free']
+                    DEBUG    Sending INFO to client: 🤖 AI Agent context.py:1044
+                             initialized with 3 models (top 3 of                
+                             3)                                                 
+                    DEBUG    Sending INFO to client: 🎯 Primary  context.py:1044
+                             model:                                             
+                             meta-llama/llama-3.3-70b-instruct:f                
+                             ree                                                
+                    INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🤖 AI Agent initialized with 3                    
+                             models (top 3 of 3)', 'extra': None}               
+                    INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🎯 Primary model:                                 
+                             meta-llama/llama-3.3-70b-instruct:fre              
+                             e', 'extra': None}                                 
+                    DEBUG    Sending ERROR to client: ❌         context.py:1044
+                             Research workflow failed for 'web':                
+                             User not found.                                    
+2026-01-20 03:50:09,688 - ERROR - Research workflow failed for 'web': User not found.
+                    ERROR    Received ERROR from server: {'msg':   logging.py:44
+                             "❌ Research workflow failed for                   
+                             'web': User not found.", 'extra':                  
+                             None}                                              
+_________________________ test_workflow_without_trends _________________________
+
+    async def test_workflow_without_trends():
+        """Test research_workflow without trends analysis."""
+        async with create_client() as client:
+            result = await client.call_tool(
+                "research_agent",
+                {
+                    "topic": "databases",
+                    "max_sources": 5,
+                    "include_trends": False,
+                    "research_depth": "basic",
+                    "enable_ai_insights": True
+                }
+            )
+    
+            output = result.content[0].text
+    
+            # Handle rate limits
+            if "rate limit" in output.lower():
+                print(f"⚠️  OpenRouter rate limited")
+            else:
+>               assert len(output) > 300, f"Output: {len(output)} chars"
+E               AssertionError: Output: 109 chars
+E               assert 109 > 300
+E                +  where 109 = len('# 📋 Research Analysis: *databases*\n\n❌ **Error:** User not found.\n\n*Analysis attempted on 2026-01-20 03:50:13*')
+
+tests/tools/test_research_agent.py:184: AssertionError
+----------------------------- Captured stderr call -----------------------------
+2026-01-20 03:50:13,457 - INFO - Custom routes registered successfully
+2026-01-20 03:50:13,457 - INFO - Starting RivalSearchMCP in development mode (stdio)
+
+
+╭──────────────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│                                                                              │
+│                         ▄▀▀ ▄▀█ █▀▀ ▀█▀ █▀▄▀█ █▀▀ █▀█                        │
+│                         █▀  █▀█ ▄▄█  █  █ ▀ █ █▄▄ █▀▀                        │
+│                                                                              │
+│                                                                              │
+│                                FastMCP 2.14.3                                │
+│                            https://gofastmcp.com                             │
+│                                                                              │
+│                    🖥  Server:      RivalSearchMCP                            │
+│                    🚀 Deploy free: https://fastmcp.cloud                     │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────────────────────────────────────────────────────────────╮
+│                          ✨ FastMCP 3.0 is coming!                           │
+│       Pin `fastmcp < 3` in production, then upgrade when you're ready.       │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+
+[01/20/26 03:50:13] INFO     Starting MCP server 'RivalSearchMCP' server.py:2507
+                             with transport 'stdio'                             
+                    DEBUG    Sending INFO to client: 🔬 Starting context.py:1044
+                             AI-enhanced research on: databases                 
+                    DEBUG    Sending INFO to client: 📊 Research context.py:1044
+                             ID: research_20260120_035013                       
+2026-01-20 03:50:13,508 - INFO - Fetching free models with tool support from OpenRouter...
+[01/20/26 03:50:13] INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🔬 Starting AI-enhanced research on:              
+                             databases', 'extra': None}                         
+                    INFO     Received INFO from server: {'msg':    logging.py:44
+                             '📊 Research ID:                                   
+                             research_20260120_035013', 'extra':                
+                             None}                                              
+2026-01-20 03:50:13,629 - INFO - Found 16 free fallback models with tool support
+2026-01-20 03:50:13,629 - INFO - Primary model (hardcoded): meta-llama/llama-3.3-70b-instruct:free
+2026-01-20 03:50:13,629 - INFO - Fallback models (dynamic): ['qwen/qwen3-coder:free', 'google/gemini-2.0-flash-exp:free']
+                    DEBUG    Sending INFO to client: 🤖 AI Agent context.py:1044
+                             initialized with 3 models (top 3 of                
+                             3)                                                 
+                    DEBUG    Sending INFO to client: 🎯 Primary  context.py:1044
+                             model:                                             
+                             meta-llama/llama-3.3-70b-instruct:f                
+                             ree                                                
+                    INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🤖 AI Agent initialized with 3                    
+                             models (top 3 of 3)', 'extra': None}               
+                    INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🎯 Primary model:                                 
+                             meta-llama/llama-3.3-70b-instruct:fre              
+                             e', 'extra': None}                                 
+                    DEBUG    Sending ERROR to client: ❌         context.py:1044
+                             Research workflow failed for                       
+                             'databases': User not found.                       
+2026-01-20 03:50:13,848 - ERROR - Research workflow failed for 'databases': User not found.
+                    ERROR    Received ERROR from server: {'msg':   logging.py:44
+                             "❌ Research workflow failed for                   
+                             'databases': User not found.",                     
+                             'extra': None}                                     
+_____________________ test_workflow_with_website_analysis ______________________
+
+    async def test_workflow_with_website_analysis():
+        """Test research_workflow with website analysis included."""
+        async with create_client() as client:
+            result = await client.call_tool(
+                "research_agent",
+                {
+                    "topic": "cloud",
+                    "max_sources": 5,
+                    "include_website_analysis": True,
+                    "research_depth": "basic",
+                    "enable_ai_insights": True
+                }
+            )
+    
+            output = result.content[0].text
+    
+            # Handle rate limits
+            if "rate limit" in output.lower():
+                print(f"⚠️  OpenRouter rate limited")
+            else:
+>               assert len(output) > 300, f"Output: {len(output)} chars"
+E               AssertionError: Output: 105 chars
+E               assert 105 > 300
+E                +  where 105 = len('# 📋 Research Analysis: *cloud*\n\n❌ **Error:** User not found.\n\n*Analysis attempted on 2026-01-20 03:50:18*')
+
+tests/tools/test_research_agent.py:209: AssertionError
+----------------------------- Captured stderr call -----------------------------
+2026-01-20 03:50:17,618 - INFO - Custom routes registered successfully
+2026-01-20 03:50:17,618 - INFO - Starting RivalSearchMCP in development mode (stdio)
+
+
+╭──────────────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│                                                                              │
+│                         ▄▀▀ ▄▀█ █▀▀ ▀█▀ █▀▄▀█ █▀▀ █▀█                        │
+│                         █▀  █▀█ ▄▄█  █  █ ▀ █ █▄▄ █▀▀                        │
+│                                                                              │
+│                                                                              │
+│                                FastMCP 2.14.3                                │
+│                            https://gofastmcp.com                             │
+│                                                                              │
+│                    🖥  Server:      RivalSearchMCP                            │
+│                    🚀 Deploy free: https://fastmcp.cloud                     │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────────────────────────────────────────────────────────────╮
+│                          ✨ FastMCP 3.0 is coming!                           │
+│       Pin `fastmcp < 3` in production, then upgrade when you're ready.       │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+
+[01/20/26 03:50:17] INFO     Starting MCP server 'RivalSearchMCP' server.py:2507
+                             with transport 'stdio'                             
+                    DEBUG    Sending INFO to client: 🔬 Starting context.py:1044
+                             AI-enhanced research on: cloud                     
+                    DEBUG    Sending INFO to client: 📊 Research context.py:1044
+                             ID: research_20260120_035017                       
+2026-01-20 03:50:17,669 - INFO - Fetching free models with tool support from OpenRouter...
+[01/20/26 03:50:17] INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🔬 Starting AI-enhanced research on:              
+                             cloud', 'extra': None}                             
+                    INFO     Received INFO from server: {'msg':    logging.py:44
+                             '📊 Research ID:                                   
+                             research_20260120_035017', 'extra':                
+                             None}                                              
+2026-01-20 03:50:17,771 - INFO - Found 16 free fallback models with tool support
+2026-01-20 03:50:17,771 - INFO - Primary model (hardcoded): meta-llama/llama-3.3-70b-instruct:free
+2026-01-20 03:50:17,771 - INFO - Fallback models (dynamic): ['qwen/qwen3-coder:free', 'google/gemini-2.0-flash-exp:free']
+                    DEBUG    Sending INFO to client: 🤖 AI Agent context.py:1044
+                             initialized with 3 models (top 3 of                
+                             3)                                                 
+                    DEBUG    Sending INFO to client: 🎯 Primary  context.py:1044
+                             model:                                             
+                             meta-llama/llama-3.3-70b-instruct:f                
+                             ree                                                
+                    INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🤖 AI Agent initialized with 3                    
+                             models (top 3 of 3)', 'extra': None}               
+                    INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🎯 Primary model:                                 
+                             meta-llama/llama-3.3-70b-instruct:fre              
+                             e', 'extra': None}                                 
+                    DEBUG    Sending ERROR to client: ❌         context.py:1044
+                             Research workflow failed for                       
+                             'cloud': User not found.                           
+2026-01-20 03:50:18,001 - ERROR - Research workflow failed for 'cloud': User not found.
+[01/20/26 03:50:18] ERROR    Received ERROR from server: {'msg':   logging.py:44
+                             "❌ Research workflow failed for                   
+                             'cloud': User not found.", 'extra':                
+                             None}                                              
+____________________ test_workflow_without_website_analysis ____________________
+
+    async def test_workflow_without_website_analysis():
+        """Test research_workflow without website analysis."""
+        async with create_client() as client:
+            result = await client.call_tool(
+                "research_agent",
+                {
+                    "topic": "security",
+                    "max_sources": 5,
+                    "include_website_analysis": False,
+                    "research_depth": "basic",
+                    "enable_ai_insights": True
+                }
+            )
+    
+            output = result.content[0].text
+    
+            # Handle rate limits
+            if "rate limit" in output.lower():
+                print(f"⚠️  OpenRouter rate limited")
+            else:
+>               assert len(output) > 300, f"Output: {len(output)} chars"
+E               AssertionError: Output: 108 chars
+E               assert 108 > 300
+E                +  where 108 = len('# 📋 Research Analysis: *security*\n\n❌ **Error:** User not found.\n\n*Analysis attempted on 2026-01-20 03:50:22*')
+
+tests/tools/test_research_agent.py:234: AssertionError
+----------------------------- Captured stderr call -----------------------------
+2026-01-20 03:50:21,767 - INFO - Custom routes registered successfully
+2026-01-20 03:50:21,767 - INFO - Starting RivalSearchMCP in development mode (stdio)
+
+
+╭──────────────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│                                                                              │
+│                         ▄▀▀ ▄▀█ █▀▀ ▀█▀ █▀▄▀█ █▀▀ █▀█                        │
+│                         █▀  █▀█ ▄▄█  █  █ ▀ █ █▄▄ █▀▀                        │
+│                                                                              │
+│                                                                              │
+│                                FastMCP 2.14.3                                │
+│                            https://gofastmcp.com                             │
+│                                                                              │
+│                    🖥  Server:      RivalSearchMCP                            │
+│                    🚀 Deploy free: https://fastmcp.cloud                     │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────────────────────────────────────────────────────────────╮
+│                          ✨ FastMCP 3.0 is coming!                           │
+│       Pin `fastmcp < 3` in production, then upgrade when you're ready.       │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+
+[01/20/26 03:50:21] INFO     Starting MCP server 'RivalSearchMCP' server.py:2507
+                             with transport 'stdio'                             
+                    DEBUG    Sending INFO to client: 🔬 Starting context.py:1044
+                             AI-enhanced research on: security                  
+                    DEBUG    Sending INFO to client: 📊 Research context.py:1044
+                             ID: research_20260120_035021                       
+2026-01-20 03:50:21,816 - INFO - Fetching free models with tool support from OpenRouter...
+[01/20/26 03:50:21] INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🔬 Starting AI-enhanced research on:              
+                             security', 'extra': None}                          
+                    INFO     Received INFO from server: {'msg':    logging.py:44
+                             '📊 Research ID:                                   
+                             research_20260120_035021', 'extra':                
+                             None}                                              
+2026-01-20 03:50:21,909 - INFO - Found 16 free fallback models with tool support
+2026-01-20 03:50:21,909 - INFO - Primary model (hardcoded): meta-llama/llama-3.3-70b-instruct:free
+2026-01-20 03:50:21,909 - INFO - Fallback models (dynamic): ['qwen/qwen3-coder:free', 'google/gemini-2.0-flash-exp:free']
+                    DEBUG    Sending INFO to client: 🤖 AI Agent context.py:1044
+                             initialized with 3 models (top 3 of                
+                             3)                                                 
+                    DEBUG    Sending INFO to client: 🎯 Primary  context.py:1044
+                             model:                                             
+                             meta-llama/llama-3.3-70b-instruct:f                
+                             ree                                                
+                    INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🤖 AI Agent initialized with 3                    
+                             models (top 3 of 3)', 'extra': None}               
+                    INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🎯 Primary model:                                 
+                             meta-llama/llama-3.3-70b-instruct:fre              
+                             e', 'extra': None}                                 
+[01/20/26 03:50:22] DEBUG    Sending ERROR to client: ❌         context.py:1044
+                             Research workflow failed for                       
+                             'security': User not found.                        
+2026-01-20 03:50:22,128 - ERROR - Research workflow failed for 'security': User not found.
+[01/20/26 03:50:22] ERROR    Received ERROR from server: {'msg':   logging.py:44
+                             "❌ Research workflow failed for                   
+                             'security': User not found.",                      
+                             'extra': None}                                     
+___________________ test_workflow_comprehensive_all_features ___________________
+
+    async def test_workflow_comprehensive_all_features():
+        """Test research_workflow with all features enabled."""
+        async with create_client() as client:
+            result = await client.call_tool(
+                "research_agent",
+                {
+                    "topic": "AI trends",
+                    "max_sources": 5,
+                    "include_trends": True,
+                    "include_website_analysis": True,
+                    "research_depth": "comprehensive",
+                    "enable_ai_insights": True
+                }
+            )
+    
+            output = result.content[0].text
+    
+            # Handle rate limits
+            if "rate limit" in output.lower():
+                print(f"⚠️  OpenRouter rate limited")
+                assert len(output) > 50, "Error handling too minimal"
+            else:
+>               assert len(output) > 300, f"Comprehensive workflow: {len(output)} chars"
+E               AssertionError: Comprehensive workflow: 109 chars
+E               assert 109 > 300
+E                +  where 109 = len('# 📋 Research Analysis: *AI trends*\n\n❌ **Error:** User not found.\n\n*Analysis attempted on 2026-01-20 03:50:26*')
+
+tests/tools/test_research_agent.py:261: AssertionError
+----------------------------- Captured stderr call -----------------------------
+2026-01-20 03:50:25,919 - INFO - Custom routes registered successfully
+2026-01-20 03:50:25,919 - INFO - Starting RivalSearchMCP in development mode (stdio)
+
+
+╭──────────────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│                                                                              │
+│                         ▄▀▀ ▄▀█ █▀▀ ▀█▀ █▀▄▀█ █▀▀ █▀█                        │
+│                         █▀  █▀█ ▄▄█  █  █ ▀ █ █▄▄ █▀▀                        │
+│                                                                              │
+│                                                                              │
+│                                FastMCP 2.14.3                                │
+│                            https://gofastmcp.com                             │
+│                                                                              │
+│                    🖥  Server:      RivalSearchMCP                            │
+│                    🚀 Deploy free: https://fastmcp.cloud                     │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────────────────────────────────────────────────────────────╮
+│                          ✨ FastMCP 3.0 is coming!                           │
+│       Pin `fastmcp < 3` in production, then upgrade when you're ready.       │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+
+[01/20/26 03:50:25] INFO     Starting MCP server 'RivalSearchMCP' server.py:2507
+                             with transport 'stdio'                             
+                    DEBUG    Sending INFO to client: 🔬 Starting context.py:1044
+                             AI-enhanced research on: AI trends                 
+                    DEBUG    Sending INFO to client: 📊 Research context.py:1044
+                             ID: research_20260120_035025                       
+2026-01-20 03:50:25,970 - INFO - Fetching free models with tool support from OpenRouter...
+[01/20/26 03:50:25] INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🔬 Starting AI-enhanced research on:              
+                             AI trends', 'extra': None}                         
+                    INFO     Received INFO from server: {'msg':    logging.py:44
+                             '📊 Research ID:                                   
+                             research_20260120_035025', 'extra':                
+                             None}                                              
+2026-01-20 03:50:26,070 - INFO - Found 16 free fallback models with tool support
+2026-01-20 03:50:26,070 - INFO - Primary model (hardcoded): meta-llama/llama-3.3-70b-instruct:free
+2026-01-20 03:50:26,070 - INFO - Fallback models (dynamic): ['qwen/qwen3-coder:free', 'google/gemini-2.0-flash-exp:free']
+[01/20/26 03:50:26] DEBUG    Sending INFO to client: 🤖 AI Agent context.py:1044
+                             initialized with 3 models (top 3 of                
+                             3)                                                 
+                    DEBUG    Sending INFO to client: 🎯 Primary  context.py:1044
+                             model:                                             
+                             meta-llama/llama-3.3-70b-instruct:f                
+                             ree                                                
+[01/20/26 03:50:26] INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🤖 AI Agent initialized with 3                    
+                             models (top 3 of 3)', 'extra': None}               
+                    INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🎯 Primary model:                                 
+                             meta-llama/llama-3.3-70b-instruct:fre              
+                             e', 'extra': None}                                 
+                    DEBUG    Sending ERROR to client: ❌         context.py:1044
+                             Research workflow failed for 'AI                   
+                             trends': User not found.                           
+2026-01-20 03:50:26,286 - ERROR - Research workflow failed for 'AI trends': User not found.
+                    ERROR    Received ERROR from server: {'msg':   logging.py:44
+                             "❌ Research workflow failed for 'AI               
+                             trends': User not found.", 'extra':                
+                             None}                                              
+______________________________ test_reddit_search ______________________________
+
+    async def test_reddit_search():
+        """Test Reddit search functionality."""
+        async with create_client() as client:
+            result = await client.call_tool(
+                "social_search",
+                {
+                    "query": "Python web frameworks",
+                    "platforms": ["reddit"],
+                    "max_results_per_platform": 5,
+                    "reddit_subreddit": "Python"
+                }
+            )
+    
+            output = result.content[0].text
+>           assert len(output) > 200, f"Reddit search output too short: {len(output)} chars"
+E           AssertionError: Reddit search output too short: 142 chars
+E           assert 142 > 200
+E            +  where 142 = len('# 💬 Social Search Results for: *Python web frameworks*\n\n**Found 0 results** across 0 platforms\n\n---\n\n*Search completed on 2026-01-20 03:51:40*')
+
+tests/tools/test_social_search.py:30: AssertionError
+----------------------------- Captured stderr call -----------------------------
+2026-01-20 03:51:40,501 - INFO - Custom routes registered successfully
+2026-01-20 03:51:40,501 - INFO - Starting RivalSearchMCP in development mode (stdio)
+
+
+╭──────────────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│                                                                              │
+│                         ▄▀▀ ▄▀█ █▀▀ ▀█▀ █▀▄▀█ █▀▀ █▀█                        │
+│                         █▀  █▀█ ▄▄█  █  █ ▀ █ █▄▄ █▀▀                        │
+│                                                                              │
+│                                                                              │
+│                                FastMCP 2.14.3                                │
+│                            https://gofastmcp.com                             │
+│                                                                              │
+│                    🖥  Server:      RivalSearchMCP                            │
+│                    🚀 Deploy free: https://fastmcp.cloud                     │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────────────────────────────────────────────────────────────╮
+│                          ✨ FastMCP 3.0 is coming!                           │
+│       Pin `fastmcp < 3` in production, then upgrade when you're ready.       │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+
+[01/20/26 03:51:40] INFO     Starting MCP server 'RivalSearchMCP' server.py:2507
+                             with transport 'stdio'                             
+2026-01-20 03:51:40,550 - INFO - Social search for: Python web frameworks on ['reddit']
+2026-01-20 03:51:40,677 - ERROR - Reddit search failed: Client error '403 Blocked' for url 'https://www.reddit.com/r/Python/search.json?q=Python+web+frameworks&sort=relevance&t=all&limit=5&restrict_sr=on'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403
+=========================== short test summary info ============================
+FAILED tests/tools/test_github_search.py::test_github_basic - AssertionError: GitHub output too short: 119 chars
+assert 119 > 300
+ +  where 119 = len('# 🐙 GitHub Repository Search: *web framework*\n\n**Found 0 repositories**\n\n---\n\n*Search completed on 2026-01-20 03:48:33*')
+FAILED tests/tools/test_github_search.py::test_github_quality - AssertionError: GitHub quality output: 116 chars
+assert 116 > 200
+ +  where 116 = len('# 🐙 GitHub Repository Search: *TypeScript*\n\n**Found 0 repositories**\n\n---\n\n*Search completed on 2026-01-20 03:48:46*')
+FAILED tests/tools/test_research_agent.py::test_workflow_basic_depth - AssertionError: Basic research too short: 110 chars
+assert 110 > 500
+ +  where 110 = len('# 📋 Research Analysis: *JavaScript*\n\n❌ **Error:** User not found.\n\n*Analysis attempted on 2026-01-20 03:49:53*')
+FAILED tests/tools/test_research_agent.py::test_workflow_comprehensive_depth - fastmcp.exceptions.ToolError: Tool execution failed: 1 validation error for call[research_agent]
+topic
+  String should have at least 3 characters [type=string_too_short, input_value='AI', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_too_short
+FAILED tests/tools/test_research_agent.py::test_workflow_expert_depth - AssertionError: Expert research too short: 109 chars
+assert 109 > 500
+ +  where 109 = len('# 📋 Research Analysis: *databases*\n\n❌ **Error:** User not found.\n\n*Analysis attempted on 2026-01-20 03:50:01*')
+FAILED tests/tools/test_research_agent.py::test_workflow_max_sources - AssertionError: Output too short: 111 chars
+assert 111 > 400
+ +  where 111 = len('# 📋 Research Analysis: *programming*\n\n❌ **Error:** User not found.\n\n*Analysis attempted on 2026-01-20 03:50:05*')
+FAILED tests/tools/test_research_agent.py::test_workflow_with_trends - AssertionError: Output: 103 chars
+assert 103 > 300
+ +  where 103 = len('# 📋 Research Analysis: *web*\n\n❌ **Error:** User not found.\n\n*Analysis attempted on 2026-01-20 03:50:09*')
+FAILED tests/tools/test_research_agent.py::test_workflow_without_trends - AssertionError: Output: 109 chars
+assert 109 > 300
+ +  where 109 = len('# 📋 Research Analysis: *databases*\n\n❌ **Error:** User not found.\n\n*Analysis attempted on 2026-01-20 03:50:13*')
+FAILED tests/tools/test_research_agent.py::test_workflow_with_website_analysis - AssertionError: Output: 105 chars
+assert 105 > 300
+ +  where 105 = len('# 📋 Research Analysis: *cloud*\n\n❌ **Error:** User not found.\n\n*Analysis attempted on 2026-01-20 03:50:18*')
+FAILED tests/tools/test_research_agent.py::test_workflow_without_website_analysis - AssertionError: Output: 108 chars
+assert 108 > 300
+ +  where 108 = len('# 📋 Research Analysis: *security*\n\n❌ **Error:** User not found.\n\n*Analysis attempted on 2026-01-20 03:50:22*')
+FAILED tests/tools/test_research_agent.py::test_workflow_comprehensive_all_features - AssertionError: Comprehensive workflow: 109 chars
+assert 109 > 300
+ +  where 109 = len('# 📋 Research Analysis: *AI trends*\n\n❌ **Error:** User not found.\n\n*Analysis attempted on 2026-01-20 03:50:26*')
+FAILED tests/tools/test_social_search.py::test_reddit_search - AssertionError: Reddit search output too short: 142 chars
+assert 142 > 200
+ +  where 142 = len('# 💬 Social Search Results for: *Python web frameworks*\n\n**Found 0 results** across 0 platforms\n\n---\n\n*Search completed on 2026-01-20 03:51:40*')
+================== 12 failed, 52 passed in 292.33s (0:04:52) ===================
