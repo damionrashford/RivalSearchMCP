@@ -1,0 +1,12 @@
+FAILED tests/test_null_id_validation.py::test_allows_valid_request_id_string - RuntimeError: FastMCP's StreamableHTTPSessionManager task group was not initialized. This commonly occurs when the FastMCP application's lifespan is not passed to the parent ASGI application (e.g., FastAPI or Starlette). Please ensure you are setting `lifespan=mcp_app.lifespan` in your parent app's constructor, where `mcp_app` is the application instance returned by `fastmcp_instance.http_app()`. \nFor more details, see the FastMCP ASGI integration documentation: https://gofastmcp.com/deployment/asgi\nOriginal error: Task group is not initialized. Make sure to use run().
+FAILED tests/test_null_id_validation.py::test_allows_notification_without_id - RuntimeError: FastMCP's StreamableHTTPSessionManager task group was not initialized. This commonly occurs when the FastMCP application's lifespan is not passed to the parent ASGI application (e.g., FastAPI or Starlette). Please ensure you are setting `lifespan=mcp_app.lifespan` in your parent app's constructor, where `mcp_app` is the application instance returned by `fastmcp_instance.http_app()`. \nFor more details, see the FastMCP ASGI integration documentation: https://gofastmcp.com/deployment/asgi\nOriginal error: Task group is not initialized. Make sure to use run().
+FAILED tests/tools/test_research_agent.py::test_workflow_basic_depth - AssertionError: Basic research too short: 110 chars
+FAILED tests/tools/test_research_agent.py::test_workflow_comprehensive_depth - fastmcp.exceptions.ToolError: Tool execution failed: 1 validation error for call[research_agent]
+FAILED tests/tools/test_research_agent.py::test_workflow_expert_depth - AssertionError: Expert research too short: 109 chars
+FAILED tests/tools/test_research_agent.py::test_workflow_max_sources - AssertionError: Output too short: 111 chars
+FAILED tests/tools/test_research_agent.py::test_workflow_with_trends - AssertionError: Output: 103 chars
+FAILED tests/tools/test_research_agent.py::test_workflow_without_trends - AssertionError: Output: 109 chars
+FAILED tests/tools/test_research_agent.py::test_workflow_with_website_analysis - AssertionError: Output: 105 chars
+FAILED tests/tools/test_research_agent.py::test_workflow_without_website_analysis - AssertionError: Output: 108 chars
+FAILED tests/tools/test_research_agent.py::test_workflow_comprehensive_all_features - AssertionError: Comprehensive workflow: 109 chars
+FAILED tests/tools/test_social_search.py::test_reddit_search - AssertionError: Reddit search output too short: 142 chars

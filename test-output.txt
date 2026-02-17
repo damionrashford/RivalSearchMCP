@@ -1,0 +1,3736 @@
+============================= test session starts ==============================
+platform linux -- Python 3.11.14, pytest-9.0.2, pluggy-1.6.0
+rootdir: /home/runner/work/RivalSearchMCP/RivalSearchMCP
+configfile: pyproject.toml
+testpaths: tests
+plugins: anyio-4.12.1, cov-7.0.0, asyncio-1.3.0
+asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collected 68 items
+
+tests/test_null_id_validation.py ..FF                                    [  5%]
+tests/tools/test_content_operations.py ..........                        [ 20%]
+tests/tools/test_document_analysis.py ....                               [ 26%]
+tests/tools/test_github_search.py ....                                   [ 32%]
+tests/tools/test_map_website.py .......                                  [ 42%]
+tests/tools/test_news_aggregation.py ....                                [ 48%]
+tests/tools/test_research_agent.py .FFFFFFFFF                            [ 63%]
+tests/tools/test_research_topic.py ......                                [ 72%]
+tests/tools/test_scientific_research.py .........                        [ 85%]
+tests/tools/test_social_search.py F....                                  [ 92%]
+tests/tools/test_web_search.py .....                                     [100%]
+
+=================================== FAILURES ===================================
+_____________________ test_allows_valid_request_id_string ______________________
+
+self = <fastmcp.server.http.StreamableHTTPASGIApp object at 0x7ff17d8a7bd0>
+scope = {'app': <fastmcp.server.http.StarletteWithLifespan object at 0x7ff03439d410>, 'client': ('testclient', 50000), 'endpoint': <fastmcp.server.http.StreamableHTTPASGIApp object at 0x7ff17d8a7bd0>, 'extensions': {'http.response.debug': {}}, ...}
+receive = <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7ff00b3ab920>
+send = <function wrap_app_handling_exceptions.<locals>.wrapped_app.<locals>.sender at 0x7ff00b3abc40>
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        try:
+>           await self.session_manager.handle_request(scope, receive, send)
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/fastmcp/server/http.py:40: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <mcp.server.streamable_http_manager.StreamableHTTPSessionManager object at 0x7ff17d8a63d0>
+scope = {'app': <fastmcp.server.http.StarletteWithLifespan object at 0x7ff03439d410>, 'client': ('testclient', 50000), 'endpoint': <fastmcp.server.http.StreamableHTTPASGIApp object at 0x7ff17d8a7bd0>, 'extensions': {'http.response.debug': {}}, ...}
+receive = <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7ff00b3ab920>
+send = <function wrap_app_handling_exceptions.<locals>.wrapped_app.<locals>.sender at 0x7ff00b3abc40>
+
+    async def handle_request(
+        self,
+        scope: Scope,
+        receive: Receive,
+        send: Send,
+    ) -> None:
+        """
+        Process ASGI request with proper session handling and transport setup.
+    
+        Dispatches to the appropriate handler based on stateless mode.
+    
+        Args:
+            scope: ASGI scope
+            receive: ASGI receive function
+            send: ASGI send function
+        """
+        if self._task_group is None:
+>           raise RuntimeError("Task group is not initialized. Make sure to use run().")
+E           RuntimeError: Task group is not initialized. Make sure to use run().
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/mcp/server/streamable_http_manager.py:144: RuntimeError
+
+The above exception was the direct cause of the following exception:
+
+http_client = <starlette.testclient.TestClient object at 0x7ff03439dc10>
+
+    def test_allows_valid_request_id_string(http_client):
+        """Requests with string id should pass through (may get other MCP response)."""
+>       response = http_client.post(
+            "/mcp/",
+            json={"jsonrpc": "2.0", "method": "initialize", "id": "test-123"},
+            headers={"Content-Type": "application/json"},
+        )
+
+tests/test_null_id_validation.py:51: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <starlette.testclient.TestClient object at 0x7ff03439dc10>, url = '/mcp/'
+
+    def post(  # type: ignore[override]
+        self,
+        url: httpx._types.URLTypes,
+        *,
+        content: httpx._types.RequestContent | None = None,
+        data: _RequestData | None = None,
+        files: httpx._types.RequestFiles | None = None,
+        json: Any = None,
+        params: httpx._types.QueryParamTypes | None = None,
+        headers: httpx._types.HeaderTypes | None = None,
+        cookies: httpx._types.CookieTypes | None = None,
+        auth: httpx._types.AuthTypes | httpx._client.UseClientDefault = httpx._client.USE_CLIENT_DEFAULT,
+        follow_redirects: bool | httpx._client.UseClientDefault = httpx._client.USE_CLIENT_DEFAULT,
+        timeout: httpx._types.TimeoutTypes | httpx._client.UseClientDefault = httpx._client.USE_CLIENT_DEFAULT,
+        extensions: dict[str, Any] | None = None,
+    ) -> httpx.Response:
+>       return super().post(
+            url,
+            content=content,
+            data=data,
+            files=files,
+            json=json,
+            params=params,
+            headers=headers,
+            cookies=cookies,
+            auth=auth,
+            follow_redirects=follow_redirects,
+            timeout=timeout,
+            extensions=extensions,
+        )
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/starlette/testclient.py:546: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <starlette.testclient.TestClient object at 0x7ff03439dc10>, url = '/mcp/'
+
+    def post(
+        self,
+        url: URL | str,
+        *,
+        content: RequestContent | None = None,
+        data: RequestData | None = None,
+        files: RequestFiles | None = None,
+        json: typing.Any | None = None,
+        params: QueryParamTypes | None = None,
+        headers: HeaderTypes | None = None,
+        cookies: CookieTypes | None = None,
+        auth: AuthTypes | UseClientDefault = USE_CLIENT_DEFAULT,
+        follow_redirects: bool | UseClientDefault = USE_CLIENT_DEFAULT,
+        timeout: TimeoutTypes | UseClientDefault = USE_CLIENT_DEFAULT,
+        extensions: RequestExtensions | None = None,
+    ) -> Response:
+        """
+        Send a `POST` request.
+    
+        **Parameters**: See `httpx.request`.
+        """
+>       return self.request(
+            "POST",
+            url,
+            content=content,
+            data=data,
+            files=files,
+            json=json,
+            params=params,
+            headers=headers,
+            cookies=cookies,
+            auth=auth,
+            follow_redirects=follow_redirects,
+            timeout=timeout,
+            extensions=extensions,
+        )
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/httpx/_client.py:1144: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <starlette.testclient.TestClient object at 0x7ff03439dc10>
+method = 'POST', url = URL('http://testserver/mcp/')
+
+    def request(  # type: ignore[override]
+        self,
+        method: str,
+        url: httpx._types.URLTypes,
+        *,
+        content: httpx._types.RequestContent | None = None,
+        data: _RequestData | None = None,
+        files: httpx._types.RequestFiles | None = None,
+        json: Any = None,
+        params: httpx._types.QueryParamTypes | None = None,
+        headers: httpx._types.HeaderTypes | None = None,
+        cookies: httpx._types.CookieTypes | None = None,
+        auth: httpx._types.AuthTypes | httpx._client.UseClientDefault = httpx._client.USE_CLIENT_DEFAULT,
+        follow_redirects: bool | httpx._client.UseClientDefault = httpx._client.USE_CLIENT_DEFAULT,
+        timeout: httpx._types.TimeoutTypes | httpx._client.UseClientDefault = httpx._client.USE_CLIENT_DEFAULT,
+        extensions: dict[str, Any] | None = None,
+    ) -> httpx.Response:
+        if timeout is not httpx.USE_CLIENT_DEFAULT:
+            warnings.warn(
+                "You should not use the 'timeout' argument with the TestClient. "
+                "See https://github.com/Kludex/starlette/issues/1108 for more information.",
+                DeprecationWarning,
+            )
+        url = self._merge_url(url)
+>       return super().request(
+            method,
+            url,
+            content=content,
+            data=data,
+            files=files,
+            json=json,
+            params=params,
+            headers=headers,
+            cookies=cookies,
+            auth=auth,
+            follow_redirects=follow_redirects,
+            timeout=timeout,
+            extensions=extensions,
+        )
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/starlette/testclient.py:445: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <starlette.testclient.TestClient object at 0x7ff03439dc10>
+method = 'POST', url = URL('http://testserver/mcp/')
+
+    def request(
+        self,
+        method: str,
+        url: URL | str,
+        *,
+        content: RequestContent | None = None,
+        data: RequestData | None = None,
+        files: RequestFiles | None = None,
+        json: typing.Any | None = None,
+        params: QueryParamTypes | None = None,
+        headers: HeaderTypes | None = None,
+        cookies: CookieTypes | None = None,
+        auth: AuthTypes | UseClientDefault | None = USE_CLIENT_DEFAULT,
+        follow_redirects: bool | UseClientDefault = USE_CLIENT_DEFAULT,
+        timeout: TimeoutTypes | UseClientDefault = USE_CLIENT_DEFAULT,
+        extensions: RequestExtensions | None = None,
+    ) -> Response:
+        """
+        Build and send a request.
+    
+        Equivalent to:
+    
+        ```python
+        request = client.build_request(...)
+        response = client.send(request, ...)
+        ```
+    
+        See `Client.build_request()`, `Client.send()` and
+        [Merging of configuration][0] for how the various parameters
+        are merged with client-level configuration.
+    
+        [0]: /advanced/clients/#merging-of-configuration
+        """
+        if cookies is not None:
+            message = (
+                "Setting per-request cookies=<...> is being deprecated, because "
+                "the expected behaviour on cookie persistence is ambiguous. Set "
+                "cookies directly on the client instance instead."
+            )
+            warnings.warn(message, DeprecationWarning, stacklevel=2)
+    
+        request = self.build_request(
+            method=method,
+            url=url,
+            content=content,
+            data=data,
+            files=files,
+            json=json,
+            params=params,
+            headers=headers,
+            cookies=cookies,
+            timeout=timeout,
+            extensions=extensions,
+        )
+>       return self.send(request, auth=auth, follow_redirects=follow_redirects)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/httpx/_client.py:825: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <starlette.testclient.TestClient object at 0x7ff03439dc10>
+request = <Request('POST', 'http://testserver/mcp/')>
+
+    def send(
+        self,
+        request: Request,
+        *,
+        stream: bool = False,
+        auth: AuthTypes | UseClientDefault | None = USE_CLIENT_DEFAULT,
+        follow_redirects: bool | UseClientDefault = USE_CLIENT_DEFAULT,
+    ) -> Response:
+        """
+        Send a request.
+    
+        The request is sent as-is, unmodified.
+    
+        Typically you'll want to build one with `Client.build_request()`
+        so that any client-level configuration is merged into the request,
+        but passing an explicit `httpx.Request()` is supported as well.
+    
+        See also: [Request instances][0]
+    
+        [0]: /advanced/clients/#request-instances
+        """
+        if self._state == ClientState.CLOSED:
+            raise RuntimeError("Cannot send a request, as the client has been closed.")
+    
+        self._state = ClientState.OPENED
+        follow_redirects = (
+            self.follow_redirects
+            if isinstance(follow_redirects, UseClientDefault)
+            else follow_redirects
+        )
+    
+        self._set_timeout(request)
+    
+        auth = self._build_request_auth(request, auth)
+    
+>       response = self._send_handling_auth(
+            request,
+            auth=auth,
+            follow_redirects=follow_redirects,
+            history=[],
+        )
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/httpx/_client.py:914: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <starlette.testclient.TestClient object at 0x7ff03439dc10>
+request = <Request('POST', 'http://testserver/mcp/')>
+auth = <httpx.Auth object at 0x7ff00b3bb010>, follow_redirects = True
+history = []
+
+    def _send_handling_auth(
+        self,
+        request: Request,
+        auth: Auth,
+        follow_redirects: bool,
+        history: list[Response],
+    ) -> Response:
+        auth_flow = auth.sync_auth_flow(request)
+        try:
+            request = next(auth_flow)
+    
+            while True:
+>               response = self._send_handling_redirects(
+                    request,
+                    follow_redirects=follow_redirects,
+                    history=history,
+                )
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/httpx/_client.py:942: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <starlette.testclient.TestClient object at 0x7ff03439dc10>
+request = <Request('POST', 'http://testserver/mcp/')>, follow_redirects = True
+history = []
+
+    def _send_handling_redirects(
+        self,
+        request: Request,
+        follow_redirects: bool,
+        history: list[Response],
+    ) -> Response:
+        while True:
+            if len(history) > self.max_redirects:
+                raise TooManyRedirects(
+                    "Exceeded maximum allowed redirects.", request=request
+                )
+    
+            for hook in self._event_hooks["request"]:
+                hook(request)
+    
+>           response = self._send_single_request(request)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/httpx/_client.py:979: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <starlette.testclient.TestClient object at 0x7ff03439dc10>
+request = <Request('POST', 'http://testserver/mcp/')>
+
+    def _send_single_request(self, request: Request) -> Response:
+        """
+        Sends a single request, without handling any redirections.
+        """
+        transport = self._transport_for_url(request.url)
+        start = time.perf_counter()
+    
+        if not isinstance(request.stream, SyncByteStream):
+            raise RuntimeError(
+                "Attempted to send an async request with a sync Client instance."
+            )
+    
+        with request_context(request=request):
+>           response = transport.handle_request(request)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/httpx/_client.py:1014: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <starlette.testclient._TestClientTransport object at 0x7ff00b39a1d0>
+request = <Request('POST', 'http://testserver/mcp/')>
+
+    def handle_request(self, request: httpx.Request) -> httpx.Response:
+        scheme = request.url.scheme
+        netloc = request.url.netloc.decode(encoding="ascii")
+        path = request.url.path
+        raw_path = request.url.raw_path
+        query = request.url.query.decode(encoding="ascii")
+    
+        default_port = {"http": 80, "ws": 80, "https": 443, "wss": 443}[scheme]
+    
+        if ":" in netloc:
+            host, port_string = netloc.split(":", 1)
+            port = int(port_string)
+        else:
+            host = netloc
+            port = default_port
+    
+        # Include the 'host' header.
+        if "host" in request.headers:
+            headers: list[tuple[bytes, bytes]] = []
+        elif port == default_port:  # pragma: no cover
+            headers = [(b"host", host.encode())]
+        else:  # pragma: no cover
+            headers = [(b"host", (f"{host}:{port}").encode())]
+    
+        # Include other request headers.
+        headers += [(key.lower().encode(), value.encode()) for key, value in request.headers.multi_items()]
+    
+        scope: dict[str, Any]
+    
+        if scheme in {"ws", "wss"}:
+            subprotocol = request.headers.get("sec-websocket-protocol", None)
+            if subprotocol is None:
+                subprotocols: Sequence[str] = []
+            else:
+                subprotocols = [value.strip() for value in subprotocol.split(",")]
+            scope = {
+                "type": "websocket",
+                "path": unquote(path),
+                "raw_path": raw_path.split(b"?", 1)[0],
+                "root_path": self.root_path,
+                "scheme": scheme,
+                "query_string": query.encode(),
+                "headers": headers,
+                "client": self.client,
+                "server": [host, port],
+                "subprotocols": subprotocols,
+                "state": self.app_state.copy(),
+                "extensions": {"websocket.http.response": {}},
+            }
+            session = WebSocketTestSession(self.app, scope, self.portal_factory)
+            raise _Upgrade(session)
+    
+        scope = {
+            "type": "http",
+            "http_version": "1.1",
+            "method": request.method,
+            "path": unquote(path),
+            "raw_path": raw_path.split(b"?", 1)[0],
+            "root_path": self.root_path,
+            "scheme": scheme,
+            "query_string": query.encode(),
+            "headers": headers,
+            "client": self.client,
+            "server": [host, port],
+            "extensions": {"http.response.debug": {}},
+            "state": self.app_state.copy(),
+        }
+    
+        request_complete = False
+        response_started = False
+        response_complete: anyio.Event
+        raw_kwargs: dict[str, Any] = {"stream": io.BytesIO()}
+        template = None
+        context = None
+    
+        async def receive() -> Message:
+            nonlocal request_complete
+    
+            if request_complete:
+                if not response_complete.is_set():
+                    await response_complete.wait()
+                return {"type": "http.disconnect"}
+    
+            body = request.read()
+            if isinstance(body, str):
+                body_bytes: bytes = body.encode("utf-8")  # pragma: no cover
+            elif body is None:
+                body_bytes = b""  # pragma: no cover
+            elif isinstance(body, GeneratorType):
+                try:  # pragma: no cover
+                    chunk = body.send(None)
+                    if isinstance(chunk, str):
+                        chunk = chunk.encode("utf-8")
+                    return {"type": "http.request", "body": chunk, "more_body": True}
+                except StopIteration:  # pragma: no cover
+                    request_complete = True
+                    return {"type": "http.request", "body": b""}
+            else:
+                body_bytes = body
+    
+            request_complete = True
+            return {"type": "http.request", "body": body_bytes}
+    
+        async def send(message: Message) -> None:
+            nonlocal raw_kwargs, response_started, template, context
+    
+            if message["type"] == "http.response.start":
+                assert not response_started, 'Received multiple "http.response.start" messages.'
+                raw_kwargs["status_code"] = message["status"]
+                raw_kwargs["headers"] = [(key.decode(), value.decode()) for key, value in message.get("headers", [])]
+                response_started = True
+            elif message["type"] == "http.response.body":
+                assert response_started, 'Received "http.response.body" without "http.response.start".'
+                assert not response_complete.is_set(), 'Received "http.response.body" after response completed.'
+                body = message.get("body", b"")
+                more_body = message.get("more_body", False)
+                if request.method != "HEAD":
+                    raw_kwargs["stream"].write(body)
+                if not more_body:
+                    raw_kwargs["stream"].seek(0)
+                    response_complete.set()
+            elif message["type"] == "http.response.debug":
+                template = message["info"]["template"]
+                context = message["info"]["context"]
+    
+        try:
+            with self.portal_factory() as portal:
+                response_complete = portal.call(anyio.Event)
+                portal.call(self.app, scope, receive, send)
+        except BaseException as exc:
+            if self.raise_server_exceptions:
+>               raise exc
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/starlette/testclient.py:348: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <starlette.testclient._TestClientTransport object at 0x7ff00b39a1d0>
+request = <Request('POST', 'http://testserver/mcp/')>
+
+    def handle_request(self, request: httpx.Request) -> httpx.Response:
+        scheme = request.url.scheme
+        netloc = request.url.netloc.decode(encoding="ascii")
+        path = request.url.path
+        raw_path = request.url.raw_path
+        query = request.url.query.decode(encoding="ascii")
+    
+        default_port = {"http": 80, "ws": 80, "https": 443, "wss": 443}[scheme]
+    
+        if ":" in netloc:
+            host, port_string = netloc.split(":", 1)
+            port = int(port_string)
+        else:
+            host = netloc
+            port = default_port
+    
+        # Include the 'host' header.
+        if "host" in request.headers:
+            headers: list[tuple[bytes, bytes]] = []
+        elif port == default_port:  # pragma: no cover
+            headers = [(b"host", host.encode())]
+        else:  # pragma: no cover
+            headers = [(b"host", (f"{host}:{port}").encode())]
+    
+        # Include other request headers.
+        headers += [(key.lower().encode(), value.encode()) for key, value in request.headers.multi_items()]
+    
+        scope: dict[str, Any]
+    
+        if scheme in {"ws", "wss"}:
+            subprotocol = request.headers.get("sec-websocket-protocol", None)
+            if subprotocol is None:
+                subprotocols: Sequence[str] = []
+            else:
+                subprotocols = [value.strip() for value in subprotocol.split(",")]
+            scope = {
+                "type": "websocket",
+                "path": unquote(path),
+                "raw_path": raw_path.split(b"?", 1)[0],
+                "root_path": self.root_path,
+                "scheme": scheme,
+                "query_string": query.encode(),
+                "headers": headers,
+                "client": self.client,
+                "server": [host, port],
+                "subprotocols": subprotocols,
+                "state": self.app_state.copy(),
+                "extensions": {"websocket.http.response": {}},
+            }
+            session = WebSocketTestSession(self.app, scope, self.portal_factory)
+            raise _Upgrade(session)
+    
+        scope = {
+            "type": "http",
+            "http_version": "1.1",
+            "method": request.method,
+            "path": unquote(path),
+            "raw_path": raw_path.split(b"?", 1)[0],
+            "root_path": self.root_path,
+            "scheme": scheme,
+            "query_string": query.encode(),
+            "headers": headers,
+            "client": self.client,
+            "server": [host, port],
+            "extensions": {"http.response.debug": {}},
+            "state": self.app_state.copy(),
+        }
+    
+        request_complete = False
+        response_started = False
+        response_complete: anyio.Event
+        raw_kwargs: dict[str, Any] = {"stream": io.BytesIO()}
+        template = None
+        context = None
+    
+        async def receive() -> Message:
+            nonlocal request_complete
+    
+            if request_complete:
+                if not response_complete.is_set():
+                    await response_complete.wait()
+                return {"type": "http.disconnect"}
+    
+            body = request.read()
+            if isinstance(body, str):
+                body_bytes: bytes = body.encode("utf-8")  # pragma: no cover
+            elif body is None:
+                body_bytes = b""  # pragma: no cover
+            elif isinstance(body, GeneratorType):
+                try:  # pragma: no cover
+                    chunk = body.send(None)
+                    if isinstance(chunk, str):
+                        chunk = chunk.encode("utf-8")
+                    return {"type": "http.request", "body": chunk, "more_body": True}
+                except StopIteration:  # pragma: no cover
+                    request_complete = True
+                    return {"type": "http.request", "body": b""}
+            else:
+                body_bytes = body
+    
+            request_complete = True
+            return {"type": "http.request", "body": body_bytes}
+    
+        async def send(message: Message) -> None:
+            nonlocal raw_kwargs, response_started, template, context
+    
+            if message["type"] == "http.response.start":
+                assert not response_started, 'Received multiple "http.response.start" messages.'
+                raw_kwargs["status_code"] = message["status"]
+                raw_kwargs["headers"] = [(key.decode(), value.decode()) for key, value in message.get("headers", [])]
+                response_started = True
+            elif message["type"] == "http.response.body":
+                assert response_started, 'Received "http.response.body" without "http.response.start".'
+                assert not response_complete.is_set(), 'Received "http.response.body" after response completed.'
+                body = message.get("body", b"")
+                more_body = message.get("more_body", False)
+                if request.method != "HEAD":
+                    raw_kwargs["stream"].write(body)
+                if not more_body:
+                    raw_kwargs["stream"].seek(0)
+                    response_complete.set()
+            elif message["type"] == "http.response.debug":
+                template = message["info"]["template"]
+                context = message["info"]["context"]
+    
+        try:
+            with self.portal_factory() as portal:
+                response_complete = portal.call(anyio.Event)
+>               portal.call(self.app, scope, receive, send)
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/starlette/testclient.py:345: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <anyio.from_thread.BlockingPortal object at 0x7ff00b3b1f10>
+func = <fastmcp.server.http.StarletteWithLifespan object at 0x7ff03439d410>
+args = ({'app': <fastmcp.server.http.StarletteWithLifespan object at 0x7ff03439d410>, 'client': ('testclient', 50000), 'endpo...st.<locals>.receive at 0x7ff17b54fa60>, <function _TestClientTransport.handle_request.<locals>.send at 0x7ff00b3a9f80>)
+
+    def call(
+        self,
+        func: Callable[[Unpack[PosArgsT]], Awaitable[T_Retval] | T_Retval],
+        *args: Unpack[PosArgsT],
+    ) -> T_Retval:
+        """
+        Call the given function in the event loop thread.
+    
+        If the callable returns a coroutine object, it is awaited on.
+    
+        :param func: any callable
+        :raises RuntimeError: if the portal is not running or if this method is called
+            from within the event loop thread
+    
+        """
+>       return cast(T_Retval, self.start_task_soon(func, *args).result())
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/anyio/from_thread.py:334: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = None, timeout = None
+
+    def result(self, timeout=None):
+        """Return the result of the call that the future represents.
+    
+        Args:
+            timeout: The number of seconds to wait for the result if the future
+                isn't done. If None, then there is no limit on the wait time.
+    
+        Returns:
+            The result of the call that the future represents.
+    
+        Raises:
+            CancelledError: If the future was cancelled.
+            TimeoutError: If the future didn't finish executing before the given
+                timeout.
+            Exception: If the call raised then that exception will be raised.
+        """
+        try:
+            with self._condition:
+                if self._state in [CANCELLED, CANCELLED_AND_NOTIFIED]:
+                    raise CancelledError()
+                elif self._state == FINISHED:
+                    return self.__get_result()
+    
+                self._condition.wait(timeout)
+    
+                if self._state in [CANCELLED, CANCELLED_AND_NOTIFIED]:
+                    raise CancelledError()
+                elif self._state == FINISHED:
+>                   return self.__get_result()
+                           ^^^^^^^^^^^^^^^^^^^
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/concurrent/futures/_base.py:456: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = None
+
+    def __get_result(self):
+        if self._exception:
+            try:
+>               raise self._exception
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/concurrent/futures/_base.py:401: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <anyio.from_thread.BlockingPortal object at 0x7ff00b3b1f10>
+func = <fastmcp.server.http.StarletteWithLifespan object at 0x7ff03439d410>
+args = ({'app': <fastmcp.server.http.StarletteWithLifespan object at 0x7ff03439d410>, 'client': ('testclient', 50000), 'endpo...st.<locals>.receive at 0x7ff17b54fa60>, <function _TestClientTransport.handle_request.<locals>.send at 0x7ff00b3a9f80>)
+kwargs = {}
+future = <Future at 0x7ff00b3bb710 state=finished raised RuntimeError>
+
+    async def _call_func(
+        self,
+        func: Callable[[Unpack[PosArgsT]], Awaitable[T_Retval] | T_Retval],
+        args: tuple[Unpack[PosArgsT]],
+        kwargs: dict[str, Any],
+        future: Future[T_Retval],
+    ) -> None:
+        def callback(f: Future[T_Retval]) -> None:
+            if f.cancelled():
+                if self._event_loop_thread_id == get_ident():
+                    scope.cancel("the future was cancelled")
+                elif self._event_loop_thread_id is not None:
+                    self.call(scope.cancel, "the future was cancelled")
+    
+        try:
+            retval_or_awaitable = func(*args, **kwargs)
+            if isawaitable(retval_or_awaitable):
+                with CancelScope() as scope:
+                    future.add_done_callback(callback)
+>                   retval = await retval_or_awaitable
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/anyio/from_thread.py:259: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <fastmcp.server.http.StarletteWithLifespan object at 0x7ff03439d410>
+scope = {'app': <fastmcp.server.http.StarletteWithLifespan object at 0x7ff03439d410>, 'client': ('testclient', 50000), 'endpoint': <fastmcp.server.http.StreamableHTTPASGIApp object at 0x7ff17d8a7bd0>, 'extensions': {'http.response.debug': {}}, ...}
+receive = <function _TestClientTransport.handle_request.<locals>.receive at 0x7ff17b54fa60>
+send = <function _TestClientTransport.handle_request.<locals>.send at 0x7ff00b3a9f80>
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        scope["app"] = self
+        if self.middleware_stack is None:
+            self.middleware_stack = self.build_middleware_stack()
+>       await self.middleware_stack(scope, receive, send)
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/starlette/applications.py:107: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <starlette.middleware.errors.ServerErrorMiddleware object at 0x7ff00b3b1d10>
+scope = {'app': <fastmcp.server.http.StarletteWithLifespan object at 0x7ff03439d410>, 'client': ('testclient', 50000), 'endpoint': <fastmcp.server.http.StreamableHTTPASGIApp object at 0x7ff17d8a7bd0>, 'extensions': {'http.response.debug': {}}, ...}
+receive = <function _TestClientTransport.handle_request.<locals>.receive at 0x7ff17b54fa60>
+send = <function _TestClientTransport.handle_request.<locals>.send at 0x7ff00b3a9f80>
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        if scope["type"] != "http":
+            await self.app(scope, receive, send)
+            return
+    
+        response_started = False
+    
+        async def _send(message: Message) -> None:
+            nonlocal response_started, send
+    
+            if message["type"] == "http.response.start":
+                response_started = True
+            await send(message)
+    
+        try:
+            await self.app(scope, receive, _send)
+        except Exception as exc:
+            request = Request(scope)
+            if self.debug:
+                # In debug mode, return traceback responses.
+                response = self.debug_response(request, exc)
+            elif self.handler is None:
+                # Use our default 500 error handler.
+                response = self.error_response(request, exc)
+            else:
+                # Use an installed 500 error handler.
+                if is_async_callable(self.handler):
+                    response = await self.handler(request, exc)
+                else:
+                    response = await run_in_threadpool(self.handler, request, exc)
+    
+            if not response_started:
+                await response(scope, receive, send)
+    
+            # We always continue to raise the exception.
+            # This allows servers to log the error, or allows test clients
+            # to optionally raise the error within the test case.
+>           raise exc
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/starlette/middleware/errors.py:186: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <starlette.middleware.errors.ServerErrorMiddleware object at 0x7ff00b3b1d10>
+scope = {'app': <fastmcp.server.http.StarletteWithLifespan object at 0x7ff03439d410>, 'client': ('testclient', 50000), 'endpoint': <fastmcp.server.http.StreamableHTTPASGIApp object at 0x7ff17d8a7bd0>, 'extensions': {'http.response.debug': {}}, ...}
+receive = <function _TestClientTransport.handle_request.<locals>.receive at 0x7ff17b54fa60>
+send = <function _TestClientTransport.handle_request.<locals>.send at 0x7ff00b3a9f80>
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        if scope["type"] != "http":
+            await self.app(scope, receive, send)
+            return
+    
+        response_started = False
+    
+        async def _send(message: Message) -> None:
+            nonlocal response_started, send
+    
+            if message["type"] == "http.response.start":
+                response_started = True
+            await send(message)
+    
+        try:
+>           await self.app(scope, receive, _send)
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/starlette/middleware/errors.py:164: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <fastmcp.server.http.RequestContextMiddleware object at 0x7ff00b3b3090>
+scope = {'app': <fastmcp.server.http.StarletteWithLifespan object at 0x7ff03439d410>, 'client': ('testclient', 50000), 'endpoint': <fastmcp.server.http.StreamableHTTPASGIApp object at 0x7ff17d8a7bd0>, 'extensions': {'http.response.debug': {}}, ...}
+receive = <function _TestClientTransport.handle_request.<locals>.receive at 0x7ff17b54fa60>
+send = <function ServerErrorMiddleware.__call__.<locals>._send at 0x7ff00b3ab6a0>
+
+    async def __call__(self, scope, receive, send):
+        if scope["type"] == "http":
+            with set_http_request(Request(scope)):
+>               await self.app(scope, receive, send)
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/fastmcp/server/http.py:96: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <src.middleware.null_id_validation.NullIdValidationMiddleware object at 0x7ff00b3b2590>
+scope = {'app': <fastmcp.server.http.StarletteWithLifespan object at 0x7ff03439d410>, 'client': ('testclient', 50000), 'endpoint': <fastmcp.server.http.StreamableHTTPASGIApp object at 0x7ff17d8a7bd0>, 'extensions': {'http.response.debug': {}}, ...}
+receive = <function _TestClientTransport.handle_request.<locals>.receive at 0x7ff17b54fa60>
+send = <function ServerErrorMiddleware.__call__.<locals>._send at 0x7ff00b3ab6a0>
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        if scope["type"] != "http":
+            await self.app(scope, receive, send)
+            return
+    
+        request = _CachedRequest(scope, receive)
+        wrapped_receive = request.wrapped_receive
+        response_sent = anyio.Event()
+        app_exc: Exception | None = None
+        exception_already_raised = False
+    
+        async def call_next(request: Request) -> Response:
+            async def receive_or_disconnect() -> Message:
+                if response_sent.is_set():
+                    return {"type": "http.disconnect"}
+    
+                async with anyio.create_task_group() as task_group:
+    
+                    async def wrap(func: Callable[[], Awaitable[T]]) -> T:
+                        result = await func()
+                        task_group.cancel_scope.cancel()
+                        return result
+    
+                    task_group.start_soon(wrap, response_sent.wait)
+                    message = await wrap(wrapped_receive)
+    
+                if response_sent.is_set():
+                    return {"type": "http.disconnect"}
+    
+                return message
+    
+            async def send_no_error(message: Message) -> None:
+                try:
+                    await send_stream.send(message)
+                except anyio.BrokenResourceError:
+                    # recv_stream has been closed, i.e. response_sent has been set.
+                    return
+    
+            async def coro() -> None:
+                nonlocal app_exc
+    
+                with send_stream:
+                    try:
+                        await self.app(scope, receive_or_disconnect, send_no_error)
+                    except Exception as exc:
+                        app_exc = exc
+    
+            task_group.start_soon(coro)
+    
+            try:
+                message = await recv_stream.receive()
+                info = message.get("info", None)
+                if message["type"] == "http.response.debug" and info is not None:
+                    message = await recv_stream.receive()
+            except anyio.EndOfStream:
+                if app_exc is not None:
+                    nonlocal exception_already_raised
+                    exception_already_raised = True
+                    # Prevent `anyio.EndOfStream` from polluting app exception context.
+                    # If both cause and context are None then the context is suppressed
+                    # and `anyio.EndOfStream` is not present in the exception traceback.
+                    # If exception cause is not None then it is propagated with
+                    # reraising here.
+                    # If exception has no cause but has context set then the context is
+                    # propagated as a cause with the reraise. This is necessary in order
+                    # to prevent `anyio.EndOfStream` from polluting the exception
+                    # context.
+                    raise app_exc from app_exc.__cause__ or app_exc.__context__
+                raise RuntimeError("No response returned.")
+    
+            assert message["type"] == "http.response.start"
+    
+            async def body_stream() -> BodyStreamGenerator:
+                async for message in recv_stream:
+                    if message["type"] == "http.response.pathsend":
+                        yield message
+                        break
+                    assert message["type"] == "http.response.body", f"Unexpected message: {message}"
+                    body = message.get("body", b"")
+                    if body:
+                        yield body
+                    if not message.get("more_body", False):
+                        break
+    
+            response = _StreamingResponse(status_code=message["status"], content=body_stream(), info=info)
+            response.raw_headers = message["headers"]
+            return response
+    
+        streams: anyio.create_memory_object_stream[Message] = anyio.create_memory_object_stream()
+        send_stream, recv_stream = streams
+>       with recv_stream, send_stream, collapse_excgroups():
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/starlette/middleware/base.py:191: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <contextlib._GeneratorContextManager object at 0x7ff00b3b2790>
+typ = <class 'ExceptionGroup'>
+value = ExceptionGroup('unhandled errors in a TaskGroup', [RuntimeError("FastMCP's StreamableHTTPSessionManager task group was...ion: https://gofastmcp.com/deployment/asgi\\nOriginal error: Task group is not initialized. Make sure to use run().")])
+traceback = <traceback object at 0x7ff00b3dc5c0>
+
+    def __exit__(self, typ, value, traceback):
+        if typ is None:
+            try:
+                next(self.gen)
+            except StopIteration:
+                return False
+            else:
+                try:
+                    raise RuntimeError("generator didn't stop")
+                finally:
+                    self.gen.close()
+        else:
+            if value is None:
+                # Need to force instantiation so we can reliably
+                # tell if we get the same exception back
+                value = typ()
+            try:
+>               self.gen.throw(typ, value, traceback)
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/contextlib.py:158: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    @contextmanager
+    def collapse_excgroups() -> Generator[None, None, None]:
+        try:
+            yield
+        except BaseException as exc:
+            if has_exceptiongroups:  # pragma: no cover
+                while isinstance(exc, BaseExceptionGroup) and len(exc.exceptions) == 1:
+                    exc = exc.exceptions[0]
+    
+>           raise exc
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/starlette/_utils.py:87: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <src.middleware.null_id_validation.NullIdValidationMiddleware object at 0x7ff00b3b2590>
+scope = {'app': <fastmcp.server.http.StarletteWithLifespan object at 0x7ff03439d410>, 'client': ('testclient', 50000), 'endpoint': <fastmcp.server.http.StreamableHTTPASGIApp object at 0x7ff17d8a7bd0>, 'extensions': {'http.response.debug': {}}, ...}
+receive = <function _TestClientTransport.handle_request.<locals>.receive at 0x7ff17b54fa60>
+send = <function ServerErrorMiddleware.__call__.<locals>._send at 0x7ff00b3ab6a0>
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        if scope["type"] != "http":
+            await self.app(scope, receive, send)
+            return
+    
+        request = _CachedRequest(scope, receive)
+        wrapped_receive = request.wrapped_receive
+        response_sent = anyio.Event()
+        app_exc: Exception | None = None
+        exception_already_raised = False
+    
+        async def call_next(request: Request) -> Response:
+            async def receive_or_disconnect() -> Message:
+                if response_sent.is_set():
+                    return {"type": "http.disconnect"}
+    
+                async with anyio.create_task_group() as task_group:
+    
+                    async def wrap(func: Callable[[], Awaitable[T]]) -> T:
+                        result = await func()
+                        task_group.cancel_scope.cancel()
+                        return result
+    
+                    task_group.start_soon(wrap, response_sent.wait)
+                    message = await wrap(wrapped_receive)
+    
+                if response_sent.is_set():
+                    return {"type": "http.disconnect"}
+    
+                return message
+    
+            async def send_no_error(message: Message) -> None:
+                try:
+                    await send_stream.send(message)
+                except anyio.BrokenResourceError:
+                    # recv_stream has been closed, i.e. response_sent has been set.
+                    return
+    
+            async def coro() -> None:
+                nonlocal app_exc
+    
+                with send_stream:
+                    try:
+                        await self.app(scope, receive_or_disconnect, send_no_error)
+                    except Exception as exc:
+                        app_exc = exc
+    
+            task_group.start_soon(coro)
+    
+            try:
+                message = await recv_stream.receive()
+                info = message.get("info", None)
+                if message["type"] == "http.response.debug" and info is not None:
+                    message = await recv_stream.receive()
+            except anyio.EndOfStream:
+                if app_exc is not None:
+                    nonlocal exception_already_raised
+                    exception_already_raised = True
+                    # Prevent `anyio.EndOfStream` from polluting app exception context.
+                    # If both cause and context are None then the context is suppressed
+                    # and `anyio.EndOfStream` is not present in the exception traceback.
+                    # If exception cause is not None then it is propagated with
+                    # reraising here.
+                    # If exception has no cause but has context set then the context is
+                    # propagated as a cause with the reraise. This is necessary in order
+                    # to prevent `anyio.EndOfStream` from polluting the exception
+                    # context.
+                    raise app_exc from app_exc.__cause__ or app_exc.__context__
+                raise RuntimeError("No response returned.")
+    
+            assert message["type"] == "http.response.start"
+    
+            async def body_stream() -> BodyStreamGenerator:
+                async for message in recv_stream:
+                    if message["type"] == "http.response.pathsend":
+                        yield message
+                        break
+                    assert message["type"] == "http.response.body", f"Unexpected message: {message}"
+                    body = message.get("body", b"")
+                    if body:
+                        yield body
+                    if not message.get("more_body", False):
+                        break
+    
+            response = _StreamingResponse(status_code=message["status"], content=body_stream(), info=info)
+            response.raw_headers = message["headers"]
+            return response
+    
+        streams: anyio.create_memory_object_stream[Message] = anyio.create_memory_object_stream()
+        send_stream, recv_stream = streams
+        with recv_stream, send_stream, collapse_excgroups():
+            async with anyio.create_task_group() as task_group:
+>               response = await self.dispatch_func(request, call_next)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/starlette/middleware/base.py:193: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <src.middleware.null_id_validation.NullIdValidationMiddleware object at 0x7ff00b3b2590>
+request = <starlette.requests.Request object at 0x7ff00b3b0f50>
+call_next = <function BaseHTTPMiddleware.__call__.<locals>.call_next at 0x7ff00b3ab740>
+
+    async def dispatch(self, request: Request, call_next: Callable) -> Response:
+        if request.method != "POST":
+            return await call_next(request)
+    
+        try:
+            body = await request.body()
+        except Exception as e:
+            logger.warning("NullIdValidation: could not read body: %s", e)
+            return await call_next(request)
+    
+        if not body:
+            return await call_next(request)
+    
+        try:
+            data = json.loads(body)
+        except json.JSONDecodeError:
+            return await call_next(request)
+    
+        if not _has_null_id(data):
+            # Valid - pass through; re-inject body for downstream
+            async def receive():
+                return {"type": "http.request", "body": body, "more_body": False}
+    
+            request = Request(request.scope, receive=receive)
+>           return await call_next(request)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^
+
+src/middleware/null_id_validation.py:85: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+request = <starlette.requests.Request object at 0x7ff00b3b0f50>
+
+    async def call_next(request: Request) -> Response:
+        async def receive_or_disconnect() -> Message:
+            if response_sent.is_set():
+                return {"type": "http.disconnect"}
+    
+            async with anyio.create_task_group() as task_group:
+    
+                async def wrap(func: Callable[[], Awaitable[T]]) -> T:
+                    result = await func()
+                    task_group.cancel_scope.cancel()
+                    return result
+    
+                task_group.start_soon(wrap, response_sent.wait)
+                message = await wrap(wrapped_receive)
+    
+            if response_sent.is_set():
+                return {"type": "http.disconnect"}
+    
+            return message
+    
+        async def send_no_error(message: Message) -> None:
+            try:
+                await send_stream.send(message)
+            except anyio.BrokenResourceError:
+                # recv_stream has been closed, i.e. response_sent has been set.
+                return
+    
+        async def coro() -> None:
+            nonlocal app_exc
+    
+            with send_stream:
+                try:
+                    await self.app(scope, receive_or_disconnect, send_no_error)
+                except Exception as exc:
+                    app_exc = exc
+    
+        task_group.start_soon(coro)
+    
+        try:
+            message = await recv_stream.receive()
+            info = message.get("info", None)
+            if message["type"] == "http.response.debug" and info is not None:
+                message = await recv_stream.receive()
+        except anyio.EndOfStream:
+            if app_exc is not None:
+                nonlocal exception_already_raised
+                exception_already_raised = True
+                # Prevent `anyio.EndOfStream` from polluting app exception context.
+                # If both cause and context are None then the context is suppressed
+                # and `anyio.EndOfStream` is not present in the exception traceback.
+                # If exception cause is not None then it is propagated with
+                # reraising here.
+                # If exception has no cause but has context set then the context is
+                # propagated as a cause with the reraise. This is necessary in order
+                # to prevent `anyio.EndOfStream` from polluting the exception
+                # context.
+>               raise app_exc from app_exc.__cause__ or app_exc.__context__
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/starlette/middleware/base.py:168: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    async def coro() -> None:
+        nonlocal app_exc
+    
+        with send_stream:
+            try:
+>               await self.app(scope, receive_or_disconnect, send_no_error)
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/starlette/middleware/base.py:144: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <starlette.middleware.exceptions.ExceptionMiddleware object at 0x7ff00b3b2950>
+scope = {'app': <fastmcp.server.http.StarletteWithLifespan object at 0x7ff03439d410>, 'client': ('testclient', 50000), 'endpoint': <fastmcp.server.http.StreamableHTTPASGIApp object at 0x7ff17d8a7bd0>, 'extensions': {'http.response.debug': {}}, ...}
+receive = <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7ff00b3ab920>
+send = <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.send_no_error at 0x7ff00b3ab9c0>
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        if scope["type"] not in ("http", "websocket"):
+            await self.app(scope, receive, send)
+            return
+    
+        scope["starlette.exception_handlers"] = (
+            self._exception_handlers,
+            self._status_handlers,
+        )
+    
+        conn: Request | WebSocket
+        if scope["type"] == "http":
+            conn = Request(scope, receive, send)
+        else:
+            conn = WebSocket(scope, receive, send)
+    
+>       await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/starlette/middleware/exceptions.py:63: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+scope = {'app': <fastmcp.server.http.StarletteWithLifespan object at 0x7ff03439d410>, 'client': ('testclient', 50000), 'endpoint': <fastmcp.server.http.StreamableHTTPASGIApp object at 0x7ff17d8a7bd0>, 'extensions': {'http.response.debug': {}}, ...}
+receive = <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7ff00b3ab920>
+send = <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.send_no_error at 0x7ff00b3ab9c0>
+
+    async def wrapped_app(scope: Scope, receive: Receive, send: Send) -> None:
+        response_started = False
+    
+        async def sender(message: Message) -> None:
+            nonlocal response_started
+    
+            if message["type"] == "http.response.start":
+                response_started = True
+            await send(message)
+    
+        try:
+            await app(scope, receive, sender)
+        except Exception as exc:
+            handler = None
+    
+            if isinstance(exc, HTTPException):
+                handler = status_handlers.get(exc.status_code)
+    
+            if handler is None:
+                handler = _lookup_exception_handler(exception_handlers, exc)
+    
+            if handler is None:
+>               raise exc
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:53: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+scope = {'app': <fastmcp.server.http.StarletteWithLifespan object at 0x7ff03439d410>, 'client': ('testclient', 50000), 'endpoint': <fastmcp.server.http.StreamableHTTPASGIApp object at 0x7ff17d8a7bd0>, 'extensions': {'http.response.debug': {}}, ...}
+receive = <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7ff00b3ab920>
+send = <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.send_no_error at 0x7ff00b3ab9c0>
+
+    async def wrapped_app(scope: Scope, receive: Receive, send: Send) -> None:
+        response_started = False
+    
+        async def sender(message: Message) -> None:
+            nonlocal response_started
+    
+            if message["type"] == "http.response.start":
+                response_started = True
+            await send(message)
+    
+        try:
+>           await app(scope, receive, sender)
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:42: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <starlette.routing.Router object at 0x7ff03439ddd0>
+scope = {'app': <fastmcp.server.http.StarletteWithLifespan object at 0x7ff03439d410>, 'client': ('testclient', 50000), 'endpoint': <fastmcp.server.http.StreamableHTTPASGIApp object at 0x7ff17d8a7bd0>, 'extensions': {'http.response.debug': {}}, ...}
+receive = <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7ff00b3ab920>
+send = <function wrap_app_handling_exceptions.<locals>.wrapped_app.<locals>.sender at 0x7ff00b3abc40>
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        """
+        The main entry point to the Router class.
+        """
+>       await self.middleware_stack(scope, receive, send)
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/starlette/routing.py:716: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <starlette.routing.Router object at 0x7ff03439ddd0>
+scope = {'app': <fastmcp.server.http.StarletteWithLifespan object at 0x7ff03439d410>, 'client': ('testclient', 50000), 'endpoint': <fastmcp.server.http.StreamableHTTPASGIApp object at 0x7ff17d8a7bd0>, 'extensions': {'http.response.debug': {}}, ...}
+receive = <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7ff00b3ab920>
+send = <function wrap_app_handling_exceptions.<locals>.wrapped_app.<locals>.sender at 0x7ff00b3abc40>
+
+    async def app(self, scope: Scope, receive: Receive, send: Send) -> None:
+        assert scope["type"] in ("http", "websocket", "lifespan")
+    
+        if "router" not in scope:
+            scope["router"] = self
+    
+        if scope["type"] == "lifespan":
+            await self.lifespan(scope, receive, send)
+            return
+    
+        partial = None
+    
+        for route in self.routes:
+            # Determine if any route matches the incoming scope,
+            # and hand over to the matching route if found.
+            match, child_scope = route.matches(scope)
+            if match == Match.FULL:
+                scope.update(child_scope)
+>               await route.handle(scope, receive, send)
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/starlette/routing.py:736: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = Route(path='/mcp/', name='StreamableHTTPASGIApp', methods=[])
+scope = {'app': <fastmcp.server.http.StarletteWithLifespan object at 0x7ff03439d410>, 'client': ('testclient', 50000), 'endpoint': <fastmcp.server.http.StreamableHTTPASGIApp object at 0x7ff17d8a7bd0>, 'extensions': {'http.response.debug': {}}, ...}
+receive = <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7ff00b3ab920>
+send = <function wrap_app_handling_exceptions.<locals>.wrapped_app.<locals>.sender at 0x7ff00b3abc40>
+
+    async def handle(self, scope: Scope, receive: Receive, send: Send) -> None:
+        if self.methods and scope["method"] not in self.methods:
+            headers = {"Allow": ", ".join(self.methods)}
+            if "app" in scope:
+                raise HTTPException(status_code=405, headers=headers)
+            else:
+                response = PlainTextResponse("Method Not Allowed", status_code=405, headers=headers)
+            await response(scope, receive, send)
+        else:
+>           await self.app(scope, receive, send)
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/starlette/routing.py:290: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <fastmcp.server.http.StreamableHTTPASGIApp object at 0x7ff17d8a7bd0>
+scope = {'app': <fastmcp.server.http.StarletteWithLifespan object at 0x7ff03439d410>, 'client': ('testclient', 50000), 'endpoint': <fastmcp.server.http.StreamableHTTPASGIApp object at 0x7ff17d8a7bd0>, 'extensions': {'http.response.debug': {}}, ...}
+receive = <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7ff00b3ab920>
+send = <function wrap_app_handling_exceptions.<locals>.wrapped_app.<locals>.sender at 0x7ff00b3abc40>
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        try:
+            await self.session_manager.handle_request(scope, receive, send)
+        except RuntimeError as e:
+            if str(e) == "Task group is not initialized. Make sure to use run().":
+                logger.error(
+                    f"Original RuntimeError from mcp library: {e}", exc_info=True
+                )
+                new_error_message = (
+                    "FastMCP's StreamableHTTPSessionManager task group was not initialized. "
+                    "This commonly occurs when the FastMCP application's lifespan is not "
+                    "passed to the parent ASGI application (e.g., FastAPI or Starlette). "
+                    "Please ensure you are setting `lifespan=mcp_app.lifespan` in your "
+                    "parent app's constructor, where `mcp_app` is the application instance "
+                    "returned by `fastmcp_instance.http_app()`. \\n"
+                    "For more details, see the FastMCP ASGI integration documentation: "
+                    "https://gofastmcp.com/deployment/asgi"
+                )
+                # Raise a new RuntimeError that includes the original error's message
+                # for full context, but leads with the more helpful guidance.
+>               raise RuntimeError(f"{new_error_message}\\nOriginal error: {e}") from e
+E               RuntimeError: FastMCP's StreamableHTTPSessionManager task group was not initialized. This commonly occurs when the FastMCP application's lifespan is not passed to the parent ASGI application (e.g., FastAPI or Starlette). Please ensure you are setting `lifespan=mcp_app.lifespan` in your parent app's constructor, where `mcp_app` is the application instance returned by `fastmcp_instance.http_app()`. \nFor more details, see the FastMCP ASGI integration documentation: https://gofastmcp.com/deployment/asgi\nOriginal error: Task group is not initialized. Make sure to use run().
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/fastmcp/server/http.py:58: RuntimeError
+----------------------------- Captured stderr call -----------------------------
+[02/17/26 09:08:44] Original RuntimeError from mcp library: Task group is not   
+                    initialized. Make sure to use run().                        
+                    ╭─────────── Traceback (most recent call last) ────────────╮
+                    │ /opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/s │
+                    │ ite-packages/fastmcp/server/http.py:40 in __call__       │
+                    │                                                          │
+                    │ /opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/s │
+                    │ ite-packages/mcp/server/streamable_http_manager.py:144   │
+                    │ in handle_request                                        │
+                    ╰──────────────────────────────────────────────────────────╯
+                    RuntimeError: Task group is not initialized. Make sure to   
+                    use run().                                                  
+_____________________ test_allows_notification_without_id ______________________
+
+self = <fastmcp.server.http.StreamableHTTPASGIApp object at 0x7ff007694590>
+scope = {'app': <fastmcp.server.http.StarletteWithLifespan object at 0x7ff007694950>, 'client': ('testclient', 50000), 'endpoint': <fastmcp.server.http.StreamableHTTPASGIApp object at 0x7ff007694590>, 'extensions': {'http.response.debug': {}}, ...}
+receive = <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7ff0076b4680>
+send = <function wrap_app_handling_exceptions.<locals>.wrapped_app.<locals>.sender at 0x7ff0076b4c20>
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        try:
+>           await self.session_manager.handle_request(scope, receive, send)
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/fastmcp/server/http.py:40: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <mcp.server.streamable_http_manager.StreamableHTTPSessionManager object at 0x7ff007694550>
+scope = {'app': <fastmcp.server.http.StarletteWithLifespan object at 0x7ff007694950>, 'client': ('testclient', 50000), 'endpoint': <fastmcp.server.http.StreamableHTTPASGIApp object at 0x7ff007694590>, 'extensions': {'http.response.debug': {}}, ...}
+receive = <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7ff0076b4680>
+send = <function wrap_app_handling_exceptions.<locals>.wrapped_app.<locals>.sender at 0x7ff0076b4c20>
+
+    async def handle_request(
+        self,
+        scope: Scope,
+        receive: Receive,
+        send: Send,
+    ) -> None:
+        """
+        Process ASGI request with proper session handling and transport setup.
+    
+        Dispatches to the appropriate handler based on stateless mode.
+    
+        Args:
+            scope: ASGI scope
+            receive: ASGI receive function
+            send: ASGI send function
+        """
+        if self._task_group is None:
+>           raise RuntimeError("Task group is not initialized. Make sure to use run().")
+E           RuntimeError: Task group is not initialized. Make sure to use run().
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/mcp/server/streamable_http_manager.py:144: RuntimeError
+
+The above exception was the direct cause of the following exception:
+
+http_client = <starlette.testclient.TestClient object at 0x7ff007694890>
+
+    def test_allows_notification_without_id(http_client):
+        """Notifications (no id field) should pass through."""
+>       response = http_client.post(
+            "/mcp/",
+            json={"jsonrpc": "2.0", "method": "notifications/initialized"},
+            headers={"Content-Type": "application/json"},
+        )
+
+tests/test_null_id_validation.py:62: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <starlette.testclient.TestClient object at 0x7ff007694890>, url = '/mcp/'
+
+    def post(  # type: ignore[override]
+        self,
+        url: httpx._types.URLTypes,
+        *,
+        content: httpx._types.RequestContent | None = None,
+        data: _RequestData | None = None,
+        files: httpx._types.RequestFiles | None = None,
+        json: Any = None,
+        params: httpx._types.QueryParamTypes | None = None,
+        headers: httpx._types.HeaderTypes | None = None,
+        cookies: httpx._types.CookieTypes | None = None,
+        auth: httpx._types.AuthTypes | httpx._client.UseClientDefault = httpx._client.USE_CLIENT_DEFAULT,
+        follow_redirects: bool | httpx._client.UseClientDefault = httpx._client.USE_CLIENT_DEFAULT,
+        timeout: httpx._types.TimeoutTypes | httpx._client.UseClientDefault = httpx._client.USE_CLIENT_DEFAULT,
+        extensions: dict[str, Any] | None = None,
+    ) -> httpx.Response:
+>       return super().post(
+            url,
+            content=content,
+            data=data,
+            files=files,
+            json=json,
+            params=params,
+            headers=headers,
+            cookies=cookies,
+            auth=auth,
+            follow_redirects=follow_redirects,
+            timeout=timeout,
+            extensions=extensions,
+        )
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/starlette/testclient.py:546: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <starlette.testclient.TestClient object at 0x7ff007694890>, url = '/mcp/'
+
+    def post(
+        self,
+        url: URL | str,
+        *,
+        content: RequestContent | None = None,
+        data: RequestData | None = None,
+        files: RequestFiles | None = None,
+        json: typing.Any | None = None,
+        params: QueryParamTypes | None = None,
+        headers: HeaderTypes | None = None,
+        cookies: CookieTypes | None = None,
+        auth: AuthTypes | UseClientDefault = USE_CLIENT_DEFAULT,
+        follow_redirects: bool | UseClientDefault = USE_CLIENT_DEFAULT,
+        timeout: TimeoutTypes | UseClientDefault = USE_CLIENT_DEFAULT,
+        extensions: RequestExtensions | None = None,
+    ) -> Response:
+        """
+        Send a `POST` request.
+    
+        **Parameters**: See `httpx.request`.
+        """
+>       return self.request(
+            "POST",
+            url,
+            content=content,
+            data=data,
+            files=files,
+            json=json,
+            params=params,
+            headers=headers,
+            cookies=cookies,
+            auth=auth,
+            follow_redirects=follow_redirects,
+            timeout=timeout,
+            extensions=extensions,
+        )
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/httpx/_client.py:1144: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <starlette.testclient.TestClient object at 0x7ff007694890>
+method = 'POST', url = URL('http://testserver/mcp/')
+
+    def request(  # type: ignore[override]
+        self,
+        method: str,
+        url: httpx._types.URLTypes,
+        *,
+        content: httpx._types.RequestContent | None = None,
+        data: _RequestData | None = None,
+        files: httpx._types.RequestFiles | None = None,
+        json: Any = None,
+        params: httpx._types.QueryParamTypes | None = None,
+        headers: httpx._types.HeaderTypes | None = None,
+        cookies: httpx._types.CookieTypes | None = None,
+        auth: httpx._types.AuthTypes | httpx._client.UseClientDefault = httpx._client.USE_CLIENT_DEFAULT,
+        follow_redirects: bool | httpx._client.UseClientDefault = httpx._client.USE_CLIENT_DEFAULT,
+        timeout: httpx._types.TimeoutTypes | httpx._client.UseClientDefault = httpx._client.USE_CLIENT_DEFAULT,
+        extensions: dict[str, Any] | None = None,
+    ) -> httpx.Response:
+        if timeout is not httpx.USE_CLIENT_DEFAULT:
+            warnings.warn(
+                "You should not use the 'timeout' argument with the TestClient. "
+                "See https://github.com/Kludex/starlette/issues/1108 for more information.",
+                DeprecationWarning,
+            )
+        url = self._merge_url(url)
+>       return super().request(
+            method,
+            url,
+            content=content,
+            data=data,
+            files=files,
+            json=json,
+            params=params,
+            headers=headers,
+            cookies=cookies,
+            auth=auth,
+            follow_redirects=follow_redirects,
+            timeout=timeout,
+            extensions=extensions,
+        )
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/starlette/testclient.py:445: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <starlette.testclient.TestClient object at 0x7ff007694890>
+method = 'POST', url = URL('http://testserver/mcp/')
+
+    def request(
+        self,
+        method: str,
+        url: URL | str,
+        *,
+        content: RequestContent | None = None,
+        data: RequestData | None = None,
+        files: RequestFiles | None = None,
+        json: typing.Any | None = None,
+        params: QueryParamTypes | None = None,
+        headers: HeaderTypes | None = None,
+        cookies: CookieTypes | None = None,
+        auth: AuthTypes | UseClientDefault | None = USE_CLIENT_DEFAULT,
+        follow_redirects: bool | UseClientDefault = USE_CLIENT_DEFAULT,
+        timeout: TimeoutTypes | UseClientDefault = USE_CLIENT_DEFAULT,
+        extensions: RequestExtensions | None = None,
+    ) -> Response:
+        """
+        Build and send a request.
+    
+        Equivalent to:
+    
+        ```python
+        request = client.build_request(...)
+        response = client.send(request, ...)
+        ```
+    
+        See `Client.build_request()`, `Client.send()` and
+        [Merging of configuration][0] for how the various parameters
+        are merged with client-level configuration.
+    
+        [0]: /advanced/clients/#merging-of-configuration
+        """
+        if cookies is not None:
+            message = (
+                "Setting per-request cookies=<...> is being deprecated, because "
+                "the expected behaviour on cookie persistence is ambiguous. Set "
+                "cookies directly on the client instance instead."
+            )
+            warnings.warn(message, DeprecationWarning, stacklevel=2)
+    
+        request = self.build_request(
+            method=method,
+            url=url,
+            content=content,
+            data=data,
+            files=files,
+            json=json,
+            params=params,
+            headers=headers,
+            cookies=cookies,
+            timeout=timeout,
+            extensions=extensions,
+        )
+>       return self.send(request, auth=auth, follow_redirects=follow_redirects)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/httpx/_client.py:825: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <starlette.testclient.TestClient object at 0x7ff007694890>
+request = <Request('POST', 'http://testserver/mcp/')>
+
+    def send(
+        self,
+        request: Request,
+        *,
+        stream: bool = False,
+        auth: AuthTypes | UseClientDefault | None = USE_CLIENT_DEFAULT,
+        follow_redirects: bool | UseClientDefault = USE_CLIENT_DEFAULT,
+    ) -> Response:
+        """
+        Send a request.
+    
+        The request is sent as-is, unmodified.
+    
+        Typically you'll want to build one with `Client.build_request()`
+        so that any client-level configuration is merged into the request,
+        but passing an explicit `httpx.Request()` is supported as well.
+    
+        See also: [Request instances][0]
+    
+        [0]: /advanced/clients/#request-instances
+        """
+        if self._state == ClientState.CLOSED:
+            raise RuntimeError("Cannot send a request, as the client has been closed.")
+    
+        self._state = ClientState.OPENED
+        follow_redirects = (
+            self.follow_redirects
+            if isinstance(follow_redirects, UseClientDefault)
+            else follow_redirects
+        )
+    
+        self._set_timeout(request)
+    
+        auth = self._build_request_auth(request, auth)
+    
+>       response = self._send_handling_auth(
+            request,
+            auth=auth,
+            follow_redirects=follow_redirects,
+            history=[],
+        )
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/httpx/_client.py:914: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <starlette.testclient.TestClient object at 0x7ff007694890>
+request = <Request('POST', 'http://testserver/mcp/')>
+auth = <httpx.Auth object at 0x7ff007694c90>, follow_redirects = True
+history = []
+
+    def _send_handling_auth(
+        self,
+        request: Request,
+        auth: Auth,
+        follow_redirects: bool,
+        history: list[Response],
+    ) -> Response:
+        auth_flow = auth.sync_auth_flow(request)
+        try:
+            request = next(auth_flow)
+    
+            while True:
+>               response = self._send_handling_redirects(
+                    request,
+                    follow_redirects=follow_redirects,
+                    history=history,
+                )
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/httpx/_client.py:942: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <starlette.testclient.TestClient object at 0x7ff007694890>
+request = <Request('POST', 'http://testserver/mcp/')>, follow_redirects = True
+history = []
+
+    def _send_handling_redirects(
+        self,
+        request: Request,
+        follow_redirects: bool,
+        history: list[Response],
+    ) -> Response:
+        while True:
+            if len(history) > self.max_redirects:
+                raise TooManyRedirects(
+                    "Exceeded maximum allowed redirects.", request=request
+                )
+    
+            for hook in self._event_hooks["request"]:
+                hook(request)
+    
+>           response = self._send_single_request(request)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/httpx/_client.py:979: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <starlette.testclient.TestClient object at 0x7ff007694890>
+request = <Request('POST', 'http://testserver/mcp/')>
+
+    def _send_single_request(self, request: Request) -> Response:
+        """
+        Sends a single request, without handling any redirections.
+        """
+        transport = self._transport_for_url(request.url)
+        start = time.perf_counter()
+    
+        if not isinstance(request.stream, SyncByteStream):
+            raise RuntimeError(
+                "Attempted to send an async request with a sync Client instance."
+            )
+    
+        with request_context(request=request):
+>           response = transport.handle_request(request)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/httpx/_client.py:1014: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <starlette.testclient._TestClientTransport object at 0x7ff007694710>
+request = <Request('POST', 'http://testserver/mcp/')>
+
+    def handle_request(self, request: httpx.Request) -> httpx.Response:
+        scheme = request.url.scheme
+        netloc = request.url.netloc.decode(encoding="ascii")
+        path = request.url.path
+        raw_path = request.url.raw_path
+        query = request.url.query.decode(encoding="ascii")
+    
+        default_port = {"http": 80, "ws": 80, "https": 443, "wss": 443}[scheme]
+    
+        if ":" in netloc:
+            host, port_string = netloc.split(":", 1)
+            port = int(port_string)
+        else:
+            host = netloc
+            port = default_port
+    
+        # Include the 'host' header.
+        if "host" in request.headers:
+            headers: list[tuple[bytes, bytes]] = []
+        elif port == default_port:  # pragma: no cover
+            headers = [(b"host", host.encode())]
+        else:  # pragma: no cover
+            headers = [(b"host", (f"{host}:{port}").encode())]
+    
+        # Include other request headers.
+        headers += [(key.lower().encode(), value.encode()) for key, value in request.headers.multi_items()]
+    
+        scope: dict[str, Any]
+    
+        if scheme in {"ws", "wss"}:
+            subprotocol = request.headers.get("sec-websocket-protocol", None)
+            if subprotocol is None:
+                subprotocols: Sequence[str] = []
+            else:
+                subprotocols = [value.strip() for value in subprotocol.split(",")]
+            scope = {
+                "type": "websocket",
+                "path": unquote(path),
+                "raw_path": raw_path.split(b"?", 1)[0],
+                "root_path": self.root_path,
+                "scheme": scheme,
+                "query_string": query.encode(),
+                "headers": headers,
+                "client": self.client,
+                "server": [host, port],
+                "subprotocols": subprotocols,
+                "state": self.app_state.copy(),
+                "extensions": {"websocket.http.response": {}},
+            }
+            session = WebSocketTestSession(self.app, scope, self.portal_factory)
+            raise _Upgrade(session)
+    
+        scope = {
+            "type": "http",
+            "http_version": "1.1",
+            "method": request.method,
+            "path": unquote(path),
+            "raw_path": raw_path.split(b"?", 1)[0],
+            "root_path": self.root_path,
+            "scheme": scheme,
+            "query_string": query.encode(),
+            "headers": headers,
+            "client": self.client,
+            "server": [host, port],
+            "extensions": {"http.response.debug": {}},
+            "state": self.app_state.copy(),
+        }
+    
+        request_complete = False
+        response_started = False
+        response_complete: anyio.Event
+        raw_kwargs: dict[str, Any] = {"stream": io.BytesIO()}
+        template = None
+        context = None
+    
+        async def receive() -> Message:
+            nonlocal request_complete
+    
+            if request_complete:
+                if not response_complete.is_set():
+                    await response_complete.wait()
+                return {"type": "http.disconnect"}
+    
+            body = request.read()
+            if isinstance(body, str):
+                body_bytes: bytes = body.encode("utf-8")  # pragma: no cover
+            elif body is None:
+                body_bytes = b""  # pragma: no cover
+            elif isinstance(body, GeneratorType):
+                try:  # pragma: no cover
+                    chunk = body.send(None)
+                    if isinstance(chunk, str):
+                        chunk = chunk.encode("utf-8")
+                    return {"type": "http.request", "body": chunk, "more_body": True}
+                except StopIteration:  # pragma: no cover
+                    request_complete = True
+                    return {"type": "http.request", "body": b""}
+            else:
+                body_bytes = body
+    
+            request_complete = True
+            return {"type": "http.request", "body": body_bytes}
+    
+        async def send(message: Message) -> None:
+            nonlocal raw_kwargs, response_started, template, context
+    
+            if message["type"] == "http.response.start":
+                assert not response_started, 'Received multiple "http.response.start" messages.'
+                raw_kwargs["status_code"] = message["status"]
+                raw_kwargs["headers"] = [(key.decode(), value.decode()) for key, value in message.get("headers", [])]
+                response_started = True
+            elif message["type"] == "http.response.body":
+                assert response_started, 'Received "http.response.body" without "http.response.start".'
+                assert not response_complete.is_set(), 'Received "http.response.body" after response completed.'
+                body = message.get("body", b"")
+                more_body = message.get("more_body", False)
+                if request.method != "HEAD":
+                    raw_kwargs["stream"].write(body)
+                if not more_body:
+                    raw_kwargs["stream"].seek(0)
+                    response_complete.set()
+            elif message["type"] == "http.response.debug":
+                template = message["info"]["template"]
+                context = message["info"]["context"]
+    
+        try:
+            with self.portal_factory() as portal:
+                response_complete = portal.call(anyio.Event)
+                portal.call(self.app, scope, receive, send)
+        except BaseException as exc:
+            if self.raise_server_exceptions:
+>               raise exc
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/starlette/testclient.py:348: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <starlette.testclient._TestClientTransport object at 0x7ff007694710>
+request = <Request('POST', 'http://testserver/mcp/')>
+
+    def handle_request(self, request: httpx.Request) -> httpx.Response:
+        scheme = request.url.scheme
+        netloc = request.url.netloc.decode(encoding="ascii")
+        path = request.url.path
+        raw_path = request.url.raw_path
+        query = request.url.query.decode(encoding="ascii")
+    
+        default_port = {"http": 80, "ws": 80, "https": 443, "wss": 443}[scheme]
+    
+        if ":" in netloc:
+            host, port_string = netloc.split(":", 1)
+            port = int(port_string)
+        else:
+            host = netloc
+            port = default_port
+    
+        # Include the 'host' header.
+        if "host" in request.headers:
+            headers: list[tuple[bytes, bytes]] = []
+        elif port == default_port:  # pragma: no cover
+            headers = [(b"host", host.encode())]
+        else:  # pragma: no cover
+            headers = [(b"host", (f"{host}:{port}").encode())]
+    
+        # Include other request headers.
+        headers += [(key.lower().encode(), value.encode()) for key, value in request.headers.multi_items()]
+    
+        scope: dict[str, Any]
+    
+        if scheme in {"ws", "wss"}:
+            subprotocol = request.headers.get("sec-websocket-protocol", None)
+            if subprotocol is None:
+                subprotocols: Sequence[str] = []
+            else:
+                subprotocols = [value.strip() for value in subprotocol.split(",")]
+            scope = {
+                "type": "websocket",
+                "path": unquote(path),
+                "raw_path": raw_path.split(b"?", 1)[0],
+                "root_path": self.root_path,
+                "scheme": scheme,
+                "query_string": query.encode(),
+                "headers": headers,
+                "client": self.client,
+                "server": [host, port],
+                "subprotocols": subprotocols,
+                "state": self.app_state.copy(),
+                "extensions": {"websocket.http.response": {}},
+            }
+            session = WebSocketTestSession(self.app, scope, self.portal_factory)
+            raise _Upgrade(session)
+    
+        scope = {
+            "type": "http",
+            "http_version": "1.1",
+            "method": request.method,
+            "path": unquote(path),
+            "raw_path": raw_path.split(b"?", 1)[0],
+            "root_path": self.root_path,
+            "scheme": scheme,
+            "query_string": query.encode(),
+            "headers": headers,
+            "client": self.client,
+            "server": [host, port],
+            "extensions": {"http.response.debug": {}},
+            "state": self.app_state.copy(),
+        }
+    
+        request_complete = False
+        response_started = False
+        response_complete: anyio.Event
+        raw_kwargs: dict[str, Any] = {"stream": io.BytesIO()}
+        template = None
+        context = None
+    
+        async def receive() -> Message:
+            nonlocal request_complete
+    
+            if request_complete:
+                if not response_complete.is_set():
+                    await response_complete.wait()
+                return {"type": "http.disconnect"}
+    
+            body = request.read()
+            if isinstance(body, str):
+                body_bytes: bytes = body.encode("utf-8")  # pragma: no cover
+            elif body is None:
+                body_bytes = b""  # pragma: no cover
+            elif isinstance(body, GeneratorType):
+                try:  # pragma: no cover
+                    chunk = body.send(None)
+                    if isinstance(chunk, str):
+                        chunk = chunk.encode("utf-8")
+                    return {"type": "http.request", "body": chunk, "more_body": True}
+                except StopIteration:  # pragma: no cover
+                    request_complete = True
+                    return {"type": "http.request", "body": b""}
+            else:
+                body_bytes = body
+    
+            request_complete = True
+            return {"type": "http.request", "body": body_bytes}
+    
+        async def send(message: Message) -> None:
+            nonlocal raw_kwargs, response_started, template, context
+    
+            if message["type"] == "http.response.start":
+                assert not response_started, 'Received multiple "http.response.start" messages.'
+                raw_kwargs["status_code"] = message["status"]
+                raw_kwargs["headers"] = [(key.decode(), value.decode()) for key, value in message.get("headers", [])]
+                response_started = True
+            elif message["type"] == "http.response.body":
+                assert response_started, 'Received "http.response.body" without "http.response.start".'
+                assert not response_complete.is_set(), 'Received "http.response.body" after response completed.'
+                body = message.get("body", b"")
+                more_body = message.get("more_body", False)
+                if request.method != "HEAD":
+                    raw_kwargs["stream"].write(body)
+                if not more_body:
+                    raw_kwargs["stream"].seek(0)
+                    response_complete.set()
+            elif message["type"] == "http.response.debug":
+                template = message["info"]["template"]
+                context = message["info"]["context"]
+    
+        try:
+            with self.portal_factory() as portal:
+                response_complete = portal.call(anyio.Event)
+>               portal.call(self.app, scope, receive, send)
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/starlette/testclient.py:345: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <anyio.from_thread.BlockingPortal object at 0x7ff007695e90>
+func = <fastmcp.server.http.StarletteWithLifespan object at 0x7ff007694950>
+args = ({'app': <fastmcp.server.http.StarletteWithLifespan object at 0x7ff007694950>, 'client': ('testclient', 50000), 'endpo...st.<locals>.receive at 0x7ff00b3e6f20>, <function _TestClientTransport.handle_request.<locals>.send at 0x7ff00b3e4ea0>)
+
+    def call(
+        self,
+        func: Callable[[Unpack[PosArgsT]], Awaitable[T_Retval] | T_Retval],
+        *args: Unpack[PosArgsT],
+    ) -> T_Retval:
+        """
+        Call the given function in the event loop thread.
+    
+        If the callable returns a coroutine object, it is awaited on.
+    
+        :param func: any callable
+        :raises RuntimeError: if the portal is not running or if this method is called
+            from within the event loop thread
+    
+        """
+>       return cast(T_Retval, self.start_task_soon(func, *args).result())
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/anyio/from_thread.py:334: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = None, timeout = None
+
+    def result(self, timeout=None):
+        """Return the result of the call that the future represents.
+    
+        Args:
+            timeout: The number of seconds to wait for the result if the future
+                isn't done. If None, then there is no limit on the wait time.
+    
+        Returns:
+            The result of the call that the future represents.
+    
+        Raises:
+            CancelledError: If the future was cancelled.
+            TimeoutError: If the future didn't finish executing before the given
+                timeout.
+            Exception: If the call raised then that exception will be raised.
+        """
+        try:
+            with self._condition:
+                if self._state in [CANCELLED, CANCELLED_AND_NOTIFIED]:
+                    raise CancelledError()
+                elif self._state == FINISHED:
+                    return self.__get_result()
+    
+                self._condition.wait(timeout)
+    
+                if self._state in [CANCELLED, CANCELLED_AND_NOTIFIED]:
+                    raise CancelledError()
+                elif self._state == FINISHED:
+>                   return self.__get_result()
+                           ^^^^^^^^^^^^^^^^^^^
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/concurrent/futures/_base.py:456: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = None
+
+    def __get_result(self):
+        if self._exception:
+            try:
+>               raise self._exception
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/concurrent/futures/_base.py:401: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <anyio.from_thread.BlockingPortal object at 0x7ff007695e90>
+func = <fastmcp.server.http.StarletteWithLifespan object at 0x7ff007694950>
+args = ({'app': <fastmcp.server.http.StarletteWithLifespan object at 0x7ff007694950>, 'client': ('testclient', 50000), 'endpo...st.<locals>.receive at 0x7ff00b3e6f20>, <function _TestClientTransport.handle_request.<locals>.send at 0x7ff00b3e4ea0>)
+kwargs = {}
+future = <Future at 0x7ff007695850 state=finished raised RuntimeError>
+
+    async def _call_func(
+        self,
+        func: Callable[[Unpack[PosArgsT]], Awaitable[T_Retval] | T_Retval],
+        args: tuple[Unpack[PosArgsT]],
+        kwargs: dict[str, Any],
+        future: Future[T_Retval],
+    ) -> None:
+        def callback(f: Future[T_Retval]) -> None:
+            if f.cancelled():
+                if self._event_loop_thread_id == get_ident():
+                    scope.cancel("the future was cancelled")
+                elif self._event_loop_thread_id is not None:
+                    self.call(scope.cancel, "the future was cancelled")
+    
+        try:
+            retval_or_awaitable = func(*args, **kwargs)
+            if isawaitable(retval_or_awaitable):
+                with CancelScope() as scope:
+                    future.add_done_callback(callback)
+>                   retval = await retval_or_awaitable
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/anyio/from_thread.py:259: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <fastmcp.server.http.StarletteWithLifespan object at 0x7ff007694950>
+scope = {'app': <fastmcp.server.http.StarletteWithLifespan object at 0x7ff007694950>, 'client': ('testclient', 50000), 'endpoint': <fastmcp.server.http.StreamableHTTPASGIApp object at 0x7ff007694590>, 'extensions': {'http.response.debug': {}}, ...}
+receive = <function _TestClientTransport.handle_request.<locals>.receive at 0x7ff00b3e6f20>
+send = <function _TestClientTransport.handle_request.<locals>.send at 0x7ff00b3e4ea0>
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        scope["app"] = self
+        if self.middleware_stack is None:
+            self.middleware_stack = self.build_middleware_stack()
+>       await self.middleware_stack(scope, receive, send)
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/starlette/applications.py:107: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <starlette.middleware.errors.ServerErrorMiddleware object at 0x7ff007684f90>
+scope = {'app': <fastmcp.server.http.StarletteWithLifespan object at 0x7ff007694950>, 'client': ('testclient', 50000), 'endpoint': <fastmcp.server.http.StreamableHTTPASGIApp object at 0x7ff007694590>, 'extensions': {'http.response.debug': {}}, ...}
+receive = <function _TestClientTransport.handle_request.<locals>.receive at 0x7ff00b3e6f20>
+send = <function _TestClientTransport.handle_request.<locals>.send at 0x7ff00b3e4ea0>
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        if scope["type"] != "http":
+            await self.app(scope, receive, send)
+            return
+    
+        response_started = False
+    
+        async def _send(message: Message) -> None:
+            nonlocal response_started, send
+    
+            if message["type"] == "http.response.start":
+                response_started = True
+            await send(message)
+    
+        try:
+            await self.app(scope, receive, _send)
+        except Exception as exc:
+            request = Request(scope)
+            if self.debug:
+                # In debug mode, return traceback responses.
+                response = self.debug_response(request, exc)
+            elif self.handler is None:
+                # Use our default 500 error handler.
+                response = self.error_response(request, exc)
+            else:
+                # Use an installed 500 error handler.
+                if is_async_callable(self.handler):
+                    response = await self.handler(request, exc)
+                else:
+                    response = await run_in_threadpool(self.handler, request, exc)
+    
+            if not response_started:
+                await response(scope, receive, send)
+    
+            # We always continue to raise the exception.
+            # This allows servers to log the error, or allows test clients
+            # to optionally raise the error within the test case.
+>           raise exc
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/starlette/middleware/errors.py:186: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <starlette.middleware.errors.ServerErrorMiddleware object at 0x7ff007684f90>
+scope = {'app': <fastmcp.server.http.StarletteWithLifespan object at 0x7ff007694950>, 'client': ('testclient', 50000), 'endpoint': <fastmcp.server.http.StreamableHTTPASGIApp object at 0x7ff007694590>, 'extensions': {'http.response.debug': {}}, ...}
+receive = <function _TestClientTransport.handle_request.<locals>.receive at 0x7ff00b3e6f20>
+send = <function _TestClientTransport.handle_request.<locals>.send at 0x7ff00b3e4ea0>
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        if scope["type"] != "http":
+            await self.app(scope, receive, send)
+            return
+    
+        response_started = False
+    
+        async def _send(message: Message) -> None:
+            nonlocal response_started, send
+    
+            if message["type"] == "http.response.start":
+                response_started = True
+            await send(message)
+    
+        try:
+>           await self.app(scope, receive, _send)
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/starlette/middleware/errors.py:164: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <fastmcp.server.http.RequestContextMiddleware object at 0x7ff007685190>
+scope = {'app': <fastmcp.server.http.StarletteWithLifespan object at 0x7ff007694950>, 'client': ('testclient', 50000), 'endpoint': <fastmcp.server.http.StreamableHTTPASGIApp object at 0x7ff007694590>, 'extensions': {'http.response.debug': {}}, ...}
+receive = <function _TestClientTransport.handle_request.<locals>.receive at 0x7ff00b3e6f20>
+send = <function ServerErrorMiddleware.__call__.<locals>._send at 0x7ff0076b44a0>
+
+    async def __call__(self, scope, receive, send):
+        if scope["type"] == "http":
+            with set_http_request(Request(scope)):
+>               await self.app(scope, receive, send)
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/fastmcp/server/http.py:96: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <src.middleware.null_id_validation.NullIdValidationMiddleware object at 0x7ff007685350>
+scope = {'app': <fastmcp.server.http.StarletteWithLifespan object at 0x7ff007694950>, 'client': ('testclient', 50000), 'endpoint': <fastmcp.server.http.StreamableHTTPASGIApp object at 0x7ff007694590>, 'extensions': {'http.response.debug': {}}, ...}
+receive = <function _TestClientTransport.handle_request.<locals>.receive at 0x7ff00b3e6f20>
+send = <function ServerErrorMiddleware.__call__.<locals>._send at 0x7ff0076b44a0>
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        if scope["type"] != "http":
+            await self.app(scope, receive, send)
+            return
+    
+        request = _CachedRequest(scope, receive)
+        wrapped_receive = request.wrapped_receive
+        response_sent = anyio.Event()
+        app_exc: Exception | None = None
+        exception_already_raised = False
+    
+        async def call_next(request: Request) -> Response:
+            async def receive_or_disconnect() -> Message:
+                if response_sent.is_set():
+                    return {"type": "http.disconnect"}
+    
+                async with anyio.create_task_group() as task_group:
+    
+                    async def wrap(func: Callable[[], Awaitable[T]]) -> T:
+                        result = await func()
+                        task_group.cancel_scope.cancel()
+                        return result
+    
+                    task_group.start_soon(wrap, response_sent.wait)
+                    message = await wrap(wrapped_receive)
+    
+                if response_sent.is_set():
+                    return {"type": "http.disconnect"}
+    
+                return message
+    
+            async def send_no_error(message: Message) -> None:
+                try:
+                    await send_stream.send(message)
+                except anyio.BrokenResourceError:
+                    # recv_stream has been closed, i.e. response_sent has been set.
+                    return
+    
+            async def coro() -> None:
+                nonlocal app_exc
+    
+                with send_stream:
+                    try:
+                        await self.app(scope, receive_or_disconnect, send_no_error)
+                    except Exception as exc:
+                        app_exc = exc
+    
+            task_group.start_soon(coro)
+    
+            try:
+                message = await recv_stream.receive()
+                info = message.get("info", None)
+                if message["type"] == "http.response.debug" and info is not None:
+                    message = await recv_stream.receive()
+            except anyio.EndOfStream:
+                if app_exc is not None:
+                    nonlocal exception_already_raised
+                    exception_already_raised = True
+                    # Prevent `anyio.EndOfStream` from polluting app exception context.
+                    # If both cause and context are None then the context is suppressed
+                    # and `anyio.EndOfStream` is not present in the exception traceback.
+                    # If exception cause is not None then it is propagated with
+                    # reraising here.
+                    # If exception has no cause but has context set then the context is
+                    # propagated as a cause with the reraise. This is necessary in order
+                    # to prevent `anyio.EndOfStream` from polluting the exception
+                    # context.
+                    raise app_exc from app_exc.__cause__ or app_exc.__context__
+                raise RuntimeError("No response returned.")
+    
+            assert message["type"] == "http.response.start"
+    
+            async def body_stream() -> BodyStreamGenerator:
+                async for message in recv_stream:
+                    if message["type"] == "http.response.pathsend":
+                        yield message
+                        break
+                    assert message["type"] == "http.response.body", f"Unexpected message: {message}"
+                    body = message.get("body", b"")
+                    if body:
+                        yield body
+                    if not message.get("more_body", False):
+                        break
+    
+            response = _StreamingResponse(status_code=message["status"], content=body_stream(), info=info)
+            response.raw_headers = message["headers"]
+            return response
+    
+        streams: anyio.create_memory_object_stream[Message] = anyio.create_memory_object_stream()
+        send_stream, recv_stream = streams
+>       with recv_stream, send_stream, collapse_excgroups():
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/starlette/middleware/base.py:191: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <contextlib._GeneratorContextManager object at 0x7ff007685590>
+typ = <class 'ExceptionGroup'>
+value = ExceptionGroup('unhandled errors in a TaskGroup', [RuntimeError("FastMCP's StreamableHTTPSessionManager task group was...ion: https://gofastmcp.com/deployment/asgi\\nOriginal error: Task group is not initialized. Make sure to use run().")])
+traceback = <traceback object at 0x7ff007686580>
+
+    def __exit__(self, typ, value, traceback):
+        if typ is None:
+            try:
+                next(self.gen)
+            except StopIteration:
+                return False
+            else:
+                try:
+                    raise RuntimeError("generator didn't stop")
+                finally:
+                    self.gen.close()
+        else:
+            if value is None:
+                # Need to force instantiation so we can reliably
+                # tell if we get the same exception back
+                value = typ()
+            try:
+>               self.gen.throw(typ, value, traceback)
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/contextlib.py:158: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    @contextmanager
+    def collapse_excgroups() -> Generator[None, None, None]:
+        try:
+            yield
+        except BaseException as exc:
+            if has_exceptiongroups:  # pragma: no cover
+                while isinstance(exc, BaseExceptionGroup) and len(exc.exceptions) == 1:
+                    exc = exc.exceptions[0]
+    
+>           raise exc
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/starlette/_utils.py:87: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <src.middleware.null_id_validation.NullIdValidationMiddleware object at 0x7ff007685350>
+scope = {'app': <fastmcp.server.http.StarletteWithLifespan object at 0x7ff007694950>, 'client': ('testclient', 50000), 'endpoint': <fastmcp.server.http.StreamableHTTPASGIApp object at 0x7ff007694590>, 'extensions': {'http.response.debug': {}}, ...}
+receive = <function _TestClientTransport.handle_request.<locals>.receive at 0x7ff00b3e6f20>
+send = <function ServerErrorMiddleware.__call__.<locals>._send at 0x7ff0076b44a0>
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        if scope["type"] != "http":
+            await self.app(scope, receive, send)
+            return
+    
+        request = _CachedRequest(scope, receive)
+        wrapped_receive = request.wrapped_receive
+        response_sent = anyio.Event()
+        app_exc: Exception | None = None
+        exception_already_raised = False
+    
+        async def call_next(request: Request) -> Response:
+            async def receive_or_disconnect() -> Message:
+                if response_sent.is_set():
+                    return {"type": "http.disconnect"}
+    
+                async with anyio.create_task_group() as task_group:
+    
+                    async def wrap(func: Callable[[], Awaitable[T]]) -> T:
+                        result = await func()
+                        task_group.cancel_scope.cancel()
+                        return result
+    
+                    task_group.start_soon(wrap, response_sent.wait)
+                    message = await wrap(wrapped_receive)
+    
+                if response_sent.is_set():
+                    return {"type": "http.disconnect"}
+    
+                return message
+    
+            async def send_no_error(message: Message) -> None:
+                try:
+                    await send_stream.send(message)
+                except anyio.BrokenResourceError:
+                    # recv_stream has been closed, i.e. response_sent has been set.
+                    return
+    
+            async def coro() -> None:
+                nonlocal app_exc
+    
+                with send_stream:
+                    try:
+                        await self.app(scope, receive_or_disconnect, send_no_error)
+                    except Exception as exc:
+                        app_exc = exc
+    
+            task_group.start_soon(coro)
+    
+            try:
+                message = await recv_stream.receive()
+                info = message.get("info", None)
+                if message["type"] == "http.response.debug" and info is not None:
+                    message = await recv_stream.receive()
+            except anyio.EndOfStream:
+                if app_exc is not None:
+                    nonlocal exception_already_raised
+                    exception_already_raised = True
+                    # Prevent `anyio.EndOfStream` from polluting app exception context.
+                    # If both cause and context are None then the context is suppressed
+                    # and `anyio.EndOfStream` is not present in the exception traceback.
+                    # If exception cause is not None then it is propagated with
+                    # reraising here.
+                    # If exception has no cause but has context set then the context is
+                    # propagated as a cause with the reraise. This is necessary in order
+                    # to prevent `anyio.EndOfStream` from polluting the exception
+                    # context.
+                    raise app_exc from app_exc.__cause__ or app_exc.__context__
+                raise RuntimeError("No response returned.")
+    
+            assert message["type"] == "http.response.start"
+    
+            async def body_stream() -> BodyStreamGenerator:
+                async for message in recv_stream:
+                    if message["type"] == "http.response.pathsend":
+                        yield message
+                        break
+                    assert message["type"] == "http.response.body", f"Unexpected message: {message}"
+                    body = message.get("body", b"")
+                    if body:
+                        yield body
+                    if not message.get("more_body", False):
+                        break
+    
+            response = _StreamingResponse(status_code=message["status"], content=body_stream(), info=info)
+            response.raw_headers = message["headers"]
+            return response
+    
+        streams: anyio.create_memory_object_stream[Message] = anyio.create_memory_object_stream()
+        send_stream, recv_stream = streams
+        with recv_stream, send_stream, collapse_excgroups():
+            async with anyio.create_task_group() as task_group:
+>               response = await self.dispatch_func(request, call_next)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/starlette/middleware/base.py:193: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <src.middleware.null_id_validation.NullIdValidationMiddleware object at 0x7ff007685350>
+request = <starlette.requests.Request object at 0x7ff007685850>
+call_next = <function BaseHTTPMiddleware.__call__.<locals>.call_next at 0x7ff0076b4540>
+
+    async def dispatch(self, request: Request, call_next: Callable) -> Response:
+        if request.method != "POST":
+            return await call_next(request)
+    
+        try:
+            body = await request.body()
+        except Exception as e:
+            logger.warning("NullIdValidation: could not read body: %s", e)
+            return await call_next(request)
+    
+        if not body:
+            return await call_next(request)
+    
+        try:
+            data = json.loads(body)
+        except json.JSONDecodeError:
+            return await call_next(request)
+    
+        if not _has_null_id(data):
+            # Valid - pass through; re-inject body for downstream
+            async def receive():
+                return {"type": "http.request", "body": body, "more_body": False}
+    
+            request = Request(request.scope, receive=receive)
+>           return await call_next(request)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^
+
+src/middleware/null_id_validation.py:85: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+request = <starlette.requests.Request object at 0x7ff007685850>
+
+    async def call_next(request: Request) -> Response:
+        async def receive_or_disconnect() -> Message:
+            if response_sent.is_set():
+                return {"type": "http.disconnect"}
+    
+            async with anyio.create_task_group() as task_group:
+    
+                async def wrap(func: Callable[[], Awaitable[T]]) -> T:
+                    result = await func()
+                    task_group.cancel_scope.cancel()
+                    return result
+    
+                task_group.start_soon(wrap, response_sent.wait)
+                message = await wrap(wrapped_receive)
+    
+            if response_sent.is_set():
+                return {"type": "http.disconnect"}
+    
+            return message
+    
+        async def send_no_error(message: Message) -> None:
+            try:
+                await send_stream.send(message)
+            except anyio.BrokenResourceError:
+                # recv_stream has been closed, i.e. response_sent has been set.
+                return
+    
+        async def coro() -> None:
+            nonlocal app_exc
+    
+            with send_stream:
+                try:
+                    await self.app(scope, receive_or_disconnect, send_no_error)
+                except Exception as exc:
+                    app_exc = exc
+    
+        task_group.start_soon(coro)
+    
+        try:
+            message = await recv_stream.receive()
+            info = message.get("info", None)
+            if message["type"] == "http.response.debug" and info is not None:
+                message = await recv_stream.receive()
+        except anyio.EndOfStream:
+            if app_exc is not None:
+                nonlocal exception_already_raised
+                exception_already_raised = True
+                # Prevent `anyio.EndOfStream` from polluting app exception context.
+                # If both cause and context are None then the context is suppressed
+                # and `anyio.EndOfStream` is not present in the exception traceback.
+                # If exception cause is not None then it is propagated with
+                # reraising here.
+                # If exception has no cause but has context set then the context is
+                # propagated as a cause with the reraise. This is necessary in order
+                # to prevent `anyio.EndOfStream` from polluting the exception
+                # context.
+>               raise app_exc from app_exc.__cause__ or app_exc.__context__
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/starlette/middleware/base.py:168: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    async def coro() -> None:
+        nonlocal app_exc
+    
+        with send_stream:
+            try:
+>               await self.app(scope, receive_or_disconnect, send_no_error)
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/starlette/middleware/base.py:144: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <starlette.middleware.exceptions.ExceptionMiddleware object at 0x7ff007694210>
+scope = {'app': <fastmcp.server.http.StarletteWithLifespan object at 0x7ff007694950>, 'client': ('testclient', 50000), 'endpoint': <fastmcp.server.http.StreamableHTTPASGIApp object at 0x7ff007694590>, 'extensions': {'http.response.debug': {}}, ...}
+receive = <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7ff0076b4680>
+send = <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.send_no_error at 0x7ff0076b4720>
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        if scope["type"] not in ("http", "websocket"):
+            await self.app(scope, receive, send)
+            return
+    
+        scope["starlette.exception_handlers"] = (
+            self._exception_handlers,
+            self._status_handlers,
+        )
+    
+        conn: Request | WebSocket
+        if scope["type"] == "http":
+            conn = Request(scope, receive, send)
+        else:
+            conn = WebSocket(scope, receive, send)
+    
+>       await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/starlette/middleware/exceptions.py:63: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+scope = {'app': <fastmcp.server.http.StarletteWithLifespan object at 0x7ff007694950>, 'client': ('testclient', 50000), 'endpoint': <fastmcp.server.http.StreamableHTTPASGIApp object at 0x7ff007694590>, 'extensions': {'http.response.debug': {}}, ...}
+receive = <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7ff0076b4680>
+send = <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.send_no_error at 0x7ff0076b4720>
+
+    async def wrapped_app(scope: Scope, receive: Receive, send: Send) -> None:
+        response_started = False
+    
+        async def sender(message: Message) -> None:
+            nonlocal response_started
+    
+            if message["type"] == "http.response.start":
+                response_started = True
+            await send(message)
+    
+        try:
+            await app(scope, receive, sender)
+        except Exception as exc:
+            handler = None
+    
+            if isinstance(exc, HTTPException):
+                handler = status_handlers.get(exc.status_code)
+    
+            if handler is None:
+                handler = _lookup_exception_handler(exception_handlers, exc)
+    
+            if handler is None:
+>               raise exc
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:53: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+scope = {'app': <fastmcp.server.http.StarletteWithLifespan object at 0x7ff007694950>, 'client': ('testclient', 50000), 'endpoint': <fastmcp.server.http.StreamableHTTPASGIApp object at 0x7ff007694590>, 'extensions': {'http.response.debug': {}}, ...}
+receive = <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7ff0076b4680>
+send = <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.send_no_error at 0x7ff0076b4720>
+
+    async def wrapped_app(scope: Scope, receive: Receive, send: Send) -> None:
+        response_started = False
+    
+        async def sender(message: Message) -> None:
+            nonlocal response_started
+    
+            if message["type"] == "http.response.start":
+                response_started = True
+            await send(message)
+    
+        try:
+>           await app(scope, receive, sender)
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/starlette/_exception_handler.py:42: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <starlette.routing.Router object at 0x7ff007694b10>
+scope = {'app': <fastmcp.server.http.StarletteWithLifespan object at 0x7ff007694950>, 'client': ('testclient', 50000), 'endpoint': <fastmcp.server.http.StreamableHTTPASGIApp object at 0x7ff007694590>, 'extensions': {'http.response.debug': {}}, ...}
+receive = <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7ff0076b4680>
+send = <function wrap_app_handling_exceptions.<locals>.wrapped_app.<locals>.sender at 0x7ff0076b4c20>
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        """
+        The main entry point to the Router class.
+        """
+>       await self.middleware_stack(scope, receive, send)
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/starlette/routing.py:716: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <starlette.routing.Router object at 0x7ff007694b10>
+scope = {'app': <fastmcp.server.http.StarletteWithLifespan object at 0x7ff007694950>, 'client': ('testclient', 50000), 'endpoint': <fastmcp.server.http.StreamableHTTPASGIApp object at 0x7ff007694590>, 'extensions': {'http.response.debug': {}}, ...}
+receive = <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7ff0076b4680>
+send = <function wrap_app_handling_exceptions.<locals>.wrapped_app.<locals>.sender at 0x7ff0076b4c20>
+
+    async def app(self, scope: Scope, receive: Receive, send: Send) -> None:
+        assert scope["type"] in ("http", "websocket", "lifespan")
+    
+        if "router" not in scope:
+            scope["router"] = self
+    
+        if scope["type"] == "lifespan":
+            await self.lifespan(scope, receive, send)
+            return
+    
+        partial = None
+    
+        for route in self.routes:
+            # Determine if any route matches the incoming scope,
+            # and hand over to the matching route if found.
+            match, child_scope = route.matches(scope)
+            if match == Match.FULL:
+                scope.update(child_scope)
+>               await route.handle(scope, receive, send)
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/starlette/routing.py:736: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = Route(path='/mcp/', name='StreamableHTTPASGIApp', methods=[])
+scope = {'app': <fastmcp.server.http.StarletteWithLifespan object at 0x7ff007694950>, 'client': ('testclient', 50000), 'endpoint': <fastmcp.server.http.StreamableHTTPASGIApp object at 0x7ff007694590>, 'extensions': {'http.response.debug': {}}, ...}
+receive = <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7ff0076b4680>
+send = <function wrap_app_handling_exceptions.<locals>.wrapped_app.<locals>.sender at 0x7ff0076b4c20>
+
+    async def handle(self, scope: Scope, receive: Receive, send: Send) -> None:
+        if self.methods and scope["method"] not in self.methods:
+            headers = {"Allow": ", ".join(self.methods)}
+            if "app" in scope:
+                raise HTTPException(status_code=405, headers=headers)
+            else:
+                response = PlainTextResponse("Method Not Allowed", status_code=405, headers=headers)
+            await response(scope, receive, send)
+        else:
+>           await self.app(scope, receive, send)
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/starlette/routing.py:290: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <fastmcp.server.http.StreamableHTTPASGIApp object at 0x7ff007694590>
+scope = {'app': <fastmcp.server.http.StarletteWithLifespan object at 0x7ff007694950>, 'client': ('testclient', 50000), 'endpoint': <fastmcp.server.http.StreamableHTTPASGIApp object at 0x7ff007694590>, 'extensions': {'http.response.debug': {}}, ...}
+receive = <function BaseHTTPMiddleware.__call__.<locals>.call_next.<locals>.receive_or_disconnect at 0x7ff0076b4680>
+send = <function wrap_app_handling_exceptions.<locals>.wrapped_app.<locals>.sender at 0x7ff0076b4c20>
+
+    async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
+        try:
+            await self.session_manager.handle_request(scope, receive, send)
+        except RuntimeError as e:
+            if str(e) == "Task group is not initialized. Make sure to use run().":
+                logger.error(
+                    f"Original RuntimeError from mcp library: {e}", exc_info=True
+                )
+                new_error_message = (
+                    "FastMCP's StreamableHTTPSessionManager task group was not initialized. "
+                    "This commonly occurs when the FastMCP application's lifespan is not "
+                    "passed to the parent ASGI application (e.g., FastAPI or Starlette). "
+                    "Please ensure you are setting `lifespan=mcp_app.lifespan` in your "
+                    "parent app's constructor, where `mcp_app` is the application instance "
+                    "returned by `fastmcp_instance.http_app()`. \\n"
+                    "For more details, see the FastMCP ASGI integration documentation: "
+                    "https://gofastmcp.com/deployment/asgi"
+                )
+                # Raise a new RuntimeError that includes the original error's message
+                # for full context, but leads with the more helpful guidance.
+>               raise RuntimeError(f"{new_error_message}\\nOriginal error: {e}") from e
+E               RuntimeError: FastMCP's StreamableHTTPSessionManager task group was not initialized. This commonly occurs when the FastMCP application's lifespan is not passed to the parent ASGI application (e.g., FastAPI or Starlette). Please ensure you are setting `lifespan=mcp_app.lifespan` in your parent app's constructor, where `mcp_app` is the application instance returned by `fastmcp_instance.http_app()`. \nFor more details, see the FastMCP ASGI integration documentation: https://gofastmcp.com/deployment/asgi\nOriginal error: Task group is not initialized. Make sure to use run().
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/fastmcp/server/http.py:58: RuntimeError
+----------------------------- Captured stderr call -----------------------------
+                    Original RuntimeError from mcp library: Task group is not   
+                    initialized. Make sure to use run().                        
+                    ╭─────────── Traceback (most recent call last) ────────────╮
+                    │ /opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/s │
+                    │ ite-packages/fastmcp/server/http.py:40 in __call__       │
+                    │                                                          │
+                    │ /opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/s │
+                    │ ite-packages/mcp/server/streamable_http_manager.py:144   │
+                    │ in handle_request                                        │
+                    ╰──────────────────────────────────────────────────────────╯
+                    RuntimeError: Task group is not initialized. Make sure to   
+                    use run().                                                  
+__________________________ test_workflow_basic_depth ___________________________
+
+    async def test_workflow_basic_depth():
+        """Test research_workflow with basic research depth."""
+        async with create_client() as client:
+            result = await client.call_tool(
+                "research_agent",
+                {
+                    "topic": "JavaScript",
+                    "max_sources": 5,
+                    "research_depth": "basic",
+                    "enable_ai_insights": True
+                }
+            )
+    
+            output = result.content[0].text
+            # AI agent mode produces rich output
+>           assert len(output) > 500, f"Basic research too short: {len(output)} chars"
+E           AssertionError: Basic research too short: 110 chars
+E           assert 110 > 500
+E            +  where 110 = len('# 📋 Research Analysis: *JavaScript*\n\n❌ **Error:** User not found.\n\n*Analysis attempted on 2026-02-17 09:11:07*')
+
+tests/tools/test_research_agent.py:58: AssertionError
+----------------------------- Captured stderr call -----------------------------
+2026-02-17 09:11:07,140 - INFO - Custom routes registered successfully
+2026-02-17 09:11:07,140 - INFO - Starting RivalSearchMCP in development mode (stdio)
+
+
+╭──────────────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│                                                                              │
+│                         ▄▀▀ ▄▀█ █▀▀ ▀█▀ █▀▄▀█ █▀▀ █▀█                        │
+│                         █▀  █▀█ ▄▄█  █  █ ▀ █ █▄▄ █▀▀                        │
+│                                                                              │
+│                                                                              │
+│                                FastMCP 2.14.5                                │
+│                            https://gofastmcp.com                             │
+│                                                                              │
+│                    🖥  Server:      RivalSearchMCP                            │
+│                    🚀 Deploy free: https://fastmcp.cloud                     │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────────────────────────────────────────────────────────────╮
+│                          ✨ FastMCP 3.0 is coming!                           │
+│       Pin `fastmcp < 3` in production, then upgrade when you're ready.       │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+
+[02/17/26 09:11:07] INFO     Starting MCP server 'RivalSearchMCP' server.py:2506
+                             with transport 'stdio'                             
+                    DEBUG    Sending INFO to client: 🔬 Starting context.py:1044
+                             AI-enhanced research on: JavaScript                
+                    DEBUG    Sending INFO to client: 📊 Research context.py:1044
+                             ID: research_20260217_091107                       
+2026-02-17 09:11:07,194 - INFO - Fetching free models with tool support from OpenRouter...
+[02/17/26 09:11:07] INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🔬 Starting AI-enhanced research on:              
+                             JavaScript', 'extra': None}                        
+                    INFO     Received INFO from server: {'msg':    logging.py:44
+                             '📊 Research ID:                                   
+                             research_20260217_091107', 'extra':                
+                             None}                                              
+2026-02-17 09:11:07,300 - INFO - Found 19 free fallback models with tool support
+2026-02-17 09:11:07,300 - INFO - Primary model (hardcoded): meta-llama/llama-3.3-70b-instruct:free
+2026-02-17 09:11:07,300 - INFO - Fallback models (dynamic): ['qwen/qwen3-coder:free', 'qwen/qwen3-235b-a22b-thinking-2507']
+                    DEBUG    Sending INFO to client: 🤖 AI Agent context.py:1044
+                             initialized with 3 models (top 3 of                
+                             3)                                                 
+                    DEBUG    Sending INFO to client: 🎯 Primary  context.py:1044
+                             model:                                             
+                             meta-llama/llama-3.3-70b-instruct:f                
+                             ree                                                
+                    INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🤖 AI Agent initialized with 3                    
+                             models (top 3 of 3)', 'extra': None}               
+                    INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🎯 Primary model:                                 
+                             meta-llama/llama-3.3-70b-instruct:fre              
+                             e', 'extra': None}                                 
+                    DEBUG    Sending ERROR to client: ❌         context.py:1044
+                             Research workflow failed for                       
+                             'JavaScript': User not found.                      
+2026-02-17 09:11:07,548 - ERROR - Research workflow failed for 'JavaScript': User not found.
+                    ERROR    Received ERROR from server: {'msg':   logging.py:44
+                             "❌ Research workflow failed for                   
+                             'JavaScript': User not found.",                    
+                             'extra': None}                                     
+______________________ test_workflow_comprehensive_depth _______________________
+
+    async def test_workflow_comprehensive_depth():
+        """Test research_workflow with comprehensive research depth."""
+        async with create_client() as client:
+>           result = await client.call_tool(
+                "research_agent",
+                {
+                    "topic": "AI",
+                    "max_sources": 5,
+                    "research_depth": "comprehensive",
+                    "enable_ai_insights": True
+                }
+            )
+
+tests/tools/test_research_agent.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <fastmcp.client.client.Client object at 0x7ff0079e97d0>
+name = 'research_agent'
+arguments = {'enable_ai_insights': True, 'max_sources': 5, 'research_depth': 'comprehensive', 'topic': 'AI'}
+
+    async def call_tool(
+        self,
+        name: str,
+        arguments: dict[str, Any] | None = None,
+        *,
+        timeout: datetime.timedelta | float | int | None = None,
+        progress_handler: ProgressHandler | None = None,
+        raise_on_error: bool = True,
+        meta: dict[str, Any] | None = None,
+        task: bool = False,
+        task_id: str | None = None,
+        ttl: int = 60000,
+    ) -> CallToolResult | ToolTask:
+        """Call a tool on the server.
+    
+        Unlike call_tool_mcp, this method raises a ToolError if the tool call results in an error.
+    
+        Args:
+            name (str): The name of the tool to call.
+            arguments (dict[str, Any] | None, optional): Arguments to pass to the tool. Defaults to None.
+            timeout (datetime.timedelta | float | int | None, optional): The timeout for the tool call. Defaults to None.
+            progress_handler (ProgressHandler | None, optional): The progress handler to use for the tool call. Defaults to None.
+            raise_on_error (bool, optional): Whether to raise an exception if the tool call results in an error. Defaults to True.
+            meta (dict[str, Any] | None, optional): Additional metadata to include with the request.
+                This is useful for passing contextual information (like user IDs, trace IDs, or preferences)
+                that shouldn't be tool arguments but may influence server-side processing. The server
+                can access this via `context.request_context.meta`. Defaults to None.
+            task (bool): If True, execute as background task (SEP-1686). Defaults to False.
+            task_id (str | None): Optional client-provided task ID (auto-generated if not provided).
+            ttl (int): Time to keep results available in milliseconds (default 60s).
+    
+        Returns:
+            CallToolResult | ToolTask: The content returned by the tool if task=False,
+                or a ToolTask object if task=True. If the tool returns structured
+                outputs, they are returned as a dataclass (if an output schema
+                is available) or a dictionary; otherwise, a list of content
+                blocks is returned. Note: to receive both structured and
+                unstructured outputs, use call_tool_mcp instead and access the
+                raw result object.
+    
+        Raises:
+            ToolError: If the tool call results in an error.
+            RuntimeError: If called while the client is not connected.
+        """
+        if task:
+            return await self._call_tool_as_task(name, arguments, task_id, ttl)
+    
+        result = await self.call_tool_mcp(
+            name=name,
+            arguments=arguments or {},
+            timeout=timeout,
+            progress_handler=progress_handler,
+            meta=meta,
+        )
+>       return await self._parse_call_tool_result(
+            name, result, raise_on_error=raise_on_error
+        )
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/fastmcp/client/client.py:1430: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <fastmcp.client.client.Client object at 0x7ff0079e97d0>
+name = 'research_agent'
+result = CallToolResult(meta=None, content=[TextContent(type='text', text="Tool execution failed: 1 validation error for call[r...ps://errors.pydantic.dev/2.12/v/string_too_short", annotations=None, meta=None)], structuredContent=None, isError=True)
+raise_on_error = True
+
+    async def _parse_call_tool_result(
+        self, name: str, result: mcp.types.CallToolResult, raise_on_error: bool = False
+    ) -> CallToolResult:
+        """Parse an mcp.types.CallToolResult into our CallToolResult dataclass.
+    
+        Args:
+            name: Tool name (for schema lookup)
+            result: Raw MCP protocol result
+            raise_on_error: Whether to raise ToolError on errors
+    
+        Returns:
+            CallToolResult: Parsed result with structured data
+        """
+        data = None
+        if result.isError and raise_on_error:
+            msg = cast(mcp.types.TextContent, result.content[0]).text
+>           raise ToolError(msg)
+E           fastmcp.exceptions.ToolError: Tool execution failed: 1 validation error for call[research_agent]
+E           topic
+E             String should have at least 3 characters [type=string_too_short, input_value='AI', input_type=str]
+E               For further information visit https://errors.pydantic.dev/2.12/v/string_too_short
+
+/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/fastmcp/client/client.py:1317: ToolError
+----------------------------- Captured stderr call -----------------------------
+2026-02-17 09:11:11,662 - INFO - Custom routes registered successfully
+2026-02-17 09:11:11,662 - INFO - Starting RivalSearchMCP in development mode (stdio)
+
+
+╭──────────────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│                                                                              │
+│                         ▄▀▀ ▄▀█ █▀▀ ▀█▀ █▀▄▀█ █▀▀ █▀█                        │
+│                         █▀  █▀█ ▄▄█  █  █ ▀ █ █▄▄ █▀▀                        │
+│                                                                              │
+│                                                                              │
+│                                FastMCP 2.14.5                                │
+│                            https://gofastmcp.com                             │
+│                                                                              │
+│                    🖥  Server:      RivalSearchMCP                            │
+│                    🚀 Deploy free: https://fastmcp.cloud                     │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────────────────────────────────────────────────────────────╮
+│                          ✨ FastMCP 3.0 is coming!                           │
+│       Pin `fastmcp < 3` in production, then upgrade when you're ready.       │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+
+[02/17/26 09:11:11] INFO     Starting MCP server 'RivalSearchMCP' server.py:2506
+                             with transport 'stdio'                             
+Failed tools/call: ValidationError: 1 validation error for call[research_agent]
+topic
+  String should have at least 3 characters [type=string_too_short, input_value='AI', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_too_short
+Operation failed: tools/call after 0.20ms: 1 validation error for call[research_agent]
+topic
+  String should have at least 3 characters [type=string_too_short, input_value='AI', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_too_short
+Error in tools/call: ValidationError: 1 validation error for call[research_agent]
+topic
+  String should have at least 3 characters [type=string_too_short, input_value='AI', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_too_short
+__________________________ test_workflow_expert_depth __________________________
+
+    async def test_workflow_expert_depth():
+        """Test research_workflow with expert research depth."""
+        async with create_client() as client:
+            result = await client.call_tool(
+                "research_agent",
+                {
+                    "topic": "databases",
+                    "max_sources": 5,
+                    "research_depth": "expert",
+                    "enable_ai_insights": True
+                }
+            )
+    
+            output = result.content[0].text
+    
+            # Handle rate limits
+            if "rate limit" in output.lower():
+                print(f"⚠️  OpenRouter rate limited")
+                assert len(output) > 50, "Error handling too minimal"
+            else:
+>               assert len(output) > 500, f"Expert research too short: {len(output)} chars"
+E               AssertionError: Expert research too short: 109 chars
+E               assert 109 > 500
+E                +  where 109 = len('# 📋 Research Analysis: *databases*\n\n❌ **Error:** User not found.\n\n*Analysis attempted on 2026-02-17 09:11:16*')
+
+tests/tools/test_research_agent.py:108: AssertionError
+----------------------------- Captured stderr call -----------------------------
+2026-02-17 09:11:15,696 - INFO - Custom routes registered successfully
+2026-02-17 09:11:15,697 - INFO - Starting RivalSearchMCP in development mode (stdio)
+
+
+╭──────────────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│                                                                              │
+│                         ▄▀▀ ▄▀█ █▀▀ ▀█▀ █▀▄▀█ █▀▀ █▀█                        │
+│                         █▀  █▀█ ▄▄█  █  █ ▀ █ █▄▄ █▀▀                        │
+│                                                                              │
+│                                                                              │
+│                                FastMCP 2.14.5                                │
+│                            https://gofastmcp.com                             │
+│                                                                              │
+│                    🖥  Server:      RivalSearchMCP                            │
+│                    🚀 Deploy free: https://fastmcp.cloud                     │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────────────────────────────────────────────────────────────╮
+│                          ✨ FastMCP 3.0 is coming!                           │
+│       Pin `fastmcp < 3` in production, then upgrade when you're ready.       │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+
+[02/17/26 09:11:15] INFO     Starting MCP server 'RivalSearchMCP' server.py:2506
+                             with transport 'stdio'                             
+                    DEBUG    Sending INFO to client: 🔬 Starting context.py:1044
+                             AI-enhanced research on: databases                 
+                    DEBUG    Sending INFO to client: 📊 Research context.py:1044
+                             ID: research_20260217_091115                       
+2026-02-17 09:11:15,751 - INFO - Fetching free models with tool support from OpenRouter...
+[02/17/26 09:11:15] INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🔬 Starting AI-enhanced research on:              
+                             databases', 'extra': None}                         
+                    INFO     Received INFO from server: {'msg':    logging.py:44
+                             '📊 Research ID:                                   
+                             research_20260217_091115', 'extra':                
+                             None}                                              
+2026-02-17 09:11:15,841 - INFO - Found 19 free fallback models with tool support
+2026-02-17 09:11:15,842 - INFO - Primary model (hardcoded): meta-llama/llama-3.3-70b-instruct:free
+2026-02-17 09:11:15,842 - INFO - Fallback models (dynamic): ['qwen/qwen3-coder:free', 'qwen/qwen3-235b-a22b-thinking-2507']
+                    DEBUG    Sending INFO to client: 🤖 AI Agent context.py:1044
+                             initialized with 3 models (top 3 of                
+                             3)                                                 
+                    DEBUG    Sending INFO to client: 🎯 Primary  context.py:1044
+                             model:                                             
+                             meta-llama/llama-3.3-70b-instruct:f                
+                             ree                                                
+                    INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🤖 AI Agent initialized with 3                    
+                             models (top 3 of 3)', 'extra': None}               
+                    INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🎯 Primary model:                                 
+                             meta-llama/llama-3.3-70b-instruct:fre              
+                             e', 'extra': None}                                 
+[02/17/26 09:11:16] DEBUG    Sending ERROR to client: ❌         context.py:1044
+                             Research workflow failed for                       
+                             'databases': User not found.                       
+2026-02-17 09:11:16,079 - ERROR - Research workflow failed for 'databases': User not found.
+[02/17/26 09:11:16] ERROR    Received ERROR from server: {'msg':   logging.py:44
+                             "❌ Research workflow failed for                   
+                             'databases': User not found.",                     
+                             'extra': None}                                     
+__________________________ test_workflow_max_sources ___________________________
+
+    async def test_workflow_max_sources():
+        """Test research_workflow with different max_sources values."""
+        async with create_client() as client:
+            # Only test one value to keep test fast
+            result = await client.call_tool(
+                "research_agent",
+                {
+                    "topic": "programming",
+                    "max_sources": 5,
+                    "research_depth": "basic",
+                    "enable_ai_insights": True
+                }
+            )
+    
+            output = result.content[0].text
+    
+            # Handle rate limits
+            if "rate limit" in output.lower():
+                print(f"⚠️  OpenRouter rate limited")
+                assert len(output) > 50, "Error handling too minimal"
+            else:
+>               assert len(output) > 400, f"Output too short: {len(output)} chars"
+E               AssertionError: Output too short: 111 chars
+E               assert 111 > 400
+E                +  where 111 = len('# 📋 Research Analysis: *programming*\n\n❌ **Error:** User not found.\n\n*Analysis attempted on 2026-02-17 09:11:20*')
+
+tests/tools/test_research_agent.py:134: AssertionError
+----------------------------- Captured stderr call -----------------------------
+2026-02-17 09:11:20,089 - INFO - Custom routes registered successfully
+2026-02-17 09:11:20,089 - INFO - Starting RivalSearchMCP in development mode (stdio)
+
+
+╭──────────────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│                                                                              │
+│                         ▄▀▀ ▄▀█ █▀▀ ▀█▀ █▀▄▀█ █▀▀ █▀█                        │
+│                         █▀  █▀█ ▄▄█  █  █ ▀ █ █▄▄ █▀▀                        │
+│                                                                              │
+│                                                                              │
+│                                FastMCP 2.14.5                                │
+│                            https://gofastmcp.com                             │
+│                                                                              │
+│                    🖥  Server:      RivalSearchMCP                            │
+│                    🚀 Deploy free: https://fastmcp.cloud                     │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────────────────────────────────────────────────────────────╮
+│                          ✨ FastMCP 3.0 is coming!                           │
+│       Pin `fastmcp < 3` in production, then upgrade when you're ready.       │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+
+[02/17/26 09:11:20] INFO     Starting MCP server 'RivalSearchMCP' server.py:2506
+                             with transport 'stdio'                             
+                    DEBUG    Sending INFO to client: 🔬 Starting context.py:1044
+                             AI-enhanced research on:                           
+                             programming                                        
+                    DEBUG    Sending INFO to client: 📊 Research context.py:1044
+                             ID: research_20260217_091120                       
+2026-02-17 09:11:20,143 - INFO - Fetching free models with tool support from OpenRouter...
+[02/17/26 09:11:20] INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🔬 Starting AI-enhanced research on:              
+                             programming', 'extra': None}                       
+                    INFO     Received INFO from server: {'msg':    logging.py:44
+                             '📊 Research ID:                                   
+                             research_20260217_091120', 'extra':                
+                             None}                                              
+2026-02-17 09:11:20,236 - INFO - Found 19 free fallback models with tool support
+2026-02-17 09:11:20,236 - INFO - Primary model (hardcoded): meta-llama/llama-3.3-70b-instruct:free
+2026-02-17 09:11:20,236 - INFO - Fallback models (dynamic): ['qwen/qwen3-coder:free', 'qwen/qwen3-235b-a22b-thinking-2507']
+                    DEBUG    Sending INFO to client: 🤖 AI Agent context.py:1044
+                             initialized with 3 models (top 3 of                
+                             3)                                                 
+                    DEBUG    Sending INFO to client: 🎯 Primary  context.py:1044
+                             model:                                             
+                             meta-llama/llama-3.3-70b-instruct:f                
+                             ree                                                
+                    INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🤖 AI Agent initialized with 3                    
+                             models (top 3 of 3)', 'extra': None}               
+                    INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🎯 Primary model:                                 
+                             meta-llama/llama-3.3-70b-instruct:fre              
+                             e', 'extra': None}                                 
+                    DEBUG    Sending ERROR to client: ❌         context.py:1044
+                             Research workflow failed for                       
+                             'programming': User not found.                     
+2026-02-17 09:11:20,481 - ERROR - Research workflow failed for 'programming': User not found.
+                    ERROR    Received ERROR from server: {'msg':   logging.py:44
+                             "❌ Research workflow failed for                   
+                             'programming': User not found.",                   
+                             'extra': None}                                     
+__________________________ test_workflow_with_trends ___________________________
+
+    async def test_workflow_with_trends():
+        """Test research_workflow with trends analysis included."""
+        async with create_client() as client:
+            result = await client.call_tool(
+                "research_agent",
+                {
+                    "topic": "web",
+                    "max_sources": 5,
+                    "include_trends": True,
+                    "research_depth": "basic",
+                    "enable_ai_insights": True
+                }
+            )
+    
+            output = result.content[0].text
+    
+            # Handle rate limits
+            if "rate limit" in output.lower():
+                print(f"⚠️  OpenRouter rate limited")
+            else:
+>               assert len(output) > 300, f"Output: {len(output)} chars"
+E               AssertionError: Output: 103 chars
+E               assert 103 > 300
+E                +  where 103 = len('# 📋 Research Analysis: *web*\n\n❌ **Error:** User not found.\n\n*Analysis attempted on 2026-02-17 09:11:24*')
+
+tests/tools/test_research_agent.py:159: AssertionError
+----------------------------- Captured stderr call -----------------------------
+2026-02-17 09:11:24,532 - INFO - Custom routes registered successfully
+2026-02-17 09:11:24,532 - INFO - Starting RivalSearchMCP in development mode (stdio)
+
+
+╭──────────────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│                                                                              │
+│                         ▄▀▀ ▄▀█ █▀▀ ▀█▀ █▀▄▀█ █▀▀ █▀█                        │
+│                         █▀  █▀█ ▄▄█  █  █ ▀ █ █▄▄ █▀▀                        │
+│                                                                              │
+│                                                                              │
+│                                FastMCP 2.14.5                                │
+│                            https://gofastmcp.com                             │
+│                                                                              │
+│                    🖥  Server:      RivalSearchMCP                            │
+│                    🚀 Deploy free: https://fastmcp.cloud                     │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────────────────────────────────────────────────────────────╮
+│                          ✨ FastMCP 3.0 is coming!                           │
+│       Pin `fastmcp < 3` in production, then upgrade when you're ready.       │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+
+[02/17/26 09:11:24] INFO     Starting MCP server 'RivalSearchMCP' server.py:2506
+                             with transport 'stdio'                             
+                    DEBUG    Sending INFO to client: 🔬 Starting context.py:1044
+                             AI-enhanced research on: web                       
+                    DEBUG    Sending INFO to client: 📊 Research context.py:1044
+                             ID: research_20260217_091124                       
+2026-02-17 09:11:24,586 - INFO - Fetching free models with tool support from OpenRouter...
+[02/17/26 09:11:24] INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🔬 Starting AI-enhanced research on:              
+                             web', 'extra': None}                               
+                    INFO     Received INFO from server: {'msg':    logging.py:44
+                             '📊 Research ID:                                   
+                             research_20260217_091124', 'extra':                
+                             None}                                              
+2026-02-17 09:11:24,669 - INFO - Found 19 free fallback models with tool support
+2026-02-17 09:11:24,669 - INFO - Primary model (hardcoded): meta-llama/llama-3.3-70b-instruct:free
+2026-02-17 09:11:24,669 - INFO - Fallback models (dynamic): ['qwen/qwen3-coder:free', 'qwen/qwen3-235b-a22b-thinking-2507']
+                    DEBUG    Sending INFO to client: 🤖 AI Agent context.py:1044
+                             initialized with 3 models (top 3 of                
+                             3)                                                 
+                    DEBUG    Sending INFO to client: 🎯 Primary  context.py:1044
+                             model:                                             
+                             meta-llama/llama-3.3-70b-instruct:f                
+                             ree                                                
+                    INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🤖 AI Agent initialized with 3                    
+                             models (top 3 of 3)', 'extra': None}               
+                    INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🎯 Primary model:                                 
+                             meta-llama/llama-3.3-70b-instruct:fre              
+                             e', 'extra': None}                                 
+                    DEBUG    Sending ERROR to client: ❌         context.py:1044
+                             Research workflow failed for 'web':                
+                             User not found.                                    
+2026-02-17 09:11:24,930 - ERROR - Research workflow failed for 'web': User not found.
+                    ERROR    Received ERROR from server: {'msg':   logging.py:44
+                             "❌ Research workflow failed for                   
+                             'web': User not found.", 'extra':                  
+                             None}                                              
+_________________________ test_workflow_without_trends _________________________
+
+    async def test_workflow_without_trends():
+        """Test research_workflow without trends analysis."""
+        async with create_client() as client:
+            result = await client.call_tool(
+                "research_agent",
+                {
+                    "topic": "databases",
+                    "max_sources": 5,
+                    "include_trends": False,
+                    "research_depth": "basic",
+                    "enable_ai_insights": True
+                }
+            )
+    
+            output = result.content[0].text
+    
+            # Handle rate limits
+            if "rate limit" in output.lower():
+                print(f"⚠️  OpenRouter rate limited")
+            else:
+>               assert len(output) > 300, f"Output: {len(output)} chars"
+E               AssertionError: Output: 109 chars
+E               assert 109 > 300
+E                +  where 109 = len('# 📋 Research Analysis: *databases*\n\n❌ **Error:** User not found.\n\n*Analysis attempted on 2026-02-17 09:11:29*')
+
+tests/tools/test_research_agent.py:184: AssertionError
+----------------------------- Captured stderr call -----------------------------
+2026-02-17 09:11:28,874 - INFO - Custom routes registered successfully
+2026-02-17 09:11:28,874 - INFO - Starting RivalSearchMCP in development mode (stdio)
+
+
+╭──────────────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│                                                                              │
+│                         ▄▀▀ ▄▀█ █▀▀ ▀█▀ █▀▄▀█ █▀▀ █▀█                        │
+│                         █▀  █▀█ ▄▄█  █  █ ▀ █ █▄▄ █▀▀                        │
+│                                                                              │
+│                                                                              │
+│                                FastMCP 2.14.5                                │
+│                            https://gofastmcp.com                             │
+│                                                                              │
+│                    🖥  Server:      RivalSearchMCP                            │
+│                    🚀 Deploy free: https://fastmcp.cloud                     │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────────────────────────────────────────────────────────────╮
+│                          ✨ FastMCP 3.0 is coming!                           │
+│       Pin `fastmcp < 3` in production, then upgrade when you're ready.       │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+
+[02/17/26 09:11:28] INFO     Starting MCP server 'RivalSearchMCP' server.py:2506
+                             with transport 'stdio'                             
+                    DEBUG    Sending INFO to client: 🔬 Starting context.py:1044
+                             AI-enhanced research on: databases                 
+                    DEBUG    Sending INFO to client: 📊 Research context.py:1044
+                             ID: research_20260217_091128                       
+2026-02-17 09:11:28,927 - INFO - Fetching free models with tool support from OpenRouter...
+[02/17/26 09:11:28] INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🔬 Starting AI-enhanced research on:              
+                             databases', 'extra': None}                         
+                    INFO     Received INFO from server: {'msg':    logging.py:44
+                             '📊 Research ID:                                   
+                             research_20260217_091128', 'extra':                
+                             None}                                              
+2026-02-17 09:11:29,027 - INFO - Found 19 free fallback models with tool support
+2026-02-17 09:11:29,027 - INFO - Primary model (hardcoded): meta-llama/llama-3.3-70b-instruct:free
+2026-02-17 09:11:29,027 - INFO - Fallback models (dynamic): ['qwen/qwen3-coder:free', 'qwen/qwen3-235b-a22b-thinking-2507']
+[02/17/26 09:11:29] DEBUG    Sending INFO to client: 🤖 AI Agent context.py:1044
+                             initialized with 3 models (top 3 of                
+                             3)                                                 
+                    DEBUG    Sending INFO to client: 🎯 Primary  context.py:1044
+                             model:                                             
+                             meta-llama/llama-3.3-70b-instruct:f                
+                             ree                                                
+[02/17/26 09:11:29] INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🤖 AI Agent initialized with 3                    
+                             models (top 3 of 3)', 'extra': None}               
+                    INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🎯 Primary model:                                 
+                             meta-llama/llama-3.3-70b-instruct:fre              
+                             e', 'extra': None}                                 
+                    DEBUG    Sending ERROR to client: ❌         context.py:1044
+                             Research workflow failed for                       
+                             'databases': User not found.                       
+2026-02-17 09:11:29,267 - ERROR - Research workflow failed for 'databases': User not found.
+                    ERROR    Received ERROR from server: {'msg':   logging.py:44
+                             "❌ Research workflow failed for                   
+                             'databases': User not found.",                     
+                             'extra': None}                                     
+_____________________ test_workflow_with_website_analysis ______________________
+
+    async def test_workflow_with_website_analysis():
+        """Test research_workflow with website analysis included."""
+        async with create_client() as client:
+            result = await client.call_tool(
+                "research_agent",
+                {
+                    "topic": "cloud",
+                    "max_sources": 5,
+                    "include_website_analysis": True,
+                    "research_depth": "basic",
+                    "enable_ai_insights": True
+                }
+            )
+    
+            output = result.content[0].text
+    
+            # Handle rate limits
+            if "rate limit" in output.lower():
+                print(f"⚠️  OpenRouter rate limited")
+            else:
+>               assert len(output) > 300, f"Output: {len(output)} chars"
+E               AssertionError: Output: 105 chars
+E               assert 105 > 300
+E                +  where 105 = len('# 📋 Research Analysis: *cloud*\n\n❌ **Error:** User not found.\n\n*Analysis attempted on 2026-02-17 09:11:33*')
+
+tests/tools/test_research_agent.py:209: AssertionError
+----------------------------- Captured stderr call -----------------------------
+2026-02-17 09:11:33,216 - INFO - Custom routes registered successfully
+2026-02-17 09:11:33,216 - INFO - Starting RivalSearchMCP in development mode (stdio)
+
+
+╭──────────────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│                                                                              │
+│                         ▄▀▀ ▄▀█ █▀▀ ▀█▀ █▀▄▀█ █▀▀ █▀█                        │
+│                         █▀  █▀█ ▄▄█  █  █ ▀ █ █▄▄ █▀▀                        │
+│                                                                              │
+│                                                                              │
+│                                FastMCP 2.14.5                                │
+│                            https://gofastmcp.com                             │
+│                                                                              │
+│                    🖥  Server:      RivalSearchMCP                            │
+│                    🚀 Deploy free: https://fastmcp.cloud                     │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────────────────────────────────────────────────────────────╮
+│                          ✨ FastMCP 3.0 is coming!                           │
+│       Pin `fastmcp < 3` in production, then upgrade when you're ready.       │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+
+[02/17/26 09:11:33] INFO     Starting MCP server 'RivalSearchMCP' server.py:2506
+                             with transport 'stdio'                             
+                    DEBUG    Sending INFO to client: 🔬 Starting context.py:1044
+                             AI-enhanced research on: cloud                     
+                    DEBUG    Sending INFO to client: 📊 Research context.py:1044
+                             ID: research_20260217_091133                       
+2026-02-17 09:11:33,270 - INFO - Fetching free models with tool support from OpenRouter...
+[02/17/26 09:11:33] INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🔬 Starting AI-enhanced research on:              
+                             cloud', 'extra': None}                             
+                    INFO     Received INFO from server: {'msg':    logging.py:44
+                             '📊 Research ID:                                   
+                             research_20260217_091133', 'extra':                
+                             None}                                              
+2026-02-17 09:11:33,350 - INFO - Found 19 free fallback models with tool support
+2026-02-17 09:11:33,350 - INFO - Primary model (hardcoded): meta-llama/llama-3.3-70b-instruct:free
+2026-02-17 09:11:33,350 - INFO - Fallback models (dynamic): ['qwen/qwen3-coder:free', 'qwen/qwen3-235b-a22b-thinking-2507']
+                    DEBUG    Sending INFO to client: 🤖 AI Agent context.py:1044
+                             initialized with 3 models (top 3 of                
+                             3)                                                 
+                    DEBUG    Sending INFO to client: 🎯 Primary  context.py:1044
+                             model:                                             
+                             meta-llama/llama-3.3-70b-instruct:f                
+                             ree                                                
+                    INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🤖 AI Agent initialized with 3                    
+                             models (top 3 of 3)', 'extra': None}               
+                    INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🎯 Primary model:                                 
+                             meta-llama/llama-3.3-70b-instruct:fre              
+                             e', 'extra': None}                                 
+                    DEBUG    Sending ERROR to client: ❌         context.py:1044
+                             Research workflow failed for                       
+                             'cloud': User not found.                           
+2026-02-17 09:11:33,592 - ERROR - Research workflow failed for 'cloud': User not found.
+                    ERROR    Received ERROR from server: {'msg':   logging.py:44
+                             "❌ Research workflow failed for                   
+                             'cloud': User not found.", 'extra':                
+                             None}                                              
+____________________ test_workflow_without_website_analysis ____________________
+
+    async def test_workflow_without_website_analysis():
+        """Test research_workflow without website analysis."""
+        async with create_client() as client:
+            result = await client.call_tool(
+                "research_agent",
+                {
+                    "topic": "security",
+                    "max_sources": 5,
+                    "include_website_analysis": False,
+                    "research_depth": "basic",
+                    "enable_ai_insights": True
+                }
+            )
+    
+            output = result.content[0].text
+    
+            # Handle rate limits
+            if "rate limit" in output.lower():
+                print(f"⚠️  OpenRouter rate limited")
+            else:
+>               assert len(output) > 300, f"Output: {len(output)} chars"
+E               AssertionError: Output: 108 chars
+E               assert 108 > 300
+E                +  where 108 = len('# 📋 Research Analysis: *security*\n\n❌ **Error:** User not found.\n\n*Analysis attempted on 2026-02-17 09:11:37*')
+
+tests/tools/test_research_agent.py:234: AssertionError
+----------------------------- Captured stderr call -----------------------------
+2026-02-17 09:11:37,553 - INFO - Custom routes registered successfully
+2026-02-17 09:11:37,553 - INFO - Starting RivalSearchMCP in development mode (stdio)
+
+
+╭──────────────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│                                                                              │
+│                         ▄▀▀ ▄▀█ █▀▀ ▀█▀ █▀▄▀█ █▀▀ █▀█                        │
+│                         █▀  █▀█ ▄▄█  █  █ ▀ █ █▄▄ █▀▀                        │
+│                                                                              │
+│                                                                              │
+│                                FastMCP 2.14.5                                │
+│                            https://gofastmcp.com                             │
+│                                                                              │
+│                    🖥  Server:      RivalSearchMCP                            │
+│                    🚀 Deploy free: https://fastmcp.cloud                     │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────────────────────────────────────────────────────────────╮
+│                          ✨ FastMCP 3.0 is coming!                           │
+│       Pin `fastmcp < 3` in production, then upgrade when you're ready.       │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+
+[02/17/26 09:11:37] INFO     Starting MCP server 'RivalSearchMCP' server.py:2506
+                             with transport 'stdio'                             
+                    DEBUG    Sending INFO to client: 🔬 Starting context.py:1044
+                             AI-enhanced research on: security                  
+                    DEBUG    Sending INFO to client: 📊 Research context.py:1044
+                             ID: research_20260217_091137                       
+2026-02-17 09:11:37,606 - INFO - Fetching free models with tool support from OpenRouter...
+[02/17/26 09:11:37] INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🔬 Starting AI-enhanced research on:              
+                             security', 'extra': None}                          
+                    INFO     Received INFO from server: {'msg':    logging.py:44
+                             '📊 Research ID:                                   
+                             research_20260217_091137', 'extra':                
+                             None}                                              
+2026-02-17 09:11:37,682 - INFO - Found 19 free fallback models with tool support
+2026-02-17 09:11:37,682 - INFO - Primary model (hardcoded): meta-llama/llama-3.3-70b-instruct:free
+2026-02-17 09:11:37,682 - INFO - Fallback models (dynamic): ['qwen/qwen3-coder:free', 'qwen/qwen3-235b-a22b-thinking-2507']
+                    DEBUG    Sending INFO to client: 🤖 AI Agent context.py:1044
+                             initialized with 3 models (top 3 of                
+                             3)                                                 
+                    DEBUG    Sending INFO to client: 🎯 Primary  context.py:1044
+                             model:                                             
+                             meta-llama/llama-3.3-70b-instruct:f                
+                             ree                                                
+                    INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🤖 AI Agent initialized with 3                    
+                             models (top 3 of 3)', 'extra': None}               
+                    INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🎯 Primary model:                                 
+                             meta-llama/llama-3.3-70b-instruct:fre              
+                             e', 'extra': None}                                 
+                    DEBUG    Sending ERROR to client: ❌         context.py:1044
+                             Research workflow failed for                       
+                             'security': User not found.                        
+2026-02-17 09:11:37,923 - ERROR - Research workflow failed for 'security': User not found.
+                    ERROR    Received ERROR from server: {'msg':   logging.py:44
+                             "❌ Research workflow failed for                   
+                             'security': User not found.",                      
+                             'extra': None}                                     
+___________________ test_workflow_comprehensive_all_features ___________________
+
+    async def test_workflow_comprehensive_all_features():
+        """Test research_workflow with all features enabled."""
+        async with create_client() as client:
+            result = await client.call_tool(
+                "research_agent",
+                {
+                    "topic": "AI trends",
+                    "max_sources": 5,
+                    "include_trends": True,
+                    "include_website_analysis": True,
+                    "research_depth": "comprehensive",
+                    "enable_ai_insights": True
+                }
+            )
+    
+            output = result.content[0].text
+    
+            # Handle rate limits
+            if "rate limit" in output.lower():
+                print(f"⚠️  OpenRouter rate limited")
+                assert len(output) > 50, "Error handling too minimal"
+            else:
+>               assert len(output) > 300, f"Comprehensive workflow: {len(output)} chars"
+E               AssertionError: Comprehensive workflow: 109 chars
+E               assert 109 > 300
+E                +  where 109 = len('# 📋 Research Analysis: *AI trends*\n\n❌ **Error:** User not found.\n\n*Analysis attempted on 2026-02-17 09:11:42*')
+
+tests/tools/test_research_agent.py:261: AssertionError
+----------------------------- Captured stderr call -----------------------------
+2026-02-17 09:11:41,818 - INFO - Custom routes registered successfully
+2026-02-17 09:11:41,818 - INFO - Starting RivalSearchMCP in development mode (stdio)
+
+
+╭──────────────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│                                                                              │
+│                         ▄▀▀ ▄▀█ █▀▀ ▀█▀ █▀▄▀█ █▀▀ █▀█                        │
+│                         █▀  █▀█ ▄▄█  █  █ ▀ █ █▄▄ █▀▀                        │
+│                                                                              │
+│                                                                              │
+│                                FastMCP 2.14.5                                │
+│                            https://gofastmcp.com                             │
+│                                                                              │
+│                    🖥  Server:      RivalSearchMCP                            │
+│                    🚀 Deploy free: https://fastmcp.cloud                     │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────────────────────────────────────────────────────────────╮
+│                          ✨ FastMCP 3.0 is coming!                           │
+│       Pin `fastmcp < 3` in production, then upgrade when you're ready.       │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+
+[02/17/26 09:11:41] INFO     Starting MCP server 'RivalSearchMCP' server.py:2506
+                             with transport 'stdio'                             
+                    DEBUG    Sending INFO to client: 🔬 Starting context.py:1044
+                             AI-enhanced research on: AI trends                 
+                    DEBUG    Sending INFO to client: 📊 Research context.py:1044
+                             ID: research_20260217_091141                       
+2026-02-17 09:11:41,873 - INFO - Fetching free models with tool support from OpenRouter...
+[02/17/26 09:11:41] INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🔬 Starting AI-enhanced research on:              
+                             AI trends', 'extra': None}                         
+                    INFO     Received INFO from server: {'msg':    logging.py:44
+                             '📊 Research ID:                                   
+                             research_20260217_091141', 'extra':                
+                             None}                                              
+2026-02-17 09:11:41,956 - INFO - Found 19 free fallback models with tool support
+2026-02-17 09:11:41,956 - INFO - Primary model (hardcoded): meta-llama/llama-3.3-70b-instruct:free
+2026-02-17 09:11:41,956 - INFO - Fallback models (dynamic): ['qwen/qwen3-coder:free', 'qwen/qwen3-235b-a22b-thinking-2507']
+[02/17/26 09:11:42] DEBUG    Sending INFO to client: 🤖 AI Agent context.py:1044
+                             initialized with 3 models (top 3 of                
+                             3)                                                 
+                    DEBUG    Sending INFO to client: 🎯 Primary  context.py:1044
+                             model:                                             
+                             meta-llama/llama-3.3-70b-instruct:f                
+                             ree                                                
+[02/17/26 09:11:42] INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🤖 AI Agent initialized with 3                    
+                             models (top 3 of 3)', 'extra': None}               
+                    INFO     Received INFO from server: {'msg':    logging.py:44
+                             '🎯 Primary model:                                 
+                             meta-llama/llama-3.3-70b-instruct:fre              
+                             e', 'extra': None}                                 
+                    DEBUG    Sending ERROR to client: ❌         context.py:1044
+                             Research workflow failed for 'AI                   
+                             trends': User not found.                           
+2026-02-17 09:11:42,194 - ERROR - Research workflow failed for 'AI trends': User not found.
+                    ERROR    Received ERROR from server: {'msg':   logging.py:44
+                             "❌ Research workflow failed for 'AI               
+                             trends': User not found.", 'extra':                
+                             None}                                              
+______________________________ test_reddit_search ______________________________
+
+    async def test_reddit_search():
+        """Test Reddit search functionality."""
+        async with create_client() as client:
+            result = await client.call_tool(
+                "social_search",
+                {
+                    "query": "Python web frameworks",
+                    "platforms": ["reddit"],
+                    "max_results_per_platform": 5,
+                    "reddit_subreddit": "Python"
+                }
+            )
+    
+            output = result.content[0].text
+>           assert len(output) > 200, f"Reddit search output too short: {len(output)} chars"
+E           AssertionError: Reddit search output too short: 142 chars
+E           assert 142 > 200
+E            +  where 142 = len('# 💬 Social Search Results for: *Python web frameworks*\n\n**Found 0 results** across 0 platforms\n\n---\n\n*Search completed on 2026-02-17 09:12:54*')
+
+tests/tools/test_social_search.py:30: AssertionError
+----------------------------- Captured stderr call -----------------------------
+2026-02-17 09:12:54,213 - INFO - Custom routes registered successfully
+2026-02-17 09:12:54,213 - INFO - Starting RivalSearchMCP in development mode (stdio)
+
+
+╭──────────────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│                                                                              │
+│                         ▄▀▀ ▄▀█ █▀▀ ▀█▀ █▀▄▀█ █▀▀ █▀█                        │
+│                         █▀  █▀█ ▄▄█  █  █ ▀ █ █▄▄ █▀▀                        │
+│                                                                              │
+│                                                                              │
+│                                FastMCP 2.14.5                                │
+│                            https://gofastmcp.com                             │
+│                                                                              │
+│                    🖥  Server:      RivalSearchMCP                            │
+│                    🚀 Deploy free: https://fastmcp.cloud                     │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+╭──────────────────────────────────────────────────────────────────────────────╮
+│                          ✨ FastMCP 3.0 is coming!                           │
+│       Pin `fastmcp < 3` in production, then upgrade when you're ready.       │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+
+[02/17/26 09:12:54] INFO     Starting MCP server 'RivalSearchMCP' server.py:2506
+                             with transport 'stdio'                             
+2026-02-17 09:12:54,262 - INFO - Social search for: Python web frameworks on ['reddit']
+2026-02-17 09:12:54,354 - ERROR - Reddit search failed: Client error '403 Blocked' for url 'https://www.reddit.com/r/Python/search.json?q=Python+web+frameworks&sort=relevance&t=all&limit=5&restrict_sr=on'
+For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/403
+=========================== short test summary info ============================
+FAILED tests/test_null_id_validation.py::test_allows_valid_request_id_string - RuntimeError: FastMCP's StreamableHTTPSessionManager task group was not initialized. This commonly occurs when the FastMCP application's lifespan is not passed to the parent ASGI application (e.g., FastAPI or Starlette). Please ensure you are setting `lifespan=mcp_app.lifespan` in your parent app's constructor, where `mcp_app` is the application instance returned by `fastmcp_instance.http_app()`. \nFor more details, see the FastMCP ASGI integration documentation: https://gofastmcp.com/deployment/asgi\nOriginal error: Task group is not initialized. Make sure to use run().
+FAILED tests/test_null_id_validation.py::test_allows_notification_without_id - RuntimeError: FastMCP's StreamableHTTPSessionManager task group was not initialized. This commonly occurs when the FastMCP application's lifespan is not passed to the parent ASGI application (e.g., FastAPI or Starlette). Please ensure you are setting `lifespan=mcp_app.lifespan` in your parent app's constructor, where `mcp_app` is the application instance returned by `fastmcp_instance.http_app()`. \nFor more details, see the FastMCP ASGI integration documentation: https://gofastmcp.com/deployment/asgi\nOriginal error: Task group is not initialized. Make sure to use run().
+FAILED tests/tools/test_research_agent.py::test_workflow_basic_depth - AssertionError: Basic research too short: 110 chars
+assert 110 > 500
+ +  where 110 = len('# 📋 Research Analysis: *JavaScript*\n\n❌ **Error:** User not found.\n\n*Analysis attempted on 2026-02-17 09:11:07*')
+FAILED tests/tools/test_research_agent.py::test_workflow_comprehensive_depth - fastmcp.exceptions.ToolError: Tool execution failed: 1 validation error for call[research_agent]
+topic
+  String should have at least 3 characters [type=string_too_short, input_value='AI', input_type=str]
+    For further information visit https://errors.pydantic.dev/2.12/v/string_too_short
+FAILED tests/tools/test_research_agent.py::test_workflow_expert_depth - AssertionError: Expert research too short: 109 chars
+assert 109 > 500
+ +  where 109 = len('# 📋 Research Analysis: *databases*\n\n❌ **Error:** User not found.\n\n*Analysis attempted on 2026-02-17 09:11:16*')
+FAILED tests/tools/test_research_agent.py::test_workflow_max_sources - AssertionError: Output too short: 111 chars
+assert 111 > 400
+ +  where 111 = len('# 📋 Research Analysis: *programming*\n\n❌ **Error:** User not found.\n\n*Analysis attempted on 2026-02-17 09:11:20*')
+FAILED tests/tools/test_research_agent.py::test_workflow_with_trends - AssertionError: Output: 103 chars
+assert 103 > 300
+ +  where 103 = len('# 📋 Research Analysis: *web*\n\n❌ **Error:** User not found.\n\n*Analysis attempted on 2026-02-17 09:11:24*')
+FAILED tests/tools/test_research_agent.py::test_workflow_without_trends - AssertionError: Output: 109 chars
+assert 109 > 300
+ +  where 109 = len('# 📋 Research Analysis: *databases*\n\n❌ **Error:** User not found.\n\n*Analysis attempted on 2026-02-17 09:11:29*')
+FAILED tests/tools/test_research_agent.py::test_workflow_with_website_analysis - AssertionError: Output: 105 chars
+assert 105 > 300
+ +  where 105 = len('# 📋 Research Analysis: *cloud*\n\n❌ **Error:** User not found.\n\n*Analysis attempted on 2026-02-17 09:11:33*')
+FAILED tests/tools/test_research_agent.py::test_workflow_without_website_analysis - AssertionError: Output: 108 chars
+assert 108 > 300
+ +  where 108 = len('# 📋 Research Analysis: *security*\n\n❌ **Error:** User not found.\n\n*Analysis attempted on 2026-02-17 09:11:37*')
+FAILED tests/tools/test_research_agent.py::test_workflow_comprehensive_all_features - AssertionError: Comprehensive workflow: 109 chars
+assert 109 > 300
+ +  where 109 = len('# 📋 Research Analysis: *AI trends*\n\n❌ **Error:** User not found.\n\n*Analysis attempted on 2026-02-17 09:11:42*')
+FAILED tests/tools/test_social_search.py::test_reddit_search - AssertionError: Reddit search output too short: 142 chars
+assert 142 > 200
+ +  where 142 = len('# 💬 Social Search Results for: *Python web frameworks*\n\n**Found 0 results** across 0 platforms\n\n---\n\n*Search completed on 2026-02-17 09:12:54*')
+================== 12 failed, 56 passed in 295.77s (0:04:55) ===================
