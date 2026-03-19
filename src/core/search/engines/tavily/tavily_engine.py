@@ -66,5 +66,5 @@ class TavilySearchEngine(BaseSearchEngine):
             return []
 
     async def close(self):
-        """Close the engine. Tavily client has no persistent session to close."""
-        pass
+        """Close the engine and inherited httpx session."""
+        await super().close()

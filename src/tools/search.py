@@ -1,6 +1,6 @@
 """
 Search tools for FastMCP server.
-Handles multi-engine search with Yahoo and DuckDuckGo engines.
+Handles multi-engine search with DuckDuckGo, Wikipedia, and optional Tavily engines.
 """
 
 from typing import Annotated
@@ -59,7 +59,7 @@ def register_search_tools(mcp: FastMCP):
         ] = True,
     ) -> str:
         """
-        Multi-engine search across Yahoo and DuckDuckGo with enhanced security validation.
+        Multi-engine search across DuckDuckGo, Wikipedia, and optional Tavily with enhanced security validation.
 
         This tool searches across multiple engines simultaneously with:
         - Input validation and sanitization

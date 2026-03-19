@@ -51,6 +51,7 @@ cryptography==46.0.3
     # via
     #   authlib
     #   pyjwt
+    #   secretstorage
 cyclopts==4.5.0
     # via fastmcp
 diskcache==5.6.3
@@ -95,6 +96,7 @@ httpx==0.28.1
     #   fastmcp
     #   mcp
     #   openrouter
+    #   tavily-python
 httpx-sse==0.4.3
     # via mcp
 idna==3.11
@@ -116,6 +118,10 @@ jaraco-context==6.1.0
     # via keyring
 jaraco-functools==4.4.0
     # via keyring
+jeepney==0.9.0
+    # via
+    #   keyring
+    #   secretstorage
 jinja2==3.1.6
     # via torch
 jsonschema==4.26.0
@@ -290,11 +296,15 @@ referencing==0.36.2
     #   jsonschema
     #   jsonschema-path
     #   jsonschema-specifications
+regex==2026.2.28
+    # via tiktoken
 requests==2.32.5
     # via
     #   rivalsearchmcp (pyproject.toml)
     #   jsonschema-path
     #   pytrends
+    #   tavily-python
+    #   tiktoken
 rich==14.2.0
     # via
     #   cyclopts
@@ -314,6 +324,8 @@ scipy==1.17.0
     # via
     #   easyocr
     #   scikit-image
+secretstorage==3.5.0
+    # via keyring
 sgmllib3k==1.0.0
     # via feedparser
 shapely==2.1.2
@@ -334,8 +346,12 @@ starlette==0.52.1
     #   sse-starlette
 sympy==1.14.0
     # via torch
+tavily-python==0.7.23
+    # via rivalsearchmcp (pyproject.toml)
 tifffile==2026.1.14
     # via scikit-image
+tiktoken==0.12.0
+    # via tavily-python
 torch==2.9.1
     # via
     #   easyocr
