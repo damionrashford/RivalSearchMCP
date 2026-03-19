@@ -4,6 +4,7 @@ Provides comprehensive search across multiple engines with fallback support.
 """
 
 import asyncio
+import os
 from datetime import datetime
 from typing import Any, Dict
 
@@ -24,6 +25,17 @@ class MultiSearchOrchestrator:
             "wikipedia": WikipediaSearchEngine(),
         }
         self.engine_order = ["duckduckgo", "wikipedia"]
+
+        # Conditionally add Tavily engine when API key is available
+        tavily_api_key = os.environ.get("TAVILY_API_KEY")
+        if tavily_api_key:
+            from src.core.search.engines.tavily.tavily_engine import TavilySearchEngine
+
+            self.engines["tavily"] = TavilySearchEngine(api_key=tavily_api_key)
+            self.engine_order.append("tavily")
+            logger.info("Tavily search engine enabled")
+        else:
+            logger.debug("TAVILY_API_KEY not set; Tavily engine disabled")
 
     async def search_all_engines(
         self,

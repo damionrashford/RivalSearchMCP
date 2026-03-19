@@ -18,12 +18,13 @@ def register_search_tools(mcp: FastMCP):
 
     @mcp.tool(
         name="web_search",
-        description="Search across Yahoo and DuckDuckGo engines with fallback support",
-        tags={"search", "web", "yahoo", "duckduckgo"},
+        description="Search across DuckDuckGo and Wikipedia engines with fallback support. "
+        "Optionally includes Tavily when TAVILY_API_KEY is set.",
+        tags={"search", "web", "duckduckgo", "wikipedia", "tavily"},
         meta={
-            "version": "1.0",
+            "version": "1.1",
             "category": "Search",
-            "engines": ["yahoo", "duckduckgo"],
+            "engines": ["duckduckgo", "wikipedia", "tavily (optional)"],
         },
         annotations={
             "title": "Web Search",
