@@ -25,6 +25,7 @@ dependencies = [
     "pypdf>=6.6.0",
     "python-docx>=1.2.0",
     "easyocr>=1.7.2",
+    "tavily-python>=0.3.0",
 ]
 
 [project.optional-dependencies]
