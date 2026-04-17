@@ -8,6 +8,8 @@ import re
 from typing import Annotated, Any, Dict, List, Literal, Optional
 
 from fastmcp import Context, FastMCP
+from fastmcp.exceptions import ToolError
+from fastmcp.tools.tool import ToolResult
 from pydantic import Field
 
 from src.core.conflict import find_conflicts as _find_conflicts_core
@@ -33,7 +35,16 @@ ResearchMode = Literal["topic", "entity"]
 def register_analysis_tools(mcp: FastMCP):
     """Register consolidated content operations tool."""
 
-    @mcp.tool
+    @mcp.tool(
+        annotations={
+            "title": "Content Operations",
+            "readOnlyHint": True,
+            "openWorldHint": True,
+            "destructiveHint": False,
+            "idempotentHint": False,
+        },
+        timeout=90.0,
+    )
     async def content_operations(
         operation: Annotated[
             ContentOperation,
@@ -127,7 +138,7 @@ def register_analysis_tools(mcp: FastMCP):
             Field(description="Include metadata in the response.", default=True),
         ] = True,
         ctx: Optional[Context] = None,
-    ) -> str:
+    ) -> ToolResult | str:
         """
         One tool for every URL/content-level operation. Pick `operation`,
         provide whichever of `url`, `urls`, `content` that operation
@@ -149,7 +160,7 @@ def register_analysis_tools(mcp: FastMCP):
 
             if operation == "retrieve":
                 if not url:
-                    raise ValueError("URL required for retrieve operation")
+                    raise ToolError("URL required for retrieve operation")
 
                 # Dispatch on extraction_method to the right shared-client
                 # helper. Scrapling's parser handles sites (Wikipedia, etc.)
@@ -186,7 +197,7 @@ def register_analysis_tools(mcp: FastMCP):
 
             elif operation == "stream":
                 if not url:
-                    raise ValueError("URL required for stream operation")
+                    raise ToolError("URL required for stream operation")
                 # Real streaming implementation with retry logic
                 from src.core.fetch import stream_fetch
 
@@ -211,7 +222,7 @@ def register_analysis_tools(mcp: FastMCP):
 
             elif operation == "analyze":
                 if not content:
-                    raise ValueError("Content required for analyze operation")
+                    raise ToolError("Content required for analyze operation")
 
                 # Basic content analysis
                 analysis_result = {
@@ -338,7 +349,7 @@ def register_analysis_tools(mcp: FastMCP):
 
             elif operation == "extract":
                 if not url:
-                    raise ValueError("URL required for extract operation")
+                    raise ToolError("URL required for extract operation")
 
                 # Real link extraction implementation
                 from urllib.parse import urljoin, urlparse
@@ -477,9 +488,9 @@ def register_analysis_tools(mcp: FastMCP):
 
             elif operation == "score":
                 if not urls:
-                    raise ValueError("urls list required for score operation")
+                    raise ToolError("urls list required for score operation")
                 if len(urls) > 50:
-                    raise ValueError("score operation accepts at most 50 urls")
+                    raise ToolError("score operation accepts at most 50 urls")
 
                 # Align optional metadata
                 md = list(metadata or [])
@@ -493,28 +504,31 @@ def register_analysis_tools(mcp: FastMCP):
                     f"{r['quality']['score']}/100 ({r['quality']['tier']}) — {r['url']}"
                     for r in annotated
                 ]
-                return format_research_analysis_markdown(
-                    {
-                        "topic": "Source Quality Scores",
-                        "summary": (
-                            f"Confidence {summary['confidence']} · "
-                            f"mean {summary['mean_score']}/100 · "
-                            f"{summary['independent_domains']} independent domains across "
-                            f"{summary['result_count']} sources"
-                        ),
-                        "key_findings": findings,
-                        "quality_details": [{"url": r["url"], **r["quality"]} for r in annotated],
-                        "confidence": summary,
-                        "status": "success",
-                    },
-                    "Content Operations",
+                payload = {
+                    "topic": "Source Quality Scores",
+                    "summary": (
+                        f"Confidence {summary['confidence']} · "
+                        f"mean {summary['mean_score']}/100 · "
+                        f"{summary['independent_domains']} independent domains across "
+                        f"{summary['result_count']} sources"
+                    ),
+                    "key_findings": findings,
+                    "quality_details": [{"url": r["url"], **r["quality"]} for r in annotated],
+                    "confidence": summary,
+                    "status": "success",
+                }
+                # Dual-channel return: LLMs read the markdown (content),
+                # agents parse the raw scores from structured_content.
+                return ToolResult(
+                    content=format_research_analysis_markdown(payload, "Content Operations"),
+                    structured_content=payload,
                 )
 
             elif operation == "find_conflicts":
                 if not urls or len(urls) < 2:
-                    raise ValueError("find_conflicts requires a list of at least 2 urls")
+                    raise ToolError("find_conflicts requires a list of at least 2 urls")
                 if len(urls) > 10:
-                    raise ValueError("find_conflicts accepts at most 10 urls per call")
+                    raise ToolError("find_conflicts accepts at most 10 urls per call")
 
                 # Fetch each URL via Scrapling (TLS-fingerprint safe) with
                 # an httpx fallback, extract clean text, cap at 8000 chars
@@ -604,28 +618,29 @@ def register_analysis_tools(mcp: FastMCP):
                 if not findings:
                     findings = ["No conflicts detected across the provided sources."]
 
-                return format_research_analysis_markdown(
-                    {
-                        "topic": (
-                            f"Conflict Analysis ({len(urls)} sources)"
-                            + (f" — claim: {claim!r}" if claim else "")
-                        ),
-                        "summary": (
-                            f"{len(report.conflicts)} disagreement(s) detected "
-                            f"across {len(urls)} sources. "
-                            f"{len(report.agreements)} agreement record(s)."
-                        ),
-                        "key_findings": findings,
-                        "sources": [{"title": url, "url": url} for url in urls],
-                        "conflicts": [c.as_dict() for c in report.conflicts],
-                        "agreements": report.agreements,
-                        "status": "success",
-                    },
-                    "Content Operations",
+                payload = {
+                    "topic": (
+                        f"Conflict Analysis ({len(urls)} sources)"
+                        + (f" — claim: {claim!r}" if claim else "")
+                    ),
+                    "summary": (
+                        f"{len(report.conflicts)} disagreement(s) detected "
+                        f"across {len(urls)} sources. "
+                        f"{len(report.agreements)} agreement record(s)."
+                    ),
+                    "key_findings": findings,
+                    "sources": [{"title": url, "url": url} for url in urls],
+                    "conflicts": [c.as_dict() for c in report.conflicts],
+                    "agreements": report.agreements,
+                    "status": "success",
+                }
+                return ToolResult(
+                    content=format_research_analysis_markdown(payload, "Content Operations"),
+                    structured_content=payload,
                 )
 
             else:
-                raise ValueError(f"Unknown operation: {operation}")
+                raise ToolError(f"Unknown operation: {operation}")
 
         except Exception as e:
             logger.error(f"Content operations failed: {e}")
@@ -644,7 +659,20 @@ def register_analysis_tools(mcp: FastMCP):
             "Content Operations",
         )
 
-    @mcp.tool
+    @mcp.tool(
+        annotations={
+            "title": "Research Topic",
+            "readOnlyHint": True,
+            "openWorldHint": True,
+            "destructiveHint": False,
+            "idempotentHint": False,
+        },
+        # Entity mode fans out to up to 8 sub-sources in parallel, each
+        # with its own ~30s HTTP timeout. Topic mode is faster but also
+        # chains search + per-result content fetch. 180s is a generous
+        # ceiling -- the real constraint is each sub-source's own budget.
+        timeout=180.0,
+    )
     async def research_topic(
         topic: Annotated[
             str,

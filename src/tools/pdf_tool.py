@@ -15,7 +15,17 @@ def register_pdf_tools(mcp: FastMCP):
 
     analyzer = DocumentAnalyzer()
 
-    @mcp.tool
+    @mcp.tool(
+        annotations={
+            "title": "Document Analysis",
+            "readOnlyHint": True,
+            "openWorldHint": True,
+            "destructiveHint": False,
+            "idempotentHint": True,
+        },
+        # Large PDFs with OCR can take a while.
+        timeout=180.0,
+    )
     async def document_analysis(
         url: str, max_pages: int = 10, extract_metadata: bool = True, summary_length: int = 500
     ) -> str:

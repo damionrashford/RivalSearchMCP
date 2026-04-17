@@ -24,7 +24,16 @@ def register_scientific_tools(mcp: FastMCP):
     academic_orchestrator = AcademicSearchOrchestrator()
     dataset_orchestrator = DatasetDiscoveryOrchestrator()
 
-    @mcp.tool
+    @mcp.tool(
+        annotations={
+            "title": "Scientific Research",
+            "readOnlyHint": True,
+            "openWorldHint": True,
+            "destructiveHint": False,
+            "idempotentHint": True,
+        },
+        timeout=120.0,
+    )
     async def scientific_research(
         ctx: Context,
         operation: Annotated[

@@ -17,7 +17,16 @@ def register_github_tools(mcp: FastMCP):
 
     github_api = GitHubSearch()
 
-    @mcp.tool
+    @mcp.tool(
+        annotations={
+            "title": "GitHub Search",
+            "readOnlyHint": True,
+            "openWorldHint": True,
+            "destructiveHint": False,
+            "idempotentHint": True,
+        },
+        timeout=45.0,
+    )
     async def github_search(
         query: str,
         language: Optional[str] = None,

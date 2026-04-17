@@ -20,7 +20,16 @@ from src.utils.markdown_formatter import format_traversal_markdown
 def register_traversal_tools(mcp: FastMCP):
     """Register all traversal-related tools."""
 
-    @mcp.tool
+    @mcp.tool(
+        annotations={
+            "title": "Map Website",
+            "readOnlyHint": True,
+            "openWorldHint": True,
+            "destructiveHint": False,
+            "idempotentHint": False,
+        },
+        timeout=90.0,
+    )
     async def map_website(
         url: str,
         mode: Literal["research", "docs", "map"] = "research",

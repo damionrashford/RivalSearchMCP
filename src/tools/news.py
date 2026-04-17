@@ -18,7 +18,16 @@ def register_news_tools(mcp: FastMCP):
 
     aggregator = NewsAggregator()
 
-    @mcp.tool
+    @mcp.tool(
+        annotations={
+            "title": "News Aggregation",
+            "readOnlyHint": True,
+            "openWorldHint": True,
+            "destructiveHint": False,
+            "idempotentHint": False,
+        },
+        timeout=90.0,
+    )
     async def news_aggregation(
         query: str,
         max_results: int = 10,

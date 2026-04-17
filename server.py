@@ -132,10 +132,16 @@ Memory (one tool, `operation` enum covers all CRUD):
 # Create enhanced FastMCP server instance. In v3 the per-component
 # `on_duplicate_*` kwargs are collapsed into a single `on_duplicate`
 # and `include_fastmcp_meta` is gone (metadata is always included).
+#
+# mask_error_details=True: generic exceptions surface to clients as
+# "Tool execution failed" instead of leaking internal paths / parser
+# state / httpx URLs. User-facing validation errors must explicitly
+# raise fastmcp.exceptions.ToolError to pass through the mask.
 app = FastMCP(
     name="RivalSearchMCP",
     instructions=SERVER_INSTRUCTIONS,
     on_duplicate="error",
+    mask_error_details=True,
 )
 
 # Register middleware for production readiness

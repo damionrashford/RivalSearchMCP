@@ -44,6 +44,8 @@ def register_search_tools(mcp: FastMCP):
             "destructiveHint": False,
             "idempotentHint": False,
         },
+        # 5 engines concurrent + optional per-result content fetch.
+        timeout=90.0,
     )
     async def web_search_tool(
         ctx: Context,

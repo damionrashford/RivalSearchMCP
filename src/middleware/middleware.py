@@ -316,6 +316,11 @@ def register_middleware(mcp) -> None:
 
     from fastmcp.server.middleware.caching import (
         CallToolSettings,
+        GetPromptSettings,
+        ListPromptsSettings,
+        ListResourcesSettings,
+        ListToolsSettings,
+        ReadResourceSettings,
         ResponseCachingMiddleware,
     )
     from fastmcp.server.middleware.error_handling import (
@@ -382,8 +387,20 @@ def register_middleware(mcp) -> None:
     # Reddit response gets cached for 5 minutes and every retry looks
     # broken). Only cache tools whose output is a near-pure function of
     # the URL they're given.
+    # Disable caching for every list/read/get surface. Caching tools/list
+    # (the default) freezes tool schemas against the client -- when we
+    # edit annotations, timeouts, or params, clients still see the old
+    # schema until the TTL expires. Same goes for prompts/list and the
+    # resource lookups. Only call_tool is safe to cache, and only for
+    # the URL-fetching tools whose output is a pure function of the URL.
+    _disabled = {"enabled": False}
     mcp.add_middleware(
         ResponseCachingMiddleware(
+            list_tools_settings=ListToolsSettings(**_disabled),
+            list_resources_settings=ListResourcesSettings(**_disabled),
+            list_prompts_settings=ListPromptsSettings(**_disabled),
+            read_resource_settings=ReadResourceSettings(**_disabled),
+            get_prompt_settings=GetPromptSettings(**_disabled),
             call_tool_settings=CallToolSettings(
                 ttl=300,
                 included_tools=[

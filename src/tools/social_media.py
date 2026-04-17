@@ -50,7 +50,16 @@ def register_social_media_tools(mcp: FastMCP):
     lobsters_search = LobstersSearch()
     # Lemmy is instantiated per-call so callers can pick an instance.
 
-    @mcp.tool
+    @mcp.tool(
+        annotations={
+            "title": "Social Search",
+            "readOnlyHint": True,
+            "openWorldHint": True,
+            "destructiveHint": False,
+            "idempotentHint": False,
+        },
+        timeout=90.0,
+    )
     async def social_search(
         query: str,
         platforms: List[Platform] = [
