@@ -4,13 +4,14 @@ Guides users on effective tool usage patterns.
 """
 
 from fastmcp import FastMCP
+from fastmcp.prompts import Message
 
 
 def register_prompts(mcp: FastMCP):
     """Register all prompts for RivalSearchMCP."""
 
     @mcp.prompt
-    def comprehensive_research(topic: str, depth: str = "comprehensive") -> list:
+    def comprehensive_research(topic: str, depth: str = "comprehensive") -> list[Message]:
         """
         Guide the caller's LLM through an end-to-end research workflow using
         only the deterministic RivalSearchMCP tools. No in-server LLM is
@@ -22,9 +23,8 @@ def register_prompts(mcp: FastMCP):
         """
         num_sources = {"basic": 5, "comprehensive": 10, "expert": 20}.get(depth, 10)
         return [
-            {
-                "role": "user",
-                "content": f"""Conduct {depth} research on: {topic}
+            Message(
+                f"""Conduct {depth} research on: {topic}
 
 Use this tool sequence and synthesize the results yourself:
 
@@ -58,13 +58,13 @@ Then produce a report including:
 - Any conflicts surfaced by find_conflicts (explicitly)
 - Confidence level and why
 - Gaps / open questions worth a follow-up run""",
-            }
+            )
         ]
 
     @mcp.prompt
     def multi_source_search(
         query: str, include_social: bool = True, include_news: bool = True
-    ) -> list:
+    ) -> list[Message]:
         """
         Search across multiple sources (web, social, news) and synthesize results.
 
@@ -101,10 +101,10 @@ Finally, analyze all the information gathered and provide:
 - Recent developments from news
 - Comprehensive synthesis of all sources""")
 
-        return [{"role": "user", "content": "\n".join(steps)}]
+        return [Message("\n".join(steps))]
 
     @mcp.prompt
-    def deep_content_analysis(url: str, extract_documents: bool = False) -> list:
+    def deep_content_analysis(url: str, extract_documents: bool = False) -> list[Message]:
         """
         Perform deep analysis of a website and its content.
 
@@ -147,10 +147,10 @@ Finally, provide:
 - Document summaries (if applicable)
 - Comprehensive site analysis"""
 
-        return [{"role": "user", "content": prompt}]
+        return [Message(prompt)]
 
     @mcp.prompt
-    def academic_literature_review(research_question: str, max_papers: int = 10) -> list:
+    def academic_literature_review(research_question: str, max_papers: int = 10) -> list[Message]:
         """
         Conduct an academic literature review with document analysis.
 
@@ -161,9 +161,8 @@ Finally, provide:
             max_papers: Maximum number of papers to review
         """
         return [
-            {
-                "role": "user",
-                "content": f"""Conduct an academic literature review on: {research_question}
+            Message(
+                f"""Conduct an academic literature review on: {research_question}
 
 Follow this research workflow:
 
@@ -189,5 +188,5 @@ Provide a comprehensive literature review including:
 - Common methodologies and approaches
 - Research gaps and future directions
 - Citations and references""",
-            }
+            )
         ]

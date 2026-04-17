@@ -129,12 +129,13 @@ Memory (one tool, `operation` enum covers all CRUD):
 - Tools: /tools
 """
 
-# Create enhanced FastMCP server instance
+# Create enhanced FastMCP server instance. In v3 the per-component
+# `on_duplicate_*` kwargs are collapsed into a single `on_duplicate`
+# and `include_fastmcp_meta` is gone (metadata is always included).
 app = FastMCP(
     name="RivalSearchMCP",
     instructions=SERVER_INSTRUCTIONS,
-    include_fastmcp_meta=True,  # Enable rich metadata
-    on_duplicate_tools="error",  # Prevent conflicts
+    on_duplicate="error",
 )
 
 # Register middleware for production readiness

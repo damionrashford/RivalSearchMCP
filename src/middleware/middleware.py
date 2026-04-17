@@ -283,23 +283,153 @@ class SecurityMiddleware(Middleware):
 
 
 def register_middleware(mcp) -> None:
-    """Register all middleware with the FastMCP server."""
+    """Register the full middleware stack.
 
-    # Add middleware in logical order (last added runs first)
+    Order (added first runs first on the way in, last on the way out):
+
+      1.  ErrorHandlingMiddleware        — outermost, catches exceptions
+                                           from every middleware below
+      2.  SecurityMiddleware             — rejects malformed / malicious
+                                           requests before doing real work
+      3.  SlidingWindowRateLimitingMiddleware
+                                         — rejects excess traffic before
+                                           it pollutes caches or metrics
+      4.  ResponseCachingMiddleware      — short-circuits repeated work;
+                                           scoped to exclude stateful tools
+      5.  PerformanceMonitoringMiddleware
+                                         — aggregates per-operation metrics
+                                           for the /metrics endpoint
+      6.  TimingMiddleware (built-in)    — logs per-request duration
+      7.  LoggingMiddleware (built-in)   — structured request/response log
+      8.  ResponseLimitingMiddleware     — innermost on the way out; caps
+                                           oversized tool responses
+      9.  PingMiddleware                 — separate: 30s keepalive for
+                                           long-lived streaming connections
+
+    This ordering is intentional: error handling is outermost so it
+    catches everything; rate-limiting runs before caching so cache hits
+    don't bypass it; caching runs before performance/timing so metrics
+    reflect actual handler work, not cache-hit speed; response-limiting
+    is innermost so it sees the final response just before it leaves.
+    """
+    from pathlib import Path
+
+    from fastmcp.server.middleware.caching import (
+        CallToolSettings,
+        ResponseCachingMiddleware,
+    )
+    from fastmcp.server.middleware.error_handling import (
+        ErrorHandlingMiddleware as BuiltinErrorHandlingMiddleware,
+    )
+    from fastmcp.server.middleware.logging import LoggingMiddleware as BuiltinLoggingMiddleware
+    from fastmcp.server.middleware.ping import PingMiddleware
+    from fastmcp.server.middleware.rate_limiting import (
+        SlidingWindowRateLimitingMiddleware,
+    )
+    from fastmcp.server.middleware.response_limiting import ResponseLimitingMiddleware
+    from fastmcp.server.middleware.timing import TimingMiddleware as BuiltinTimingMiddleware
+
     security_middleware = SecurityMiddleware(block_suspicious_requests=True)
+
+    # 1. Error handling -- outermost
+    mcp.add_middleware(
+        BuiltinErrorHandlingMiddleware(
+            include_traceback=False,  # don't leak internal paths to clients
+            transform_errors=False,  # preserve ToolError / ResourceError types
+        )
+    )
+
+    # 2. Security (our custom) -- reject bad content early
     mcp.add_middleware(security_middleware)
-    mcp.add_middleware(ErrorHandlingMiddleware(include_traceback=False, transform_errors=True))
-    # RateLimitingMiddleware REMOVED - Not needed for controlled deployment
+
+    # 3. Rate limiting: 100 req/min per MCP session. Sliding window
+    # because token-bucket bursts can mask abuse. Uses session id as
+    # client key when available (behind CloudFront every request looks
+    # the same by IP, so session id is the cleanest per-caller signal).
+    mcp.add_middleware(
+        SlidingWindowRateLimitingMiddleware(
+            max_requests=100,
+            window_minutes=1,
+        )
+    )
+
+    # 4. Response caching: FileTreeStore under /tmp so cache survives
+    # within the container's lifetime but costs nothing when the
+    # container is recycled. Stateful tools are excluded so session_id
+    # auto-save side-effects still fire.
+    try:
+        from key_value.aio.stores.filetree import (
+            FileTreeStore,
+            FileTreeV1CollectionSanitizationStrategy,
+            FileTreeV1KeySanitizationStrategy,
+        )
+
+        cache_dir = Path("/tmp/fastmcp-cache")
+        cache_dir.mkdir(parents=True, exist_ok=True)
+        cache_store = FileTreeStore(
+            data_directory=cache_dir,
+            key_sanitization_strategy=FileTreeV1KeySanitizationStrategy(cache_dir),
+            collection_sanitization_strategy=FileTreeV1CollectionSanitizationStrategy(cache_dir),
+        )
+        caching_kwargs = {"cache_storage": cache_store}
+    except ImportError:
+        # aiofile unavailable -> fall back to in-memory caching.
+        caching_kwargs = {}
+
+    # Use an include-list, not an exclude-list. Most tools are live
+    # queries against the internet -- caching them serves stale results
+    # and silently papers over transient source flakes (a 0-result
+    # Reddit response gets cached for 5 minutes and every retry looks
+    # broken). Only cache tools whose output is a near-pure function of
+    # the URL they're given.
+    mcp.add_middleware(
+        ResponseCachingMiddleware(
+            call_tool_settings=CallToolSettings(
+                ttl=300,
+                included_tools=[
+                    # URL -> content. Target page can change, but not
+                    # on a 5-minute timescale for the pages agents fetch.
+                    "content_operations",
+                    "document_analysis",
+                ],
+            ),
+            **caching_kwargs,
+        )
+    )
+
+    # 5. Performance monitoring -- our custom metrics exposed via /metrics.
     mcp.add_middleware(PerformanceMonitoringMiddleware())
-    mcp.add_middleware(TimingMiddleware(log_slow_operations=True, slow_threshold_ms=2000.0))
-    mcp.add_middleware(LoggingMiddleware(include_payloads=True, max_payload_length=500))
+
+    # 6 + 7. Built-in timing + logging (replace our own narrower impls).
+    mcp.add_middleware(BuiltinTimingMiddleware())
+    mcp.add_middleware(
+        BuiltinLoggingMiddleware(
+            include_payloads=True,
+            max_payload_length=500,
+        )
+    )
+
+    # 8. Response size cap -- only on tools that can produce very large
+    # payloads. Leaves compact search/memory tools alone so their
+    # structured output schemas aren't broken by truncation.
+    mcp.add_middleware(
+        ResponseLimitingMiddleware(
+            max_size=1_000_000,  # 1MB safety net
+            tools=["content_operations", "map_website", "document_analysis"],
+        )
+    )
+
+    # 9. Keepalive ping for long streaming HTTP sessions.
+    mcp.add_middleware(PingMiddleware(interval_ms=30_000))
 
     # Store reference to security middleware for later startup
     global _security_middleware
     _security_middleware = security_middleware
 
-    # Log middleware registration
-    logging.getLogger("middleware").info("All middleware registered successfully")
+    logging.getLogger("middleware").info(
+        "Middleware stack registered: error, security, rate-limit, cache, "
+        "perf, timing, logging, response-limit, ping"
+    )
 
 
 def start_background_tasks():

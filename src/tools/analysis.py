@@ -7,7 +7,7 @@ import asyncio
 import re
 from typing import Annotated, Any, Dict, List, Literal, Optional
 
-from fastmcp import FastMCP
+from fastmcp import Context, FastMCP
 from pydantic import Field
 
 from src.core.conflict import find_conflicts as _find_conflicts_core
@@ -126,6 +126,7 @@ def register_analysis_tools(mcp: FastMCP):
             bool,
             Field(description="Include metadata in the response.", default=True),
         ] = True,
+        ctx: Optional[Context] = None,
     ) -> str:
         """
         One tool for every URL/content-level operation. Pick `operation`,
@@ -524,34 +525,73 @@ def register_analysis_tools(mcp: FastMCP):
 
                 extractor = UnifiedContentExtractor()
 
+                # Progress: report once per source as it lands. Using a
+                # counter + lock-free increment because asyncio.gather
+                # coroutines run on the same thread in the event loop.
+                fetch_total = len(urls)
+                fetched = 0
+
                 async def _snippet(target_url: str) -> str:
+                    nonlocal fetched
                     try:
-                        page = await AsyncFetcher.get(target_url, stealthy_headers=True, timeout=20)
-                        if page.status == 200 and page.body:
-                            text = page.text or page.body.decode("utf-8", "replace")
-                            return extractor.extract(text)[:8000]
-                    except Exception as e:
-                        logger.debug(
-                            "find_conflicts Scrapling fetch failed for %s: %s",
-                            target_url,
-                            e,
+                        try:
+                            page = await AsyncFetcher.get(
+                                target_url, stealthy_headers=True, timeout=20
+                            )
+                            if page.status == 200 and page.body:
+                                text = page.text or page.body.decode("utf-8", "replace")
+                                return extractor.extract(text)[:8000]
+                        except Exception as e:
+                            logger.debug(
+                                "find_conflicts Scrapling fetch failed for %s: %s",
+                                target_url,
+                                e,
+                            )
+                        try:
+                            import httpx
+
+                            async with httpx.AsyncClient(
+                                timeout=20.0,
+                                follow_redirects=True,
+                                headers={"User-Agent": "rivalsearchmcp/1.0"},
+                            ) as client:
+                                r = await client.get(target_url)
+                                if r.status_code == 200:
+                                    return extractor.extract(r.text)[:8000]
+                        except Exception as e:
+                            logger.warning("find_conflicts fetch failed for %s: %s", target_url, e)
+                        return ""
+                    finally:
+                        fetched += 1
+                        if ctx is not None:
+                            try:
+                                await ctx.report_progress(
+                                    progress=fetched,
+                                    total=fetch_total,
+                                    message=f"fetched {fetched}/{fetch_total} sources",
+                                )
+                            except Exception:
+                                pass
+
+                if ctx is not None:
+                    try:
+                        await ctx.report_progress(
+                            progress=0,
+                            total=fetch_total,
+                            message=f"fetching {fetch_total} sources",
                         )
-                    try:
-                        import httpx
-
-                        async with httpx.AsyncClient(
-                            timeout=20.0,
-                            follow_redirects=True,
-                            headers={"User-Agent": "rivalsearchmcp/1.0"},
-                        ) as client:
-                            r = await client.get(target_url)
-                            if r.status_code == 200:
-                                return extractor.extract(r.text)[:8000]
-                    except Exception as e:
-                        logger.warning("find_conflicts fetch failed for %s: %s", target_url, e)
-                    return ""
-
+                    except Exception:
+                        pass
                 snippets = await asyncio.gather(*[_snippet(u) for u in urls])
+                if ctx is not None:
+                    try:
+                        await ctx.report_progress(
+                            progress=fetch_total,
+                            total=fetch_total,
+                            message="detecting conflicts",
+                        )
+                    except Exception:
+                        pass
                 report = _find_conflicts_core([s for s in snippets], claim=claim)
 
                 findings: List[str] = []
@@ -670,6 +710,7 @@ def register_analysis_tools(mcp: FastMCP):
                 default=None,
             ),
         ] = None,
+        ctx: Optional[Context] = None,
     ) -> str:
         """
         End-to-end deterministic research workflow. One tool, two modes:
@@ -683,7 +724,9 @@ def register_analysis_tools(mcp: FastMCP):
         """
         try:
             if mode == "entity":
-                return await _run_entity_mode(topic, max_sources=max_sources, session_id=session_id)
+                return await _run_entity_mode(
+                    topic, max_sources=max_sources, session_id=session_id, ctx=ctx
+                )
             return await _run_topic_mode(
                 topic,
                 sources=sources,
@@ -816,11 +859,24 @@ async def _run_topic_mode(
     )
 
 
+async def _report(ctx: Optional[Context], progress: float, total: float, message: str) -> None:
+    """Best-effort progress reporter. Silent if no context is bound or the
+    client doesn't care. Keeps phase-boundary calls from having to repeat
+    the same try/except boilerplate."""
+    if ctx is None:
+        return
+    try:
+        await ctx.report_progress(progress=progress, total=total, message=message)
+    except Exception:
+        pass
+
+
 async def _run_entity_mode(
     entity: str,
     *,
     max_sources: int,
     session_id: Optional[str],
+    ctx: Optional[Context] = None,
 ) -> str:
     """Unified cross-source entity profile: web + news + github + social
     + academic fanned out in parallel, per-result quality, aggregate
@@ -866,9 +922,16 @@ async def _run_entity_mode(
     except Exception as e:
         logger.debug("github fan-out skipped: %s", e)
 
+    # 4 phases: fan-out, normalize, score, aggregate. Reported on a 0-100
+    # scale so clients can render a consistent bar regardless of how many
+    # sub-sources ran this time.
+    await _report(ctx, 10, 100, f"fanning out to {len(tasks)} sources")
+
     names = list(tasks.keys())
     outs = await asyncio.gather(*tasks.values(), return_exceptions=True)
     by_name = dict(zip(names, outs))
+
+    await _report(ctx, 55, 100, "fan-out complete, normalizing results")
 
     sections: Dict[str, List[Dict[str, Any]]] = {
         "web": [],
@@ -921,6 +984,8 @@ async def _run_entity_mode(
     elif academic:
         sections["academic"] = list(academic)
 
+    await _report(ctx, 75, 100, "scoring results")
+
     for key in list(sections.keys()):
         sections[key] = assess_results(sections[key])[:max_sources]
 
@@ -931,6 +996,8 @@ async def _run_entity_mode(
     )
     confidence = summarize_quality(union_annotated)
 
+    await _report(ctx, 90, 100, "aggregating confidence")
+
     # Flatten for auto-save
     flat_findings: List[Dict[str, Any]] = []
     for section_name, items in sections.items():
@@ -939,6 +1006,7 @@ async def _run_entity_mode(
             enriched.setdefault("section", section_name)
             flat_findings.append(enriched)
     await _auto_save(session_id, flat_findings)
+    await _report(ctx, 100, 100, "done")
 
     # Render a structured multi-section report
     md = f"# 🗺️ Entity Profile: *{entity}*\n\n"

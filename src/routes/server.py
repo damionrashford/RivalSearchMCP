@@ -32,8 +32,8 @@ Optimized for:
 - Production-ready deployment
 """
 
-# Create FastMCP instance
-mcp = FastMCP(name=SERVER_NAME, version=SERVER_VERSION, include_fastmcp_meta=True)
+# Create FastMCP instance. v3 dropped `include_fastmcp_meta` (always on).
+mcp = FastMCP(name=SERVER_NAME, version=SERVER_VERSION)
 
 
 # Tool registration with comprehensive metadata
