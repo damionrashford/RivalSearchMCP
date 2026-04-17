@@ -1,22 +1,10 @@
 """
-Unified content processing module for RivalSearchMCP.
-Consolidates the best content extraction, parsing, and cleaning methods.
+Content extraction helpers. Only `UnifiedContentExtractor` is used outside
+this package (by tools/analysis.py and search/multi_engines.py) -- the
+earlier surface (parsers, cleaners, specialised extractors) has been
+removed as dead code.
 """
 
-from .cleaners import HTMLToMarkdownConverter, UnifiedTextCleaner
-from .extractors import GenericContentExtractor, GoogleSpecificExtractor, UnifiedContentExtractor
-from .parsers import DocumentationParser, GoogleSearchParser, UnifiedHTMLParser
+from .extractors import UnifiedContentExtractor
 
-__all__ = [
-    # Extractors
-    "UnifiedContentExtractor",
-    "GoogleSpecificExtractor",
-    "GenericContentExtractor",
-    # Parsers
-    "UnifiedHTMLParser",
-    "GoogleSearchParser",
-    "DocumentationParser",
-    # Cleaners
-    "UnifiedTextCleaner",
-    "HTMLToMarkdownConverter",
-]
+__all__ = ["UnifiedContentExtractor"]

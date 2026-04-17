@@ -417,8 +417,10 @@ class SecurityMiddleware:
                     if not valid:
                         return False, str(result)
 
-        elif tool_name in ["content_operations", "traverse_website"]:
-            # Validate URL
+        elif tool_name in ["content_operations", "map_website"]:
+            # Validate URL (traverse_website was renamed to map_website
+            # in the tool-consolidation refactor; the URL-validation path
+            # is identical for both).
             if "url" in parameters:
                 valid, result = validator.validate_url(parameters["url"])
                 if not valid:

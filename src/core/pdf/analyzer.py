@@ -152,13 +152,13 @@ class DocumentAnalyzer:
 
         full_text = "\n\n".join(text_content)
 
-        # If text is minimal and OCR is available, try OCR as fallback
-        if len(full_text.strip()) < 100 and self.ocr_available:
-            logger.info("PDF has minimal text, attempting OCR on images...")
-            ocr_text = await self._ocr_pdf_pages(doc_bytes, max_pages)
-            if ocr_text and len(ocr_text) > len(full_text):
-                full_text = ocr_text
-                logger.info(f"OCR extracted {len(ocr_text)} additional characters")
+        # The old code called a _ocr_pdf_pages() fallback here that
+        # never actually OCR'd anything -- it was a stub returning "".
+        # Rendering PDF pages to images requires pdf2image (plus a
+        # Poppler system dep). Until that's wired up properly, we don't
+        # claim OCR support for scanned PDFs.
+        if len(full_text.strip()) < 100:
+            logger.info("PDF returned minimal extractable text; no OCR fallback configured.")
 
         return {
             "status": "success",
@@ -169,7 +169,7 @@ class DocumentAnalyzer:
             "metadata": metadata,
             "text": full_text,
             "text_length": len(full_text),
-            "ocr_used": len(full_text.strip()) > 100 and self.ocr_available,
+            "ocr_used": False,
             "timestamp": datetime.now().isoformat(),
         }
 
@@ -257,14 +257,21 @@ class DocumentAnalyzer:
 
         try:
             import easyocr
+            import numpy as np
             from PIL import Image
 
             image = Image.open(io.BytesIO(image_bytes))
 
-            # Extract text using OCR
-            text = easyocr.image_to_string(image)
+            # EasyOCR's real API is `Reader(lang_list).readtext(image)`
+            # which returns a list of (bbox, text, confidence) tuples.
+            # The previous code called `easyocr.image_to_string(image)`
+            # -- that function does not exist on the easyocr module and
+            # would raise AttributeError the first time this path ran.
+            reader = easyocr.Reader(["en"], gpu=False)
+            fragments = reader.readtext(np.array(image), detail=0, paragraph=True)
+            text = "\n".join(fragments)
 
-            logger.info(f"OCR extracted {len(text)} characters from image")
+            logger.info("OCR extracted %d characters from image", len(text))
 
             return {
                 "status": "success",
@@ -281,28 +288,3 @@ class DocumentAnalyzer:
         except Exception as e:
             logger.error(f"Image OCR failed: {e}")
             return {"status": "error", "error": str(e), "url": url}
-
-    async def _ocr_pdf_pages(self, pdf_bytes: bytes, max_pages: int) -> str:
-        """OCR PDF pages that may be scanned."""
-        if not self.ocr_available:
-            return ""
-
-        try:
-            from pypdf import PdfReader
-
-            # Convert PDF pages to images and OCR
-            pdf_file = io.BytesIO(pdf_bytes)
-            reader = PdfReader(pdf_file)
-
-            pages_to_process = min(len(reader.pages), max_pages)
-
-            # Note: This is a simplified approach
-            # Full implementation would use pdf2image library
-            logger.info(f"OCR fallback attempted on {pages_to_process} pages")
-
-            # For now, return empty - full OCR requires pdf2image
-            return ""
-
-        except Exception as e:
-            logger.error(f"PDF OCR failed: {e}")
-            return ""

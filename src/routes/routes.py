@@ -145,12 +145,19 @@ def register_custom_routes(mcp):
                     "comprehensive_research": True,
                 },
                 "tools": {
-                    "search": ["multi_search"],
-                    "trends": ["search_trends", "compare_keywords", "export_trends"],
-                    "llms": ["generate_llms_txt"],
-                    "traversal": ["traverse_website", "extract_links"],
-                    "analysis": ["analyze_content", "research_topic"],
-                    "retrieval": ["retrieve_content", "stream_content"],
+                    # Keep this in sync with server.py tool registration.
+                    # Stale names (trends, llms, traverse_website,
+                    # analyze_content, retrieve_content, multi_search)
+                    # were removed in the tool-consolidation refactor.
+                    "search": ["web_search", "social_search", "news_aggregation", "github_search"],
+                    "traversal": ["map_website"],
+                    "analysis": [
+                        "content_operations",
+                        "research_topic",
+                        "research_memory",
+                    ],
+                    "scientific": ["scientific_research"],
+                    "documents": ["document_analysis"],
                 },
                 "endpoints": {
                     "health": "/health",

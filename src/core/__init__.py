@@ -1,68 +1,10 @@
 """
-Core module for RivalSearchMCP.
-Main functionality for search, fetch, bypass, and content processing.
+Core business logic for RivalSearchMCP.
+
+Organized as subpackages (search, content, fetch, news, social, scientific,
+traverse, quality, conflict, memory, cache, security, metrics, github_api,
+pdf). Nothing is re-exported here -- callers import from the relevant
+subpackage directly. Keeping this file empty avoids the kind of stale
+`__all__` drift that accumulated in the previous version when modules
+were renamed/removed.
 """
-
-from .bypass import (
-    detect_paywall,
-    get_archive_url,
-    get_proxies,
-    refresh_proxies,
-    select_proxy,
-    test_proxy,
-)
-from .fetch import (
-    base_fetch_url,
-    batch_rival_retrieve,
-    google_search_fetch,
-    rival_retrieve,
-    stream_fetch,
-)
-from .search import (
-    BaseSearchEngine,
-    DuckDuckGoSearchEngine,
-    MultiSearchResult,
-    YahooSearchEngine,
-)
-from .traverse import (
-    analyze_structure,
-    extract_links,
-    get_sitemap,
-    traverse_website,
-)
-
-# Removed unused imports:
-# from .trends import GoogleTrendsAPI  # Trends tools removed
-# from .llms import ContentProcessor, LLMsTxtGenerator  # Module doesn't exist
-
-__all__ = [
-    # Bypass
-    "detect_paywall",
-    "get_archive_url",
-    "get_proxies",
-    "refresh_proxies",
-    "select_proxy",
-    "test_proxy",
-    # Extract
-    # Fetch
-    "base_fetch_url",
-    "stream_fetch",
-    "batch_rival_retrieve",
-    "rival_retrieve",
-    "google_search_fetch",
-    # Search
-    "BaseSearchEngine",
-    "MultiSearchResult",
-    "DuckDuckGoSearchEngine",
-    "YahooSearchEngine",
-    # Traverse
-    "traverse_website",
-    "get_sitemap",
-    "extract_links",
-    "analyze_structure",
-    # Trends
-    "GoogleTrendsAPI",
-    # LLMs
-    "ContentProcessor",
-    "LLMsTxtGenerator",
-]

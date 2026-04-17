@@ -151,8 +151,16 @@ class MetricsCollector:
         label_str = ",".join(f"{k}={v}" for k, v in sorted(labels.items()))
         return f"{name}{{{label_str}}}"
 
-    def get_all_metrics(self) -> Dict[str, Any]:
-        """Get all collected metrics."""
+    async def get_all_metrics(self) -> Dict[str, Any]:
+        """Get all collected metrics.
+
+        Must be async: cache_manager.get_stats() and
+        security.get_security_stats() are coroutines, and the previous
+        implementation called `asyncio.run()` inside them -- which
+        raises RuntimeError the moment this method is awaited from
+        within a running event loop (i.e. every time the /metrics HTTP
+        route executes).
+        """
         # Get performance metrics from the performance monitor
         perf_stats = performance_monitor.get_overall_stats()
 
@@ -162,9 +170,9 @@ class MetricsCollector:
             from src.core.cache.cache_manager import get_cache_manager
 
             cache_manager = get_cache_manager()
-            cache_stats = asyncio.run(cache_manager.get_stats())
-        except Exception:
-            pass
+            cache_stats = await cache_manager.get_stats()
+        except Exception as e:
+            logger.debug("cache stats unavailable: %s", e)
 
         # Get security metrics
         security_stats = {}
@@ -172,9 +180,9 @@ class MetricsCollector:
             from src.core.security.security import get_security_middleware
 
             security = get_security_middleware()
-            security_stats = asyncio.run(security.get_security_stats())
-        except Exception:
-            pass
+            security_stats = await security.get_security_stats()
+        except Exception as e:
+            logger.debug("security stats unavailable: %s", e)
 
         return {
             "timestamp": datetime.now().isoformat(),
@@ -303,40 +311,9 @@ def get_metrics_collector() -> MetricsCollector:
     return _metrics_collector
 
 
-async def start_metrics_collection():
-    """Start the global metrics collection."""
-    collector = get_metrics_collector()
-    await collector.start_collection()
-
-
-async def stop_metrics_collection():
-    """Stop the global metrics collection."""
-    collector = get_metrics_collector()
-    await collector.stop_collection()
-
-
-def record_request_metrics(method: str, duration_ms: float, success: bool):
-    """Record metrics for an API request."""
-    collector = get_metrics_collector()
-    collector.record_counter(
-        "requests_total", labels={"method": method, "status": "success" if success else "error"}
-    )
-    collector.record_histogram("request_duration_ms", duration_ms, labels={"method": method})
-
-
-def record_tool_usage(tool_name: str, duration_ms: float, success: bool):
-    """Record metrics for tool usage."""
-    collector = get_metrics_collector()
-    collector.record_counter(
-        "tool_usage_total", labels={"tool": tool_name, "status": "success" if success else "error"}
-    )
-    collector.record_histogram("tool_duration_ms", duration_ms, labels={"tool": tool_name})
-
-
-def record_cache_metrics(operation: str, hit: bool):
-    """Record cache operation metrics."""
-    collector = get_metrics_collector()
-    collector.record_counter(
-        "cache_operations_total",
-        labels={"operation": operation, "result": "hit" if hit else "miss"},
-    )
+# NOTE: start_metrics_collection / stop_metrics_collection /
+# record_request_metrics / record_tool_usage / record_cache_metrics
+# existed in an earlier version but were never wired up to the server
+# -- they were dead code. The live surface is now only
+# get_metrics_collector() + MetricsCollector.get_all_metrics() /
+# .get_prometheus_metrics(), exposed via src/routes/routes.py.
