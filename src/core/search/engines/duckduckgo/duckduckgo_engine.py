@@ -98,8 +98,16 @@ class DuckDuckGoSearchEngine(BaseSearchEngine):
                 continue
             title_link = title_links[0]
             title = self._clean_text(title_link.text or "")
-            url = title_link.attrib.get("href", "")
-            if not title or not url:
+            raw_href = title_link.attrib.get("href", "")
+            if not title or not raw_href:
+                continue
+
+            # DDG serves results wrapped in a `/l/?uddg=<target>` redirect
+            # (often protocol-relative: `//duckduckgo.com/l/...`). Unwrap
+            # here so downstream consumers get real target URLs instead
+            # of DDG redirect stubs.
+            url = _unwrap_ddg_url(raw_href)
+            if not url:
                 continue
 
             snippet_els = card.css("a.result__snippet, div.result__snippet")
@@ -118,3 +126,31 @@ class DuckDuckGoSearchEngine(BaseSearchEngine):
                 )
             )
         return results
+
+
+def _unwrap_ddg_url(raw: str) -> str:
+    """Resolve a DuckDuckGo result link to its real target URL.
+
+    DDG HTML wraps every organic result in a redirect of the form
+    `//duckduckgo.com/l/?uddg=<URL-encoded-target>&rut=...`. Sometimes
+    the href is protocol-relative (`//…`), sometimes absolute
+    (`https://…`). Either way the real URL is in `uddg`. We extract and
+    URL-decode it, and add `https:` to protocol-relative non-redirect
+    links as a fallback.
+    """
+    from urllib.parse import parse_qs, unquote, urlparse
+
+    if not raw:
+        return ""
+    try:
+        parsed = urlparse(raw if "://" in raw else "https:" + raw)
+        if "duckduckgo.com" in (parsed.netloc or "") and parsed.query:
+            q = parse_qs(parsed.query)
+            if "uddg" in q and q["uddg"]:
+                return unquote(q["uddg"][0])
+    except Exception:
+        pass
+    # Not a DDG redirect - normalize protocol-relative refs.
+    if raw.startswith("//"):
+        return "https:" + raw
+    return raw

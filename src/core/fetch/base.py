@@ -15,38 +15,50 @@ STREAM_TIMEOUT = 30.0
 
 async def base_fetch_url(url: str) -> Optional[str]:
     """
-    Fetch content from a URL with optimized performance and caching.
+    Fetch raw HTML for a URL with caching.
 
-    Args:
-        url: URL to fetch
+    Delegates to src.utils.scrapling_client.fetch_html — one place in
+    the codebase that knows how to survive Cloudflare / Akamai TLS
+    fingerprinting so Wikipedia / Reddit / major publishers respond
+    200 instead of 403. Falls back to plain httpx only if the
+    Scrapling path fails.
 
     Returns:
-        HTML content or None if failed
+        HTML content or None if every path failed.
     """
     from src.core.cache.cache_manager import get_cache_manager
+    from src.utils.scrapling_client import fetch_html
+
+    cache_manager = get_cache_manager()
+    cache_key = f"url_content:{url}"
 
     try:
-        # Create cache key for URL content
-        cache_key = f"url_content:{url}"
-        cache_manager = get_cache_manager()
-
-        # Check cache first (TTL: 1 hour for web content)
         cached_content = await cache_manager.get(cache_key)
         if cached_content:
             logger.debug(f"Using cached content for {url}")
             return cached_content
+    except Exception as e:
+        logger.debug(f"Cache read failed for {url}: {e}")
 
-        # Fetch content
+    content = await fetch_html(url, timeout=int(STREAM_TIMEOUT))
+    if content:
+        try:
+            await cache_manager.set(cache_key, content, ttl_seconds=3600)
+        except Exception:
+            pass
+        return content
+
+    # httpx fallback: small set of endpoints prefer a plain client.
+    try:
         client = await get_http_client()
         response = await client.get(url, timeout=STREAM_TIMEOUT)
         response.raise_for_status()
         content = response.text
-
-        # Cache the content (TTL: 1 hour)
-        await cache_manager.set(cache_key, content, ttl_seconds=3600)
-
+        try:
+            await cache_manager.set(cache_key, content, ttl_seconds=3600)
+        except Exception:
+            pass
         return content
-
     except Exception as e:
         logger.error(f"Failed to fetch {url}: {e}")
         return None

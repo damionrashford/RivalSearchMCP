@@ -149,34 +149,38 @@ def register_analysis_tools(mcp: FastMCP):
             if operation == "retrieve":
                 if not url:
                     raise ValueError("URL required for retrieve operation")
-                # Real content retrieval implementation with retry logic
-                from src.core.fetch import base_fetch_url
-                from src.utils import clean_html_to_markdown
+
+                # Dispatch on extraction_method to the right shared-client
+                # helper. Scrapling's parser handles sites (Wikipedia, etc.)
+                # where the previous BeautifulSoup+custom converter silently
+                # produced empty output.
+                from src.utils.scrapling_client import (
+                    fetch_html,
+                    fetch_markdown,
+                    fetch_text,
+                )
 
                 max_retries = 3
-                content = None
+                result: Optional[str] = None
                 for attempt in range(max_retries):
                     try:
-                        content = await base_fetch_url(url)
-                        if content:
+                        if extraction_method == "html":
+                            result = await fetch_html(url)
+                        elif extraction_method == "text":
+                            result = await fetch_text(url)
+                        else:  # markdown / auto
+                            result = await fetch_markdown(url)
+                        if result:
                             break
                     except Exception as e:
                         logger.warning(f"Content retrieval attempt {attempt + 1} failed: {e}")
                         if attempt < max_retries - 1:
                             await asyncio.sleep(1)
 
-                if content:
-                    if extraction_method == "html":
-                        result = str(content)
-                    elif extraction_method == "text":
-                        result = clean_html_to_markdown(str(content), url)
-                    elif extraction_method == "markdown":
-                        result = clean_html_to_markdown(str(content), url)
-                    else:  # auto
-                        result = clean_html_to_markdown(str(content), url)
-                else:
-                    result = f"Failed to retrieve content from {url} after {max_retries} attempts"
-
+                if not result:
+                    result = (
+                        f"Failed to retrieve content from {url} after " f"{max_retries} attempts"
+                    )
                 return result
 
             elif operation == "stream":
@@ -719,9 +723,11 @@ async def _run_topic_mode(
     include_analysis: bool,
     session_id: Optional[str],
 ) -> str:
-    """Original research_topic behaviour: search + fetch + extract, now
-    with automatic quality scoring and optional session memory."""
-    from src.core.fetch import base_fetch_url
+    """Topic research: search + fetch + extract key findings, with
+    automatic quality scoring and optional session memory. Routes
+    through the shared Scrapling client so Cloudflare/Akamai-fronted
+    sites respond 200 instead of 403."""
+    from src.utils.scrapling_client import fetch_text
 
     logger.info("Starting comprehensive research on: %s", topic)
 
@@ -737,14 +743,29 @@ async def _run_topic_mode(
     sources_researched: List[Dict[str, Any]] = []
     key_findings: List[str] = []
 
+    # Relevance-weighted sentence selection:
+    # the longer the sentence AND the more query tokens it contains,
+    # the more it contributes to the score. Replaces the old keyword-gated
+    # filter that missed substantive sentences lacking the exact words
+    # "important / key / critical / significant".
+    query_tokens = {t.lower() for t in re.findall(r"[A-Za-z][A-Za-z0-9]{2,}", topic)}
+
+    def _rank_sentence(s: str) -> float:
+        if len(s) < 40 or len(s) > 600:
+            return 0.0
+        lower = s.lower()
+        tok_hits = sum(1 for t in query_tokens if t in lower) if query_tokens else 0
+        # Density-ish signal: hits × log(length).
+        import math
+
+        length_score = math.log10(max(1, len(s)) + 1) - 1.5  # 0 at ~30 chars
+        return max(0.0, length_score) * (1 + 0.5 * tok_hits)
+
     for source_url in sources:
         try:
-            content = await base_fetch_url(source_url)
-            if not content:
+            clean_content = await fetch_text(source_url)
+            if not clean_content:
                 continue
-            from src.utils import clean_html_to_markdown
-
-            clean_content = clean_html_to_markdown(str(content), source_url)
             sources_researched.append(
                 {
                     "url": source_url,
@@ -754,17 +775,13 @@ async def _run_topic_mode(
                 }
             )
             if include_analysis:
-                sentences = re.split(r"[.!?]+", clean_content)
-                key_sentences = [
-                    s.strip()
-                    for s in sentences
-                    if len(s.strip()) > 50
-                    and any(
-                        word in s.lower()
-                        for word in ("important", "key", "critical", "significant")
-                    )
-                ]
-                key_findings.extend(key_sentences[:3])
+                sentences = re.split(r"(?<=[.!?])\s+", clean_content)
+                ranked = sorted(
+                    ((s.strip(), _rank_sentence(s)) for s in sentences),
+                    key=lambda pair: pair[1],
+                    reverse=True,
+                )
+                key_findings.extend(s for s, score in ranked[:3] if score > 0)
         except Exception as e:
             logger.warning("Failed to retrieve content from %s: %s", source_url, e)
 

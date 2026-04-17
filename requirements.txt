@@ -32,7 +32,9 @@ beartype==0.22.9
     #   py-key-value-aio
     #   py-key-value-shared
 beautifulsoup4==4.14.3
-    # via rivalsearchmcp (pyproject.toml)
+    # via
+    #   rivalsearchmcp (pyproject.toml)
+    #   markdownify
 browserforge==1.2.4
     # via scrapling
 cachetools==6.2.4
@@ -153,6 +155,8 @@ markdown==3.10
     # via rivalsearchmcp (pyproject.toml)
 markdown-it-py==4.0.0
     # via rich
+markdownify==1.2.2
+    # via rivalsearchmcp (pyproject.toml)
 markupsafe==3.0.3
     # via jinja2
 mcp==1.25.0
@@ -351,7 +355,9 @@ shapely==2.1.2
 shellingham==1.5.4
     # via typer
 six==1.17.0
-    # via python-dateutil
+    # via
+    #   markdownify
+    #   python-dateutil
 sortedcontainers==2.4.0
     # via fakeredis
 soupsieve==2.8.2

@@ -31,6 +31,12 @@ dependencies = [
     # to `curl` or running a headless browser. The `fetchers` extra pulls in
     # just the HTTP stack (playwright types are imported but not executed).
     "scrapling[fetchers]>=0.3.0",
+    # markdownify converts fetched HTML to clean markdown. Used by the
+    # shared Scrapling client (src/utils/scrapling_client.py). ~30KB pure
+    # Python -- more reliable than our previous custom BeautifulSoup
+    # converter which silently returned empty output on some modern sites
+    # (Wikipedia article pages, for example).
+    "markdownify>=0.11",
 ]
 
 [project.optional-dependencies]
