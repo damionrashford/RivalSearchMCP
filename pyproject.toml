@@ -48,6 +48,10 @@ dev = [
     "isort>=5.12.0",
     "ruff>=0.0.285",
     "mypy>=1.5.0",
+    # CI's `uv run pre-commit` needs the binary on PATH via the project's
+    # venv. Without it declared here, the hook step fails with
+    # "Failed to spawn: pre-commit, No such file or directory".
+    "pre-commit>=3.5.0",
 ]
 
 [build-system]

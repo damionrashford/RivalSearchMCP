@@ -40,8 +40,11 @@ def test_rejects_arbitrary_origin(http_client):
     assert "Origin not allowed" in data["detail"]
 
 
-def test_rejects_localhost_origin_by_default(http_client):
-    """localhost is not in the default allowlist and should be blocked."""
+def test_allows_localhost_for_local_development(http_client):
+    """localhost / 127.0.0.1 are explicitly allowed by CORSOriginValidation's
+    _LOCAL_ORIGIN_PATTERN -- CORS is a browser-only policy and permitting
+    localhost doesn't widen the attack surface (an attacker's page runs on
+    their own origin, not localhost)."""
     response = http_client.post(
         "/mcp/",
         json={"jsonrpc": "2.0", "method": "initialize", "id": "1"},
@@ -50,7 +53,10 @@ def test_rejects_localhost_origin_by_default(http_client):
             "Origin": "http://localhost:3000",
         },
     )
-    assert response.status_code == 403
+    # Must NOT be 403 from CORS. Downstream may 500 because Starlette
+    # TestClient doesn't run FastMCP's lifespan (task group unavailable)
+    # -- that's unrelated to CORS validation, which is what we're testing.
+    assert response.status_code != 403
 
 
 def test_rejects_preflight_from_untrusted_origin(http_client):

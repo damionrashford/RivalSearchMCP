@@ -33,16 +33,15 @@ from typing import Annotated
 
 import cyclopts
 import mcp.types
-from rich.console import Console
-
 from fastmcp import Client
+from rich.console import Console
 
 # ---------------------------------------------------------------------------
 # Configuration
 # ---------------------------------------------------------------------------
 
 # Modify this to change how the CLI connects to the MCP server.
-CLIENT_SPEC = 'https://RivalSearchMCP.fastmcp.app/mcp'
+CLIENT_SPEC = "https://RivalSearchMCP.fastmcp.app/mcp"
 
 app = cyclopts.App(
     name="rival-search",
@@ -130,11 +129,13 @@ async def list_tools() -> None:
                         "type": pschema.get("type", "string"),
                         "required": pname in required,
                     }
-                output.append({
-                    "name": tool.name,
-                    "description": tool.description or "",
-                    "parameters": params,
-                })
+                output.append(
+                    {
+                        "name": tool.name,
+                        "description": tool.description or "",
+                        "parameters": params,
+                    }
+                )
             print(json.dumps({"tools": output}, indent=2))
     except Exception as e:
         err_console.print(f"Error: Connection failed — {e}")
@@ -149,11 +150,13 @@ async def list_resources() -> None:
             resources = await client.list_resources()
             output = []
             for r in resources:
-                output.append({
-                    "uri": str(r.uri),
-                    "name": r.name or "",
-                    "description": r.description or "",
-                })
+                output.append(
+                    {
+                        "uri": str(r.uri),
+                        "name": r.name or "",
+                        "description": r.description or "",
+                    }
+                )
             print(json.dumps({"resources": output}, indent=2))
     except Exception as e:
         err_console.print(f"Error: Connection failed — {e}")
@@ -186,11 +189,13 @@ async def list_prompts() -> None:
             output = []
             for p in prompts:
                 args = [a.name for a in p.arguments] if p.arguments else []
-                output.append({
-                    "name": p.name,
-                    "description": p.description or "",
-                    "arguments": args,
-                })
+                output.append(
+                    {
+                        "name": p.name,
+                        "description": p.description or "",
+                        "arguments": args,
+                    }
+                )
             print(json.dumps({"prompts": output}, indent=2))
     except Exception as e:
         err_console.print(f"Error: Connection failed — {e}")
@@ -234,34 +239,63 @@ async def get_prompt(
 # Tool commands (generated from server schema)
 # ---------------------------------------------------------------------------
 
-@call_tool_app.command(name='web_search')
+
+@call_tool_app.command(name="web_search")
 async def web_search(
     *,
     query: Annotated[str, cyclopts.Parameter(help="Search query string")],
-    num_results: Annotated[int, cyclopts.Parameter(help="Number of results per engine (default: 10)")] = 10,
-    extract_content: Annotated[bool, cyclopts.Parameter(help="Extract full page content (default: true)")] = True,
-    follow_links: Annotated[bool, cyclopts.Parameter(help="Follow internal links (default: true)")] = True,
-    max_depth: Annotated[int, cyclopts.Parameter(help="Maximum depth for link following (default: 2)")] = 2,
-    use_fallback: Annotated[bool, cyclopts.Parameter(help="Use fallback strategy if engine fails (default: true)")] = True,
+    num_results: Annotated[
+        int, cyclopts.Parameter(help="Number of results per engine (default: 10)")
+    ] = 10,
+    extract_content: Annotated[
+        bool, cyclopts.Parameter(help="Extract full page content (default: true)")
+    ] = True,
+    follow_links: Annotated[
+        bool, cyclopts.Parameter(help="Follow internal links (default: true)")
+    ] = True,
+    max_depth: Annotated[
+        int, cyclopts.Parameter(help="Maximum depth for link following (default: 2)")
+    ] = 2,
+    use_fallback: Annotated[
+        bool, cyclopts.Parameter(help="Use fallback strategy if engine fails (default: true)")
+    ] = True,
 ) -> None:
-    '''Search across Yahoo and DuckDuckGo engines with fallback support.
+    """Search across Yahoo and DuckDuckGo engines with fallback support.
 
     Examples:
         uv run cli.py call-tool web_search --query "best MCP servers 2026"
-        uv run cli.py call-tool web_search --query "competitor analysis" --num-results 20'''
-    await _call_tool('web_search', {'query': query, 'num_results': num_results, 'extract_content': extract_content, 'follow_links': follow_links, 'max_depth': max_depth, 'use_fallback': use_fallback})
+        uv run cli.py call-tool web_search --query "competitor analysis" --num-results 20"""
+    await _call_tool(
+        "web_search",
+        {
+            "query": query,
+            "num_results": num_results,
+            "extract_content": extract_content,
+            "follow_links": follow_links,
+            "max_depth": max_depth,
+            "use_fallback": use_fallback,
+        },
+    )
 
 
-@call_tool_app.command(name='map_website')
+@call_tool_app.command(name="map_website")
 async def map_website(
     *,
     url: Annotated[str, cyclopts.Parameter(help="Website URL to traverse")],
-    mode: Annotated[str, cyclopts.Parameter(help="Traversal mode: research, docs, map (default: research)")] = 'research',
-    max_pages: Annotated[int, cyclopts.Parameter(help="Maximum pages to traverse (default: 5)")] = 5,
-    max_depth: Annotated[int, cyclopts.Parameter(help="Maximum depth for mapping (default: 2)")] = 2,
-    generate_llms_txt: Annotated[bool, cyclopts.Parameter(help="Generate llms.txt output (default: false)")] = False,
+    mode: Annotated[
+        str, cyclopts.Parameter(help="Traversal mode: research, docs, map (default: research)")
+    ] = "research",
+    max_pages: Annotated[
+        int, cyclopts.Parameter(help="Maximum pages to traverse (default: 5)")
+    ] = 5,
+    max_depth: Annotated[
+        int, cyclopts.Parameter(help="Maximum depth for mapping (default: 2)")
+    ] = 2,
+    generate_llms_txt: Annotated[
+        bool, cyclopts.Parameter(help="Generate llms.txt output (default: false)")
+    ] = False,
 ) -> None:
-    '''Map and explore websites with different modes.
+    """Map and explore websites with different modes.
 
     Modes:
         research — General-purpose website exploration
@@ -270,25 +304,60 @@ async def map_website(
 
     Examples:
         uv run cli.py call-tool map_website --url "https://docs.example.com" --mode docs
-        uv run cli.py call-tool map_website --url "https://example.com" --mode map --max-pages 20'''
-    await _call_tool('map_website', {'url': url, 'mode': mode, 'max_pages': max_pages, 'max_depth': max_depth, 'generate_llms_txt': generate_llms_txt})
+        uv run cli.py call-tool map_website --url "https://example.com" --mode map --max-pages 20"""
+    await _call_tool(
+        "map_website",
+        {
+            "url": url,
+            "mode": mode,
+            "max_pages": max_pages,
+            "max_depth": max_depth,
+            "generate_llms_txt": generate_llms_txt,
+        },
+    )
 
 
-@call_tool_app.command(name='content_operations')
+@call_tool_app.command(name="content_operations")
 async def content_operations(
     *,
-    operation: Annotated[str, cyclopts.Parameter(help="Operation: retrieve, stream, analyze, extract")],
-    url: Annotated[str | None, cyclopts.Parameter(help="URL for retrieve/stream/extract operations")] = None,
-    content: Annotated[str | None, cyclopts.Parameter(help="Content string for analyze operation")] = None,
-    extraction_method: Annotated[str, cyclopts.Parameter(help="For retrieve: auto, html, text, markdown (default: auto)")] = 'auto',
-    analysis_type: Annotated[str, cyclopts.Parameter(help="For analyze: general, sentiment, technical, business (default: general)")] = 'general',
-    max_links: Annotated[int, cyclopts.Parameter(help="For extract: max links to extract (default: 100)")] = 100,
-    link_type: Annotated[str, cyclopts.Parameter(help="For extract: all, internal, external, images, documents (default: all)")] = 'all',
-    extract_key_points: Annotated[bool, cyclopts.Parameter(help="For analyze: extract key points (default: true)")] = True,
-    summarize: Annotated[bool, cyclopts.Parameter(help="For analyze: create summary (default: true)")] = True,
-    include_metadata: Annotated[bool, cyclopts.Parameter(help="Include metadata in response (default: true)")] = True,
+    operation: Annotated[
+        str, cyclopts.Parameter(help="Operation: retrieve, stream, analyze, extract")
+    ],
+    url: Annotated[
+        str | None, cyclopts.Parameter(help="URL for retrieve/stream/extract operations")
+    ] = None,
+    content: Annotated[
+        str | None, cyclopts.Parameter(help="Content string for analyze operation")
+    ] = None,
+    extraction_method: Annotated[
+        str, cyclopts.Parameter(help="For retrieve: auto, html, text, markdown (default: auto)")
+    ] = "auto",
+    analysis_type: Annotated[
+        str,
+        cyclopts.Parameter(
+            help="For analyze: general, sentiment, technical, business (default: general)"
+        ),
+    ] = "general",
+    max_links: Annotated[
+        int, cyclopts.Parameter(help="For extract: max links to extract (default: 100)")
+    ] = 100,
+    link_type: Annotated[
+        str,
+        cyclopts.Parameter(
+            help="For extract: all, internal, external, images, documents (default: all)"
+        ),
+    ] = "all",
+    extract_key_points: Annotated[
+        bool, cyclopts.Parameter(help="For analyze: extract key points (default: true)")
+    ] = True,
+    summarize: Annotated[
+        bool, cyclopts.Parameter(help="For analyze: create summary (default: true)")
+    ] = True,
+    include_metadata: Annotated[
+        bool, cyclopts.Parameter(help="Include metadata in response (default: true)")
+    ] = True,
 ) -> None:
-    '''Consolidated content operations: retrieve, stream, analyze, extract.
+    """Consolidated content operations: retrieve, stream, analyze, extract.
 
     Operations:
         retrieve — Fetch and extract content from a URL
@@ -299,61 +368,125 @@ async def content_operations(
     Examples:
         uv run cli.py call-tool content_operations --operation retrieve --url "https://example.com"
         uv run cli.py call-tool content_operations --operation analyze --content "Your text" --analysis-type sentiment
-        uv run cli.py call-tool content_operations --operation extract --url "https://example.com" --link-type external'''
-    await _call_tool('content_operations', {'operation': operation, 'url': url, 'content': content, 'extraction_method': extraction_method, 'analysis_type': analysis_type, 'max_links': max_links, 'link_type': link_type, 'extract_key_points': extract_key_points, 'summarize': summarize, 'include_metadata': include_metadata})
+        uv run cli.py call-tool content_operations --operation extract --url "https://example.com" --link-type external
+    """
+    await _call_tool(
+        "content_operations",
+        {
+            "operation": operation,
+            "url": url,
+            "content": content,
+            "extraction_method": extraction_method,
+            "analysis_type": analysis_type,
+            "max_links": max_links,
+            "link_type": link_type,
+            "extract_key_points": extract_key_points,
+            "summarize": summarize,
+            "include_metadata": include_metadata,
+        },
+    )
 
 
-@call_tool_app.command(name='research_topic')
+@call_tool_app.command(name="research_topic")
 async def research_topic(
     *,
     topic: Annotated[str, cyclopts.Parameter(help="Research topic")],
-    sources: Annotated[str | None, cyclopts.Parameter(help="JSON array of specific sources to use")] = None,
-    max_sources: Annotated[int, cyclopts.Parameter(help="Maximum sources to research (default: 5)")] = 5,
-    include_analysis: Annotated[bool, cyclopts.Parameter(help="Include content analysis (default: true)")] = True,
+    sources: Annotated[
+        str | None, cyclopts.Parameter(help="JSON array of specific sources to use")
+    ] = None,
+    max_sources: Annotated[
+        int, cyclopts.Parameter(help="Maximum sources to research (default: 5)")
+    ] = 5,
+    include_analysis: Annotated[
+        bool, cyclopts.Parameter(help="Include content analysis (default: true)")
+    ] = True,
 ) -> None:
-    '''End-to-end research workflow for a topic.
+    """End-to-end research workflow for a topic.
 
     Combines search, content retrieval, and analysis into a single operation.
 
     Examples:
         uv run cli.py call-tool research_topic --topic "LLM agent frameworks"
-        uv run cli.py call-tool research_topic --topic "MCP servers" --max-sources 10'''
+        uv run cli.py call-tool research_topic --topic "MCP servers" --max-sources 10"""
     sources_parsed = json.loads(sources) if isinstance(sources, str) else sources
-    await _call_tool('research_topic', {'topic': topic, 'sources': sources_parsed, 'max_sources': max_sources, 'include_analysis': include_analysis})
+    await _call_tool(
+        "research_topic",
+        {
+            "topic": topic,
+            "sources": sources_parsed,
+            "max_sources": max_sources,
+            "include_analysis": include_analysis,
+        },
+    )
 
 
-@call_tool_app.command(name='research_agent')
+@call_tool_app.command(name="research_agent")
 async def research_agent(
     *,
     topic: Annotated[str, cyclopts.Parameter(help="Research topic to investigate")],
-    max_sources: Annotated[int, cyclopts.Parameter(help="Maximum sources to analyze (default: 15)")] = 15,
-    include_trends: Annotated[bool, cyclopts.Parameter(help="Include trends analysis (default: true)")] = True,
-    include_website_analysis: Annotated[bool, cyclopts.Parameter(help="Include website traversal (default: true)")] = True,
-    research_depth: Annotated[str, cyclopts.Parameter(help="Depth: quick, standard, comprehensive (default: comprehensive)")] = 'comprehensive',
-    ai_model: Annotated[str, cyclopts.Parameter(help="OpenRouter model (auto-fallback to 4+ free models)")] = 'meta-llama/llama-3.1-8b-instruct:free',
-    enable_ai_insights: Annotated[bool, cyclopts.Parameter(help="Generate AI-powered insights (default: true)")] = True,
+    max_sources: Annotated[
+        int, cyclopts.Parameter(help="Maximum sources to analyze (default: 15)")
+    ] = 15,
+    include_trends: Annotated[
+        bool, cyclopts.Parameter(help="Include trends analysis (default: true)")
+    ] = True,
+    include_website_analysis: Annotated[
+        bool, cyclopts.Parameter(help="Include website traversal (default: true)")
+    ] = True,
+    research_depth: Annotated[
+        str,
+        cyclopts.Parameter(help="Depth: quick, standard, comprehensive (default: comprehensive)"),
+    ] = "comprehensive",
+    ai_model: Annotated[
+        str, cyclopts.Parameter(help="OpenRouter model (auto-fallback to 4+ free models)")
+    ] = "meta-llama/llama-3.1-8b-instruct:free",
+    enable_ai_insights: Annotated[
+        bool, cyclopts.Parameter(help="Generate AI-powered insights (default: true)")
+    ] = True,
 ) -> None:
-    '''AI research agent with autonomous tool calling.
+    """AI research agent with autonomous tool calling.
 
     Requires OPENROUTER_API_KEY env var. Orchestrates multiple tools to generate
     comprehensive reports. Without the key, the tool gracefully degrades.
 
     Examples:
         uv run cli.py call-tool research_agent --topic "competitive analysis of MCP servers"
-        uv run cli.py call-tool research_agent --topic "AI startups" --research-depth quick'''
-    await _call_tool('research_agent', {'topic': topic, 'max_sources': max_sources, 'include_trends': include_trends, 'include_website_analysis': include_website_analysis, 'research_depth': research_depth, 'ai_model': ai_model, 'enable_ai_insights': enable_ai_insights})
+        uv run cli.py call-tool research_agent --topic "AI startups" --research-depth quick"""
+    await _call_tool(
+        "research_agent",
+        {
+            "topic": topic,
+            "max_sources": max_sources,
+            "include_trends": include_trends,
+            "include_website_analysis": include_website_analysis,
+            "research_depth": research_depth,
+            "ai_model": ai_model,
+            "enable_ai_insights": enable_ai_insights,
+        },
+    )
 
 
-@call_tool_app.command(name='scientific_research')
+@call_tool_app.command(name="scientific_research")
 async def scientific_research(
     *,
-    operation: Annotated[str, cyclopts.Parameter(help="Operation: academic_search or dataset_discovery")],
+    operation: Annotated[
+        str, cyclopts.Parameter(help="Operation: academic_search or dataset_discovery")
+    ],
     query: Annotated[str, cyclopts.Parameter(help="Search query")],
-    max_results: Annotated[int, cyclopts.Parameter(help="Maximum results to return (default: 10)")] = 10,
-    sources: Annotated[str | None, cyclopts.Parameter(help="JSON array of sources: arxiv, semantic_scholar, pubmed, kaggle, huggingface")] = None,
-    categories: Annotated[str | None, cyclopts.Parameter(help="JSON array of categories for dataset discovery")] = None,
+    max_results: Annotated[
+        int, cyclopts.Parameter(help="Maximum results to return (default: 10)")
+    ] = 10,
+    sources: Annotated[
+        str | None,
+        cyclopts.Parameter(
+            help="JSON array of sources: arxiv, semantic_scholar, pubmed, kaggle, huggingface"
+        ),
+    ] = None,
+    categories: Annotated[
+        str | None, cyclopts.Parameter(help="JSON array of categories for dataset discovery")
+    ] = None,
 ) -> None:
-    '''Scientific research: academic papers and dataset discovery.
+    """Scientific research: academic papers and dataset discovery.
 
     Operations:
         academic_search    — Search arXiv, PubMed, Semantic Scholar
@@ -361,74 +494,139 @@ async def scientific_research(
 
     Examples:
         uv run cli.py call-tool scientific_research --operation academic_search --query "transformers"
-        uv run cli.py call-tool scientific_research --operation dataset_discovery --query "sentiment" --sources \'["huggingface"]\''''
+        uv run cli.py call-tool scientific_research --operation dataset_discovery --query "sentiment" --sources \'["huggingface"]\'
+    """
     sources_parsed = json.loads(sources) if isinstance(sources, str) else sources
     categories_parsed = json.loads(categories) if isinstance(categories, str) else categories
-    await _call_tool('scientific_research', {'operation': operation, 'query': query, 'max_results': max_results, 'sources': sources_parsed, 'categories': categories_parsed})
+    await _call_tool(
+        "scientific_research",
+        {
+            "operation": operation,
+            "query": query,
+            "max_results": max_results,
+            "sources": sources_parsed,
+            "categories": categories_parsed,
+        },
+    )
 
 
-@call_tool_app.command(name='social_search')
+@call_tool_app.command(name="social_search")
 async def social_search(
     *,
     query: Annotated[str, cyclopts.Parameter(help="Search query")],
-    platforms: Annotated[list[str], cyclopts.Parameter(help="Platforms: reddit, hackernews, devto, producthunt, medium")] = ['reddit', 'hackernews', 'devto'],
-    max_results_per_platform: Annotated[int, cyclopts.Parameter(help="Max results per platform (default: 10)")] = 10,
-    max_results: Annotated[int, cyclopts.Parameter(help="Global max results, 0=unlimited (default: 0)")] = 0,
-    reddit_subreddit: Annotated[str, cyclopts.Parameter(help="Subreddit to search (default: all)")] = 'all',
-    time_filter: Annotated[str, cyclopts.Parameter(help="Time filter: all, day, week, month, year (default: all)")] = 'all',
+    platforms: Annotated[
+        list[str],
+        cyclopts.Parameter(help="Platforms: reddit, hackernews, devto, producthunt, medium"),
+    ] = ["reddit", "hackernews", "devto"],
+    max_results_per_platform: Annotated[
+        int, cyclopts.Parameter(help="Max results per platform (default: 10)")
+    ] = 10,
+    max_results: Annotated[
+        int, cyclopts.Parameter(help="Global max results, 0=unlimited (default: 0)")
+    ] = 0,
+    reddit_subreddit: Annotated[
+        str, cyclopts.Parameter(help="Subreddit to search (default: all)")
+    ] = "all",
+    time_filter: Annotated[
+        str, cyclopts.Parameter(help="Time filter: all, day, week, month, year (default: all)")
+    ] = "all",
 ) -> None:
-    '''Search social platforms and communities. No authentication required.
+    """Search social platforms and communities. No authentication required.
 
     Platforms: Reddit, Hacker News, Dev.to, Product Hunt, Medium
 
     Examples:
         uv run cli.py call-tool social_search --query "AI agents" --platforms reddit --platforms hackernews
-        uv run cli.py call-tool social_search --query "MCP" --reddit-subreddit ClaudeAI --time-filter week'''
-    await _call_tool('social_search', {'query': query, 'platforms': platforms, 'max_results_per_platform': max_results_per_platform, 'max_results': max_results, 'reddit_subreddit': reddit_subreddit, 'time_filter': time_filter})
+        uv run cli.py call-tool social_search --query "MCP" --reddit-subreddit ClaudeAI --time-filter week
+    """
+    await _call_tool(
+        "social_search",
+        {
+            "query": query,
+            "platforms": platforms,
+            "max_results_per_platform": max_results_per_platform,
+            "max_results": max_results,
+            "reddit_subreddit": reddit_subreddit,
+            "time_filter": time_filter,
+        },
+    )
 
 
-@call_tool_app.command(name='news_aggregation')
+@call_tool_app.command(name="news_aggregation")
 async def news_aggregation(
     *,
     query: Annotated[str, cyclopts.Parameter(help="News search query")],
     max_results: Annotated[int, cyclopts.Parameter(help="Maximum results (default: 10)")] = 10,
-    language: Annotated[str, cyclopts.Parameter(help="Language code (default: en)")] = 'en',
-    country: Annotated[str, cyclopts.Parameter(help="Country code (default: US)")] = 'US',
-    time_range: Annotated[str, cyclopts.Parameter(help="Time range: anytime, day, week, month (default: anytime)")] = 'anytime',
+    language: Annotated[str, cyclopts.Parameter(help="Language code (default: en)")] = "en",
+    country: Annotated[str, cyclopts.Parameter(help="Country code (default: US)")] = "US",
+    time_range: Annotated[
+        str, cyclopts.Parameter(help="Time range: anytime, day, week, month (default: anytime)")
+    ] = "anytime",
 ) -> None:
-    '''Aggregate news from Google News RSS. No authentication required.
+    """Aggregate news from Google News RSS. No authentication required.
 
     Examples:
         uv run cli.py call-tool news_aggregation --query "AI startups" --time-range week
-        uv run cli.py call-tool news_aggregation --query "tech layoffs" --country GB --language en'''
-    await _call_tool('news_aggregation', {'query': query, 'max_results': max_results, 'language': language, 'country': country, 'time_range': time_range})
+        uv run cli.py call-tool news_aggregation --query "tech layoffs" --country GB --language en
+    """
+    await _call_tool(
+        "news_aggregation",
+        {
+            "query": query,
+            "max_results": max_results,
+            "language": language,
+            "country": country,
+            "time_range": time_range,
+        },
+    )
 
 
-@call_tool_app.command(name='github_search')
+@call_tool_app.command(name="github_search")
 async def github_search(
     *,
     query: Annotated[str, cyclopts.Parameter(help="Search query (e.g., 'web framework')")],
-    language: Annotated[str | None, cyclopts.Parameter(help="Filter by language (e.g., Python, TypeScript)")] = None,
-    sort: Annotated[str, cyclopts.Parameter(help="Sort: stars, forks, updated (default: stars)")] = 'stars',
+    language: Annotated[
+        str | None, cyclopts.Parameter(help="Filter by language (e.g., Python, TypeScript)")
+    ] = None,
+    sort: Annotated[
+        str, cyclopts.Parameter(help="Sort: stars, forks, updated (default: stars)")
+    ] = "stars",
     max_results: Annotated[int, cyclopts.Parameter(help="Maximum results (default: 10)")] = 10,
-    include_readme: Annotated[bool, cyclopts.Parameter(help="Fetch README content, slower (default: false)")] = False,
+    include_readme: Annotated[
+        bool, cyclopts.Parameter(help="Fetch README content, slower (default: false)")
+    ] = False,
 ) -> None:
-    '''Search public GitHub repositories. No authentication required. Rate limited: 60 req/hr.
+    """Search public GitHub repositories. No authentication required. Rate limited: 60 req/hr.
 
     Examples:
         uv run cli.py call-tool github_search --query "MCP server" --language Python --sort stars
-        uv run cli.py call-tool github_search --query "agent framework" --include-readme'''
+        uv run cli.py call-tool github_search --query "agent framework" --include-readme"""
     language_parsed = json.loads(language) if isinstance(language, str) else language
-    await _call_tool('github_search', {'query': query, 'language': language_parsed, 'sort': sort, 'max_results': max_results, 'include_readme': include_readme})
+    await _call_tool(
+        "github_search",
+        {
+            "query": query,
+            "language": language_parsed,
+            "sort": sort,
+            "max_results": max_results,
+            "include_readme": include_readme,
+        },
+    )
 
 
-@call_tool_app.command(name='document_analysis')
+@call_tool_app.command(name="document_analysis")
 async def document_analysis(
     *,
     url: Annotated[str, cyclopts.Parameter(help="URL of document (PDF, Word, Text, Image)")],
-    max_pages: Annotated[int, cyclopts.Parameter(help="Max pages to extract for PDFs (default: 10)")] = 10,
-    extract_metadata: Annotated[bool, cyclopts.Parameter(help="Extract document metadata (default: true)")] = True,
-    summary_length: Annotated[int, cyclopts.Parameter(help="Text preview length (default: 500)")] = 500,
+    max_pages: Annotated[
+        int, cyclopts.Parameter(help="Max pages to extract for PDFs (default: 10)")
+    ] = 10,
+    extract_metadata: Annotated[
+        bool, cyclopts.Parameter(help="Extract document metadata (default: true)")
+    ] = True,
+    summary_length: Annotated[
+        int, cyclopts.Parameter(help="Text preview length (default: 500)")
+    ] = 500,
 ) -> None:
     '''Analyze documents with OCR support. No authentication required.
 
@@ -438,7 +636,15 @@ async def document_analysis(
     Examples:
         uv run cli.py call-tool document_analysis --url "https://arxiv.org/pdf/2301.00001"
         uv run cli.py call-tool document_analysis --url "https://example.com/image.png"'''
-    await _call_tool('document_analysis', {'url': url, 'max_pages': max_pages, 'extract_metadata': extract_metadata, 'summary_length': summary_length})
+    await _call_tool(
+        "document_analysis",
+        {
+            "url": url,
+            "max_pages": max_pages,
+            "extract_metadata": extract_metadata,
+            "summary_length": summary_length,
+        },
+    )
 
 
 if __name__ == "__main__":
