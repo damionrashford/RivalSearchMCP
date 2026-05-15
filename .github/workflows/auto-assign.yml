@@ -18,9 +18,12 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
           PR_AUTHOR: ${{ github.event.pull_request.user.login }}
         run: |
-          # Skip bots.
+          # Skip bots. `*[bot]` was a bash bracket expression (matching the
+          # individual characters b/o/t) — totally wrong. Escape the literal
+          # brackets and also enumerate known bots that don't follow the
+          # `[bot]` suffix convention.
           case "$PR_AUTHOR" in
-            *[bot]|dependabot|github-actions)
+            *\[bot\]|dependabot|renovate|github-actions)
               echo "Skipping bot author: $PR_AUTHOR"
               exit 0
               ;;

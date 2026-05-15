@@ -18,4 +18,11 @@ jobs:
       - uses: actions/labeler@v5
         with:
           configuration-path: .github/labeler.yml
+          # sync-labels: true makes .github/labeler.yml the single source of
+          # truth for tool:* labels — a maintainer manually adding/removing
+          # a tool:* label will be reconciled away on the next push. That
+          # matches the intent here: paths drive labels, not human guesses.
+          # If you want manual overrides to stick (e.g. tagging a PR that
+          # tangentially touches a tool without hitting its paths), flip to
+          # `sync-labels: false`.
           sync-labels: true

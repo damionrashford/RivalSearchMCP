@@ -15,9 +15,10 @@ Examples:
 ## Linked issue(s)
 
 <!-- "Fixes #N" auto-closes the issue on merge. Use "Relates to #N" for
-     looser links. Remove the line entirely if this PR has no issue. -->
+     looser links. If this PR has no linked issue, delete the line below
+     instead of leaving the placeholder. -->
 
-Fixes #
+Fixes #<!-- replace with issue number, or delete this entire line -->
 
 ## How I tested
 
@@ -38,4 +39,4 @@ Fixes #
 
 ---
 
-<sub>🤖 Made with [Claude Code](https://claude.com/claude-code)? Mention it in your commit trailer with `Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>` — it shows up in `git log`.</sub>
+<sub>🤖 Made with [Claude Code](https://claude.com/claude-code)? Mention it in your commit trailer with `Co-Authored-By: Claude <noreply@anthropic.com>` — it shows up in `git log` and won't go stale as model versions advance.</sub>
