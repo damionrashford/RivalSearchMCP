@@ -27,8 +27,10 @@ repos:
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
-        # claude-code-action requires these files match main byte-for-byte;
-        # see the discussion in #36 for the full reasoning.
+        # anthropics/claude-code-action validates that the calling workflow
+        # file on the PR is byte-identical to the version on main. Letting
+        # end-of-file-fixer "normalize" these files breaks that check on the
+        # first PR that touches them; exempting them keeps both checks happy.
         exclude: ^\.github/workflows/claude.*\.yml$
       - id: check-yaml
       - id: check-json
