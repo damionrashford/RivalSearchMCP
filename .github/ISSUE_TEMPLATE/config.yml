@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 🗨️ Discussions
+    url: https://github.com/damionrashford/RivalSearchMCP/discussions
+    about: Got an idea, a question, or want to show off how you're using RivalSearchMCP? Start here. We're building a clan of AI-native PMs and engineers — come say hi.
+  - name: 📖 Documentation
+    url: https://github.com/damionrashford/RivalSearchMCP#readme
+    about: Setup, the 10 MCP tools, and example queries.

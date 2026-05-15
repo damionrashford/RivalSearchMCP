@@ -1,0 +1,28 @@
+name: PR Auto-Assign Author
+
+on:
+  pull_request_target:
+    types: [opened, reopened]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  assign:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.assignee == null
+    steps:
+      - name: Assign PR to its author
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+        run: |
+          # Skip bots.
+          case "$PR_AUTHOR" in
+            *[bot]|dependabot|github-actions)
+              echo "Skipping bot author: $PR_AUTHOR"
+              exit 0
+              ;;
+          esac
+          gh pr edit "$PR_NUMBER" --add-assignee "$PR_AUTHOR" --repo "$GITHUB_REPOSITORY"

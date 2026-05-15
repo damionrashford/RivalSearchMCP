@@ -1,0 +1,57 @@
+name: Claude Issue Triage
+
+on:
+  issues:
+    types: [opened, reopened]
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  triage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Triage with Claude
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            A new issue was just opened in this repository.
+
+            REPO: ${{ github.repository }}
+            ISSUE: #${{ github.event.issue.number }}
+            TITLE: ${{ github.event.issue.title }}
+
+            Your job is to apply labels from the existing taxonomy. Read
+            `.github/labels.yml` for the full list. Apply exactly one label
+            from each of these groups (only if a clear fit exists):
+
+            1. Type — pick ONE: "🐛 Bug", "✨ Feature Request",
+               "❓ Question", "💬 Feedback".
+            2. Priority — pick ONE: "🔥 High", "🟡 Medium", "🟢 Low",
+               "🔮 Roadmap". Apply 🔮 Roadmap if the issue is exploratory
+               and has no clear timeline. Default to 🟡 Medium for bugs
+               with a clear repro; default to 🔥 High only for things that
+               break a default MCP tool entirely or risk data loss.
+            3. Tool — apply ZERO OR MORE `tool:*` labels for any MCP tool
+               the issue references by name (web_search, social_search,
+               news_aggregation, github_search, scientific_research,
+               content_operations, research_topic, research_memory,
+               map_website, document_analysis).
+
+            Use the `gh` CLI to apply the labels. Quote labels with the
+            emoji exactly as shown. Example:
+              gh issue edit ${{ github.event.issue.number }} \
+                --repo ${{ github.repository }} \
+                --add-label "🐛 Bug,🔥 High,tool:social_search"
+
+            Then leave ONE brief comment (2-3 sentences) summarizing what
+            you applied and why. Skip the comment if the issue is
+            obviously low-context (e.g. one-line "doesn't work").
+          claude_args: |
+            --allowedTools "Bash(gh issue edit:*),Bash(gh issue view:*),Bash(gh issue comment:*),Read(.github/labels.yml)"

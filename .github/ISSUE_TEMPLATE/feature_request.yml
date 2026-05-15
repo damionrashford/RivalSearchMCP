@@ -1,0 +1,52 @@
+name: ✨ Feature Request
+description: A new capability or a meaningful improvement to an existing one.
+title: "<area>: <one-line summary>"
+labels: ["✨ Feature Request"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the idea. RivalSearchMCP is built for AI-native PMs and engineers — the best feature requests tell us *what you were trying to do* when you hit the wall, not just *what to build*. That context is gold.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What's the problem you're trying to solve?
+      description: Describe the workflow or outcome that the current tools don't support. Concrete > abstract.
+      placeholder: e.g. I'm doing competitive research across 8 tools and end up with 500+ URLs in a session. I need to export them into a citation manager but there's no structured-bibliography output.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What would solve it?
+      description: A rough sketch of the API, tool surface, or behavior. Don't worry about implementation details.
+      placeholder: e.g. Add a `research_memory operation="export"` that returns BibTeX/APA/Chicago for every URL in the session.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Workarounds you've tried (optional)
+      description: What are you doing today instead? Helps us understand the gap.
+
+  - type: dropdown
+    id: tool
+    attributes:
+      label: Which MCP tool would this live in (or be adjacent to)?
+      options:
+        - web_search
+        - social_search
+        - news_aggregation
+        - github_search
+        - scientific_research
+        - content_operations
+        - research_topic
+        - research_memory
+        - map_website
+        - document_analysis
+        - "(new tool / cross-cutting)"
+    validations:
+      required: false

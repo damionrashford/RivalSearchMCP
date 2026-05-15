@@ -1,0 +1,84 @@
+# Config for actions/labeler@v5 — applies tool:* and area labels to PRs
+# based on changed file paths. Reconciles every push to the PR.
+# https://github.com/actions/labeler
+
+"tool:web_search":
+  - changed-files:
+      - any-glob-to-any-file:
+          - src/core/search/**
+          - src/core/fetch/**
+          - src/tools/search.py
+          - src/tools/multi_search.py
+
+"tool:social_search":
+  - changed-files:
+      - any-glob-to-any-file:
+          - src/core/social/**
+          - src/tools/social_media.py
+
+"tool:news_aggregation":
+  - changed-files:
+      - any-glob-to-any-file:
+          - src/core/news/**
+          - src/tools/news.py
+
+"tool:github_search":
+  - changed-files:
+      - any-glob-to-any-file:
+          - src/core/github_api/**
+          - src/tools/github_tool.py
+
+"tool:scientific_research":
+  - changed-files:
+      - any-glob-to-any-file:
+          - src/core/scientific/**
+          - src/tools/scientific.py
+
+"tool:content_operations":
+  - changed-files:
+      - any-glob-to-any-file:
+          - src/core/content/**
+          - src/core/conflict/**
+          - src/core/quality/**
+
+"tool:research_memory":
+  - changed-files:
+      - any-glob-to-any-file:
+          - src/core/memory/**
+          - src/tools/memory.py
+
+"tool:research_topic":
+  - changed-files:
+      - any-glob-to-any-file:
+          - src/tools/multi_search.py
+
+"tool:document_analysis":
+  - changed-files:
+      - any-glob-to-any-file:
+          - src/core/pdf/**
+          - src/tools/pdf_tool.py
+          - src/tools/analysis.py
+
+"tool:map_website":
+  - changed-files:
+      - any-glob-to-any-file:
+          - src/core/traverse/**
+          - src/tools/traversal.py
+
+# Cross-cutting area labels (kept simple — these don't exist yet as labels;
+# add them to .github/labels.yml if you want them surfaced).
+# "area:tests":
+#   - changed-files:
+#       - any-glob-to-any-file:
+#           - tests/**
+
+# "area:ci":
+#   - changed-files:
+#       - any-glob-to-any-file:
+#           - .github/workflows/**
+
+# "type:docs":
+#   - changed-files:
+#       - any-glob-to-any-file:
+#           - docs/**
+#           - "**/*.md"

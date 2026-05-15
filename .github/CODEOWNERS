@@ -1,0 +1,28 @@
+# CODEOWNERS for RivalSearchMCP.
+#
+# Every PR gets a review request to the matching owner. The most-specific
+# pattern wins (last match in this file is the one applied).
+# Docs: https://docs.github.com/en/repositories/managing-your-repositories-settings-and-customization/customizing-your-repository/about-code-owners
+
+# Default owner for everything in the repo.
+*                                   @damionrashford
+
+# Per-MCP-tool areas — added as a hook for when there are more contributors
+# per tool. Today they all point to the same owner.
+/src/core/search/                   @damionrashford
+/src/core/social/                   @damionrashford
+/src/core/news/                     @damionrashford
+/src/core/github_api/               @damionrashford
+/src/core/scientific/               @damionrashford
+/src/core/content/                  @damionrashford
+/src/core/memory/                   @damionrashford
+/src/core/pdf/                      @damionrashford
+/src/core/traverse/                 @damionrashford
+
+# Infrastructure / repo plumbing.
+/.github/                           @damionrashford
+/docs/                              @damionrashford
+/pyproject.toml                     @damionrashford
+/requirements.txt                   @damionrashford
+/uv.lock                            @damionrashford
+/.pre-commit-config.yaml            @damionrashford

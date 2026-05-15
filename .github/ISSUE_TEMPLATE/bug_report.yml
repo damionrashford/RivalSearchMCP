@@ -1,0 +1,77 @@
+name: 🐛 Bug Report
+description: A documented behavior isn't matching what you see in practice.
+title: "<tool>: <short description of the broken behavior>"
+labels: ["🐛 Bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. The more concrete the repro, the faster the fix. If you're using RivalSearchMCP from inside an agent (Claude, Cursor, etc.), please include the full tool call + tool response when you can.
+
+  - type: dropdown
+    id: tool
+    attributes:
+      label: Which MCP tool is affected?
+      description: Pick the most-specific one. If multiple, pick the primary and mention the others in the description.
+      options:
+        - web_search
+        - social_search
+        - news_aggregation
+        - github_search
+        - scientific_research
+        - content_operations
+        - research_topic
+        - research_memory
+        - map_website
+        - document_analysis
+        - "(not tool-specific / multiple)"
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Brief description of the unexpected behavior. Include error messages verbatim.
+      placeholder: e.g. social_search with platforms=["reddit"] returned 0 results across every query I tried.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect to happen?
+      placeholder: e.g. At least some results for "smart home automation" — the same query via `web_search` with `site:reddit.com` returns 100+ threads.
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: How can we reproduce it?
+      description: The exact tool call (JSON args), a short Python snippet, or the prompt you gave your agent.
+      render: text
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Server version (FastMCP), Python version, OS, and whether you're running locally or from a hosted MCP.
+      value: |
+        - FastMCP version:
+        - Python version:
+        - OS:
+        - Hosted (FastMCP cloud) / local:
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / output (optional)
+      description: Paste any relevant server logs, tool response, or stack trace. Will be auto-formatted; no need to wrap in backticks.
+      render: text
+    validations:
+      required: false

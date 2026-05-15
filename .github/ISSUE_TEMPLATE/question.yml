@@ -1,0 +1,25 @@
+name: ❓ Question
+description: Need help understanding the docs, configuring a tool, or interpreting a result?
+title: "<short question>"
+labels: ["❓ Question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For broader open-ended discussion ("how would you approach X?"), [Discussions](https://github.com/damionrashford/RivalSearchMCP/discussions) is a better fit — questions there get to a bigger audience. Use this template if you've got a concrete blocker that needs answering.
+
+  - type: textarea
+    id: question
+    attributes:
+      label: What are you trying to figure out?
+      placeholder: e.g. Does `research_topic` with `session_id` re-use prior findings to refine subsequent searches, or does it only save them?
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: What have you already tried or read?
+      description: Saves us repeating things. Links to docs/issues you've already checked help a lot.
+    validations:
+      required: false

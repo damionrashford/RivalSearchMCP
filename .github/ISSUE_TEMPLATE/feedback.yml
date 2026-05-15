@@ -1,0 +1,33 @@
+name: 💬 Feedback
+description: A user-experience observation — something that surprised you, confused you, or felt off. Doesn't have to be a bug.
+title: "<one-line observation>"
+labels: ["💬 Feedback"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Feedback is gold. Especially "this was confusing", "I expected X but got Y", or "the docs implied this would work differently". Don't worry about whether it's actionable — we'll figure that out together.
+
+  - type: textarea
+    id: observation
+    attributes:
+      label: What did you notice?
+      description: The thing itself. As specific as possible.
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: What were you doing when you noticed it?
+      description: The workflow or task. Helps us understand whether this is a one-off or a recurring friction.
+    validations:
+      required: false
+
+  - type: textarea
+    id: idea
+    attributes:
+      label: Any thoughts on what would have been better? (optional)
+      description: Don't worry if you don't — sometimes a problem is clear before the solution is.
+    validations:
+      required: false
