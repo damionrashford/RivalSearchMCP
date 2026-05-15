@@ -1,0 +1,78 @@
+name: MCP Surface Diff
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - src/**
+      - server.py
+      - fastmcp.json
+      - pyproject.toml
+      - scripts/mcp_diff.py
+      - .github/workflows/mcp-surface-diff.yml
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  diff:
+    name: Diff MCP tool surface vs base
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout base
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: base
+
+      - name: Checkout head
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          path: head
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install
+        working-directory: base
+
+      - name: Inspect base manifest
+        run: |
+          uv sync --extra dev
+          uv run fastmcp inspect --format mcp -o ../base-manifest.json
+        working-directory: base
+
+      - name: Inspect head manifest
+        run: |
+          uv sync --extra dev
+          uv run fastmcp inspect --format mcp -o ../head-manifest.json
+        working-directory: head
+
+      - name: Compute diff
+        id: diff
+        run: |
+          python head/scripts/mcp_diff.py base-manifest.json head-manifest.json --output diff.md
+          if [ -s diff.md ]; then
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Post or update PR comment
+        if: steps.diff.outputs.has_changes == 'true'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: mcp-surface-diff
+          path: diff.md
+
+      - name: Hide previous comment when surface is unchanged
+        if: steps.diff.outputs.has_changes == 'false'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: mcp-surface-diff
+          delete: true
