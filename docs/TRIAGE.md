@@ -10,7 +10,7 @@ Canonical source: [`.github/labels.yml`](../.github/labels.yml). Four namespaces
 |---|---|---|
 | **Type** | 🐛 Bug · ✨ Feature Request · ❓ Question · 💬 Feedback | one |
 | **Priority** | 🔥 High · 🟡 Medium · 🟢 Low · 🔮 Roadmap | one |
-| **Tool** | `tool:web_search`, `tool:social_search`, `tool:scientific_research`, `tool:news_aggregation`, `tool:github_search`, `tool:content_operations`, `tool:research_topic`, `tool:research_memory`, `tool:map_website`, `tool:document_analysis` | zero or more |
+| **Tool** | `tool:web_search`, `tool:social_search`, `tool:scientific_research`, `tool:news_aggregation`, `tool:github_search`, `tool:content_operations`, `tool:research_topic`, `tool:research_memory`, `tool:map_website`, `tool:document_analysis`, `tool:score_sources`, `tool:entity_research`, `tool:find_conflicts` | zero or more |
 | **Status** | `status:in-progress` · `status:blocked` | zero or one (apply only when in motion) |
 
 ### Type
