@@ -6,6 +6,11 @@
 ![FastMCP](https://img.shields.io/badge/FastMCP-3.2+-green?style=for-the-badge)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Connect-blue?logo=linkedin&style=for-the-badge)](https://www.linkedin.com/in/damion-rashford)
 
+[![CI](https://github.com/damionrashford/RivalSearchMCP/actions/workflows/ci.yml/badge.svg)](https://github.com/damionrashford/RivalSearchMCP/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/damionrashford/RivalSearchMCP/branch/main/graph/badge.svg)](https://codecov.io/gh/damionrashford/RivalSearchMCP)
+[![Reviewed by Claude](https://img.shields.io/badge/Reviewed_by-Claude-D97757?logo=anthropic&logoColor=white)](https://github.com/anthropics/claude-code-action)
+[![Releases](https://img.shields.io/github/v/release/damionrashford/RivalSearchMCP?include_prereleases&label=latest&color=8957e5)](https://github.com/damionrashford/RivalSearchMCP/releases)
+
 ![GitHub Stars](https://img.shields.io/github/stars/damionrashford/RivalSearchMCP?style=social)
 ![GitHub Forks](https://img.shields.io/github/forks/damionrashford/RivalSearchMCP?style=social)
 ![GitHub Issues](https://img.shields.io/github/issues/damionrashford/RivalSearchMCP?style=social)
@@ -265,6 +270,18 @@ Found a bug, have a feature request, or want to share how you're using RivalSear
 - **Share your use case** — Tell us how you're using RivalSearchMCP
 
 👉 **[Open an Issue](https://github.com/damionrashford/RivalSearchMCP/issues)**
+
+## 📡 Stay in the Loop
+
+Building something with RivalSearchMCP? Join the clan — every release brings new capabilities for AI-native PMs and engineers.
+
+| Channel | Link |
+|---|---|
+| 🚀 **Releases** | [GitHub Releases page](https://github.com/damionrashford/RivalSearchMCP/releases) — versioned changelog with what's new |
+| 📰 **RSS / Atom feed** | [`releases.atom`](https://github.com/damionrashford/RivalSearchMCP/releases.atom) — pipe into Slack, Discord, your RSS reader, or any feed-to-webhook tool |
+| 🗨️ **Discussions** | [GitHub Discussions](https://github.com/damionrashford/RivalSearchMCP/discussions) — show & tell, agent recipes, wishlist, help |
+| 👀 **Watch the repo** | [Subscribe to releases](https://github.com/damionrashford/RivalSearchMCP/subscription) — GitHub-native notifications |
+| 💼 **Author** | [Damion Rashford on LinkedIn](https://www.linkedin.com/in/damion-rashford) |
 
 ## Attribution & License
 
