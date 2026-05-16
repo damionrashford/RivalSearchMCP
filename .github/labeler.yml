@@ -1,4 +1,4 @@
-# Config for actions/labeler@v5 — applies tool:* and area labels to PRs
+# Config for actions/labeler@v6 — applies tool:* and area labels to PRs
 # based on changed file paths. Reconciles every push to the PR.
 # https://github.com/actions/labeler
 
