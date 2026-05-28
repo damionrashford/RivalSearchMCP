@@ -4,97 +4,85 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>RivalSearchMCP — Repository Stats</title>
-  <meta name="description" content="Daily traffic, stargazer, fork, and referrer stats for damionrashford/RivalSearchMCP, captured by github-repo-stats." />
+  <meta name="description" content="Daily snapshots of public GitHub repository activity for damionrashford/RivalSearchMCP. No visitor tracking. No MCP usage tracking." />
+  <meta name="referrer" content="no-referrer" />
   <link rel="canonical" href="https://damionrashford.github.io/RivalSearchMCP/" />
   <style>
     :root {
-      --bg: #0b0d12;
-      --panel: #121521;
-      --border: #1f2436;
-      --text: #e7ecf3;
-      --muted: #8b94a8;
-      --accent: #7c5cff;
-      --accent-2: #34d1bf;
+      --bg: #fafaf7;
+      --panel: #ffffff;
+      --border: #ececec;
+      --text: #1a1a1a;
+      --muted: #6b6b6b;
+      --accent: #4a3aff;
+      --accent-soft: #eeeaff;
     }
     * { box-sizing: border-box; }
-    html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font: 16px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif; }
-    a { color: var(--accent-2); text-decoration: none; }
+    html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif; -webkit-font-smoothing: antialiased; }
+    a { color: var(--accent); text-decoration: none; }
     a:hover { text-decoration: underline; }
-    .wrap { max-width: 980px; margin: 0 auto; padding: 48px 24px 80px; }
-    header { display: flex; flex-direction: column; gap: 8px; margin-bottom: 32px; }
-    .eyebrow { color: var(--muted); font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; }
-    h1 { margin: 0; font-size: 36px; line-height: 1.15; }
-    h2 { margin: 0 0 12px; font-size: 20px; }
-    p { color: var(--text); margin: 0 0 12px; }
-    .lede { color: var(--muted); font-size: 17px; max-width: 70ch; }
-    .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin: 24px 0 32px; }
-    .card { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
-    .card .label { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
-    .card .value { font-size: 28px; font-weight: 600; }
-    .badges { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 24px; }
-    .badges img { display: block; height: 22px; }
-    .cta { display: inline-flex; align-items: center; gap: 8px; padding: 12px 18px; background: var(--accent); color: white; border-radius: 10px; font-weight: 600; }
-    .cta:hover { text-decoration: none; filter: brightness(1.1); }
-    .section { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 24px; margin-bottom: 20px; }
-    ul.bare { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
-    ul.bare li { padding-left: 22px; position: relative; color: var(--muted); }
-    ul.bare li::before { content: ""; position: absolute; left: 0; top: 0.65em; width: 8px; height: 8px; border-radius: 2px; background: var(--accent-2); }
-    code { background: #0a0c14; border: 1px solid var(--border); border-radius: 6px; padding: 1px 6px; font-size: 0.9em; }
-    footer { margin-top: 48px; color: var(--muted); font-size: 13px; }
-    .pill { display: inline-block; padding: 4px 10px; border-radius: 999px; background: rgba(124, 92, 255, 0.12); color: var(--accent); font-size: 12px; font-weight: 600; letter-spacing: 0.04em; }
+    .wrap { max-width: 720px; margin: 0 auto; padding: 64px 24px 96px; }
+    header { margin-bottom: 40px; }
+    .eyebrow { color: var(--muted); font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 12px; }
+    h1 { margin: 0 0 16px; font-size: 32px; line-height: 1.2; font-weight: 600; letter-spacing: -0.01em; }
+    h2 { margin: 0 0 12px; font-size: 17px; font-weight: 600; }
+    p { margin: 0 0 14px; }
+    .lede { color: var(--muted); font-size: 17px; max-width: 60ch; }
+    .cta { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; background: var(--accent); color: white; border-radius: 8px; font-weight: 500; font-size: 14px; }
+    .cta:hover { text-decoration: none; opacity: 0.92; }
+    .meta { display: inline-block; margin-left: 12px; color: var(--muted); font-size: 13px; }
+    .section { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 22px 24px; margin-bottom: 16px; }
+    ul.bare { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+    ul.bare li { padding-left: 18px; position: relative; color: var(--text); }
+    ul.bare li::before { content: ""; position: absolute; left: 0; top: 0.7em; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+    code { background: var(--accent-soft); color: var(--accent); border-radius: 4px; padding: 1px 6px; font-size: 0.9em; }
+    .note { background: var(--accent-soft); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 24px 0; font-size: 14.5px; color: var(--text); }
+    .note strong { color: var(--accent); }
+    footer { margin-top: 56px; color: var(--muted); font-size: 13px; }
+    hr.soft { border: 0; border-top: 1px solid var(--border); margin: 32px 0; }
   </style>
 </head>
 <body>
   <div class="wrap">
     <header>
-      <span class="eyebrow">Rival Ventures · RivalSearchMCP</span>
+      <div class="eyebrow">Rival Ventures · RivalSearchMCP</div>
       <h1>Repository Stats</h1>
-      <p class="lede">Daily snapshots of traffic, stargazers, forks, and referrers for <a href="https://github.com/damionrashford/RivalSearchMCP">damionrashford/RivalSearchMCP</a>. Captured automatically each day and persisted to the <code>github-repo-stats</code> branch — no cloud database required.</p>
+      <p class="lede">Daily snapshots of public GitHub repository activity for <a href="https://github.com/damionrashford/RivalSearchMCP">damionrashford/RivalSearchMCP</a> — captured automatically each day and stored in git.</p>
     </header>
 
-    <div class="badges" aria-label="Live repository badges">
-      <a href="https://github.com/damionrashford/RivalSearchMCP/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/damionrashford/RivalSearchMCP?style=flat-square&logo=github&color=7c5cff&labelColor=121521"></a>
-      <a href="https://github.com/damionrashford/RivalSearchMCP/network/members"><img alt="GitHub forks" src="https://img.shields.io/github/forks/damionrashford/RivalSearchMCP?style=flat-square&logo=github&color=34d1bf&labelColor=121521"></a>
-      <a href="https://github.com/damionrashford/RivalSearchMCP/issues"><img alt="Open issues" src="https://img.shields.io/github/issues/damionrashford/RivalSearchMCP?style=flat-square&color=ffb454&labelColor=121521"></a>
-      <a href="https://github.com/damionrashford/RivalSearchMCP/pulls"><img alt="Open PRs" src="https://img.shields.io/github/issues-pr/damionrashford/RivalSearchMCP?style=flat-square&color=ffb454&labelColor=121521"></a>
-      <a href="https://github.com/damionrashford/RivalSearchMCP/commits/main"><img alt="Last commit" src="https://img.shields.io/github/last-commit/damionrashford/RivalSearchMCP?style=flat-square&color=8b94a8&labelColor=121521"></a>
-      <a href="https://github.com/damionrashford/RivalSearchMCP/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/github/license/damionrashford/RivalSearchMCP?style=flat-square&color=8b94a8&labelColor=121521"></a>
-    </div>
-
-    <div class="grid">
-      <div class="card"><div class="label">Stars</div><div class="value"><img alt="" src="https://img.shields.io/github/stars/damionrashford/RivalSearchMCP?style=flat-square&label=&color=7c5cff&labelColor=121521" style="height:28px;"></div></div>
-      <div class="card"><div class="label">Forks</div><div class="value"><img alt="" src="https://img.shields.io/github/forks/damionrashford/RivalSearchMCP?style=flat-square&label=&color=34d1bf&labelColor=121521" style="height:28px;"></div></div>
-      <div class="card"><div class="label">Watchers</div><div class="value"><img alt="" src="https://img.shields.io/github/watchers/damionrashford/RivalSearchMCP?style=flat-square&label=&color=8b94a8&labelColor=121521" style="height:28px;"></div></div>
-      <div class="card"><div class="label">Contributors</div><div class="value"><img alt="" src="https://img.shields.io/github/contributors/damionrashford/RivalSearchMCP?style=flat-square&label=&color=ffb454&labelColor=121521" style="height:28px;"></div></div>
-    </div>
-
-    <p style="margin: 8px 0 28px;">
-      <a class="cta" href="https://damionrashford.github.io/RivalSearchMCP/" rel="noopener">View full report &nbsp;→</a>
-      <span class="pill" style="margin-left:12px;">Updated daily · 23:00 UTC</span>
+    <p style="margin: 0 0 32px;">
+      <a class="cta" href="https://damionrashford.github.io/RivalSearchMCP/" rel="noopener">View the full report &nbsp;→</a>
+      <span class="meta">Updated daily · 23:00 UTC</span>
     </p>
 
+    <div class="note">
+      <strong>What this is not.</strong> This page does not track visitors — no analytics, no cookies, no third-party scripts or images. It also does not observe MCP server usage in any way. The only data collected is the public, repository-level activity that GitHub itself records on its own Traffic API (views, clones, referrers, stars, forks).
+    </div>
+
     <section class="section">
-      <h2>What gets tracked</h2>
+      <h2>What gets captured</h2>
       <ul class="bare">
         <li>Unique and total views per day</li>
         <li>Unique and total clones per day</li>
-        <li>Top referrers — where people come from when they land here</li>
-        <li>Top paths — what people look at inside the repo</li>
-        <li>Evolution of stargazers and forks over time</li>
+        <li>Top referrers — where landings come from</li>
+        <li>Top paths — which files inside the repo are viewed</li>
+        <li>Stargazer and fork counts over time</li>
       </ul>
     </section>
 
     <section class="section">
-      <h2>How the data is stored</h2>
-      <p>The action <a href="https://github.com/jgehrcke/github-repo-stats">jgehrcke/github-repo-stats</a> runs daily and pushes raw CSVs plus a generated HTML and PDF report to the <code>github-repo-stats</code> branch of this repository. Browse it here:</p>
+      <h2>Where the data lives</h2>
+      <p>The action <a href="https://github.com/jgehrcke/github-repo-stats">jgehrcke/github-repo-stats</a> runs daily and commits raw CSVs plus a generated HTML and PDF report to the <code>github-repo-stats</code> branch of this repository. No external database, no cloud storage — just git history.</p>
       <ul class="bare">
         <li><a href="https://github.com/damionrashford/RivalSearchMCP/tree/github-repo-stats">github-repo-stats branch (raw data + reports)</a></li>
         <li><a href="https://github.com/damionrashford/RivalSearchMCP/actions/workflows/github-repo-stats.yml">Workflow runs</a></li>
       </ul>
     </section>
 
+    <hr class="soft" />
+
     <footer>
-      Built for <a href="https://github.com/damionrashford/RivalSearchMCP">RivalSearchMCP</a> · powered by
+      Part of <a href="https://github.com/damionrashford/RivalSearchMCP">RivalSearchMCP</a> · powered by
       <a href="https://github.com/jgehrcke/github-repo-stats">github-repo-stats</a>.
     </footer>
   </div>
