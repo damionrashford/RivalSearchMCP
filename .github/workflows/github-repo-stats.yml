@@ -1,0 +1,23 @@
+name: github-repo-stats
+
+on:
+  schedule:
+    # Run once per day, towards the end of the UTC day so the most
+    # recent data point captures a full day's traffic.
+    - cron: "0 23 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  j1:
+    name: github-repo-stats
+    runs-on: ubuntu-latest
+    steps:
+      - name: run-ghrs
+        uses: jgehrcke/github-repo-stats@v1.4.2
+        with:
+          ghtoken: ${{ secrets.GHRS_GITHUB_API_TOKEN }}
+          databranch: github-repo-stats
+          ghpagesprefix: https://damionrashford.github.io/RivalSearchMCP
