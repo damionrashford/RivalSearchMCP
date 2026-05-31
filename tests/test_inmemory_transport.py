@@ -90,5 +90,3 @@ async def test_tool_schemas_exclude_injected_ctx(app):
     for tool in tools:
         props = (tool.inputSchema or {}).get("properties", {}) or {}
         assert "ctx" not in props, f"{tool.name} leaks ctx into its schema"
-
-
