@@ -64,15 +64,13 @@ async def test_multi_search_extract_content_flag():
 
 
 async def test_multi_search_use_fallback():
-    """Test multi_search with fallback enabled/disabled."""
+    """Test multi_search end-to-end with a representative query."""
     async with create_client() as client:
-        # Test with fallback enabled (default)
         result = await client.call_tool(
             "web_search",
             {
                 "query": "artificial intelligence",
                 "num_results": 5,
-                "use_fallback": True,
                 "extract_content": False,
             },
         )

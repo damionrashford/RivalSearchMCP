@@ -25,7 +25,7 @@ def app():
 
 
 async def test_tools_list_matches_registered(app):
-    """All 10 tools must be discoverable via the MCP protocol."""
+    """All 9 tools must be discoverable via the MCP protocol."""
     from fastmcp import Client
 
     async with Client(app) as client:
@@ -42,7 +42,6 @@ async def test_tools_list_matches_registered(app):
         "news_aggregation",
         "github_search",
         "document_analysis",
-        "research_memory",
     }
     assert names == expected, f"tool set drift: missing={expected - names} extra={names - expected}"
 
@@ -93,19 +92,3 @@ async def test_tool_schemas_exclude_injected_ctx(app):
         assert "ctx" not in props, f"{tool.name} leaks ctx into its schema"
 
 
-async def test_research_memory_list_sessions(app):
-    """research_memory is the lowest-side-effect tool — a list call proves
-    dispatch + middleware + response rendering all work end-to-end."""
-    from fastmcp import Client
-
-    async with Client(app) as client:
-        result = await client.call_tool(
-            "research_memory",
-            {"operation": "list"},
-        )
-
-    # The tool returns markdown; just prove we got a non-empty response
-    # back through the full middleware stack without an error.
-    text = result.content[0].text if result.content else ""
-    assert isinstance(text, str)
-    assert len(text) > 0
