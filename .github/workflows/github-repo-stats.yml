@@ -18,6 +18,6 @@ jobs:
       - name: run-ghrs
         uses: jgehrcke/github-repo-stats@v1.4.2
         with:
-          ghtoken: ${{ secrets.GHRS_GITHUB_API_TOKEN }}
+          ghtoken: ${{ secrets.ANALYTICS_ACTION_KEY }}
           databranch: github-repo-stats
           ghpagesprefix: https://damionrashford.github.io/RivalSearchMCP
