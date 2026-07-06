@@ -1,6 +1,6 @@
 """
 Search tools for FastMCP server.
-Registers web_search across DuckDuckGo, Bing, Yahoo, Mojeek, and Wikipedia.
+Registers web_search across DuckDuckGo, Google (SerpBase), Bing, Yahoo, Mojeek, and Wikipedia.
 """
 
 from typing import Annotated
@@ -14,28 +14,31 @@ from rival_search_mcp.tools.multi_search import web_search
 def register_search_tools(mcp: FastMCP):
     """Register all search-related tools."""
 
-    # No Google search tool - removed as requested
+    # Google search is now supported via SerpBase API engine.
+    # Set SERPBASE_API_KEY env var to enable it.
 
     @mcp.tool(
         name="web_search",
         description=(
-            "Concurrent multi-engine web search across DuckDuckGo, Bing, "
+            "Concurrent multi-engine web search across DuckDuckGo, Google (SerpBase), Bing, "
             "Yahoo, Mojeek, and Wikipedia. Results are deduplicated and "
-            "merged; failures on any single engine do not block the others."
+            "merged; failures on any single engine do not block the others. "
+            "Google results require SERPBASE_API_KEY environment variable."
         ),
         tags={
             "search",
             "web",
             "duckduckgo",
+            "google",
             "bing",
             "yahoo",
             "mojeek",
             "wikipedia",
         },
         meta={
-            "version": "2.0",
+            "version": "2.1",
             "category": "Search",
-            "engines": ["duckduckgo", "bing", "yahoo", "mojeek", "wikipedia"],
+            "engines": ["duckduckgo", "google", "bing", "yahoo", "mojeek", "wikipedia"],
         },
         annotations={
             "title": "Web Search",
@@ -44,7 +47,7 @@ def register_search_tools(mcp: FastMCP):
             "destructiveHint": False,
             "idempotentHint": False,
         },
-        # 5 engines concurrent + optional per-result content fetch.
+        # 6 engines concurrent + optional per-result content fetch.
         timeout=90.0,
     )
     async def web_search_tool(
@@ -69,8 +72,8 @@ def register_search_tools(mcp: FastMCP):
         ] = 2,
     ) -> str:
         """
-        Multi-engine search across DuckDuckGo, Bing, Yahoo, Mojeek, and Wikipedia
-        with input sanitization and rate-limit protection.
+        Multi-engine search across DuckDuckGo, Google (SerpBase), Bing, Yahoo,
+        Mojeek, and Wikipedia with input sanitization and rate-limit protection.
         """
         from rival_search_mcp.core.security.security import InputValidator
 
