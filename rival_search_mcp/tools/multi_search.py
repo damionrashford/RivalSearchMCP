@@ -12,6 +12,7 @@ from fastmcp import Context
 from rival_search_mcp.core.search.engines.bing.bing_engine import BingSearchEngine
 from rival_search_mcp.core.search.engines.duckduckgo.duckduckgo_engine import DuckDuckGoSearchEngine
 from rival_search_mcp.core.search.engines.mojeek.mojeek_engine import MojeekSearchEngine
+from rival_search_mcp.core.search.engines.serpbase.serpbase_engine import SerpBaseSearchEngine
 from rival_search_mcp.core.search.engines.wikipedia.wikipedia_engine import WikipediaSearchEngine
 from rival_search_mcp.core.search.engines.yahoo.yahoo_engine import YahooSearchEngine
 from rival_search_mcp.logging.logger import logger
@@ -19,17 +20,18 @@ from rival_search_mcp.utils.markdown_formatter import format_multi_search_markdo
 
 
 class MultiSearchOrchestrator:
-    """Orchestrates concurrent searches across five engines."""
+    """Orchestrates concurrent searches across six engines."""
 
     def __init__(self):
         self.engines = {
             "duckduckgo": DuckDuckGoSearchEngine(),
+            "google": SerpBaseSearchEngine(),
             "bing": BingSearchEngine(),
             "yahoo": YahooSearchEngine(),
             "mojeek": MojeekSearchEngine(),
             "wikipedia": WikipediaSearchEngine(),
         }
-        self.engine_order = ["duckduckgo", "bing", "yahoo", "mojeek", "wikipedia"]
+        self.engine_order = ["duckduckgo", "google", "bing", "yahoo", "mojeek", "wikipedia"]
 
     async def search_all_engines(
         self,
