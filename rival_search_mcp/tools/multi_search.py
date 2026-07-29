@@ -4,6 +4,7 @@ Provides comprehensive search across multiple engines with fallback support.
 """
 
 import asyncio
+import os
 from datetime import datetime
 from typing import Any, Dict
 
@@ -14,12 +15,13 @@ from rival_search_mcp.core.search.engines.duckduckgo.duckduckgo_engine import Du
 from rival_search_mcp.core.search.engines.mojeek.mojeek_engine import MojeekSearchEngine
 from rival_search_mcp.core.search.engines.wikipedia.wikipedia_engine import WikipediaSearchEngine
 from rival_search_mcp.core.search.engines.yahoo.yahoo_engine import YahooSearchEngine
+from rival_search_mcp.core.search.engines.youcom.youcom_engine import YouComSearchEngine
 from rival_search_mcp.logging.logger import logger
 from rival_search_mcp.utils.markdown_formatter import format_multi_search_markdown
 
 
 class MultiSearchOrchestrator:
-    """Orchestrates concurrent searches across five engines."""
+    """Orchestrates concurrent searches across the configured engines."""
 
     def __init__(self):
         self.engines = {
@@ -29,7 +31,10 @@ class MultiSearchOrchestrator:
             "mojeek": MojeekSearchEngine(),
             "wikipedia": WikipediaSearchEngine(),
         }
-        self.engine_order = ["duckduckgo", "bing", "yahoo", "mojeek", "wikipedia"]
+        if _env_flag("ENABLE_YOUCOM_SEARCH"):
+            self.engines["youcom"] = YouComSearchEngine()
+            logger.info("You.com search engine enabled via ENABLE_YOUCOM_SEARCH")
+        self.engine_order = list(self.engines.keys())
 
     async def search_all_engines(
         self,
@@ -163,6 +168,11 @@ def get_orchestrator() -> MultiSearchOrchestrator:
     if _orchestrator is None:
         _orchestrator = MultiSearchOrchestrator()
     return _orchestrator
+
+
+def _env_flag(name: str) -> bool:
+    """Return True when the named environment variable is set to a truthy value."""
+    return os.getenv(name, "").strip().lower() in {"1", "true", "yes", "on"}
 
 
 async def web_search(

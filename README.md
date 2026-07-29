@@ -21,6 +21,7 @@
 RivalSearchMCP is a FastMCP 3.x server exposing **9 specialized tools** that search, fetch, score, and compare information across:
 
 - **5 web search engines** (DuckDuckGo, Bing, Yahoo, Mojeek, Wikipedia) — concurrent, deduplicated, with TLS-fingerprint-safe fetches via Scrapling
+- **Optional You.com Search provider** — add one more engine with `ENABLE_YOUCOM_SEARCH=true`
 - **9 social platforms** (Reddit, Hacker News, Stack Overflow, Dev.to, Medium, Product Hunt, Bluesky, Lobste.rs, Lemmy) — no authentication
 - **5 news sources** (Google News, Bing News, The Guardian, GDELT, DuckDuckGo News) — with time-range filtering
 - **5 academic databases** (OpenAlex, CrossRef, arXiv, PubMed, Europe PMC) + **4 dataset hubs** (Kaggle, HuggingFace, Dataverse, Zenodo)
@@ -115,6 +116,16 @@ fastmcp run server.py --transport http --port 8000
 # Run with MCP Inspector for testing
 fastmcp dev server.py
 ```
+
+### Optional You.com Search Provider
+
+Enable the You.com adapter without changing the default engine fanout:
+
+```bash
+ENABLE_YOUCOM_SEARCH=true uv run python server.py
+```
+
+If you want authenticated access, set `YDC_API_KEY` alongside the toggle. When the toggle is off, RivalSearchMCP keeps using the built-in five engines only.
 
 **Method 4: Manual UV Setup**
 ```bash
@@ -314,6 +325,7 @@ skills/rival-search-mcp/
 ## ⚡ Key Features
 
 - **Multi-Engine Search**: 5 search engines (DuckDuckGo, Bing, Yahoo, Mojeek, Wikipedia) with TLS-fingerprint-safe fetches via Scrapling
+- **Optional You.com Engine**: add `ENABLE_YOUCOM_SEARCH=true` to include the You.com Search API without changing defaults
 - **9-Platform Social Research**: Reddit, Hacker News, Stack Overflow, Dev.to, Medium, Product Hunt, Bluesky, Lobste.rs, Lemmy
 - **5-Source News Aggregation**: Google News, Bing News, The Guardian, GDELT, DuckDuckGo News — with time-range filtering
 - **5 Academic Databases + 4 Dataset Hubs**: OpenAlex, CrossRef, arXiv, PubMed, Europe PMC + Kaggle, HuggingFace, Dataverse, Zenodo

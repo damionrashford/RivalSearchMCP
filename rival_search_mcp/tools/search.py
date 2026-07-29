@@ -20,8 +20,9 @@ def register_search_tools(mcp: FastMCP):
         name="web_search",
         description=(
             "Concurrent multi-engine web search across DuckDuckGo, Bing, "
-            "Yahoo, Mojeek, and Wikipedia. Results are deduplicated and "
-            "merged; failures on any single engine do not block the others."
+            "Yahoo, Mojeek, and Wikipedia. An optional You.com provider can "
+            "be enabled with ENABLE_YOUCOM_SEARCH. Results are deduplicated "
+            "and merged; failures on any single engine do not block the others."
         ),
         tags={
             "search",
