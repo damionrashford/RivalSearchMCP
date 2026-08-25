@@ -357,6 +357,12 @@ Yes. Clone the repo, run `uv sync --extra dev`, then `fastmcp run` (stdio) or `f
 Deliberately. The server returns deterministic, auditable output so the caller's model can reason over it — a consistent machine can't hallucinate the way a synthesizing one can. If you want an autonomous agent loop, run it in your client.
 </details>
 
+<details>
+<summary><strong>Does RivalSearchMCP remember past research across sessions?</strong></summary>
+
+No, and that is intentional here too. Every call is stateless and deterministic, which is what keeps results reproducible and auditable in the first place. If the calling agent needs to carry findings forward into a later session, that is a job for a separate memory layer rather than something a research tool should own. One option that keeps the same local and auditable philosophy is Vestige, a local first MCP memory server the calling agent can write findings into and recall from later. Disclosure: I maintain Vestige.
+</details>
+
 ## 🤝 Contributing
 
 Contributions are welcome! Whether it's fixing bugs, adding new research tools, or improving documentation, your help is appreciated.
