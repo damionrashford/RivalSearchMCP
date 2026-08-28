@@ -166,7 +166,7 @@ def register_custom_routes(mcp):
             tools_info = {
                 "search": {
                     "web_search": {
-                        "description": "Multi-engine web search (DuckDuckGo, Bing, Yahoo, Mojeek, Wikipedia)",
+                        "description": "Multi-engine web search (DuckDuckGo, Bing, Yahoo, Mojeek, Wikipedia, optional You.com when YDC_API_KEY is set)",
                         "parameters": ["query", "num_results", "search_type"],
                     },
                     "social_search": {

@@ -45,7 +45,8 @@ all results as equal.
 
 Search (every result auto-annotated with a `quality` block + an
 aggregate `confidence` summary — high / medium / low):
-- web_search: DuckDuckGo + Bing + Yahoo + Mojeek + Wikipedia (no auth)
+- web_search: DuckDuckGo + Bing + Yahoo + Mojeek + Wikipedia, with
+  optional You.com when `YDC_API_KEY` is set
 - social_search: Reddit, Hacker News, Dev.to, Product Hunt, Medium,
                  Stack Overflow, Bluesky, Lobste.rs, Lemmy (no auth)
 - news_aggregation: Google News, Bing News, Guardian, GDELT, DuckDuckGo

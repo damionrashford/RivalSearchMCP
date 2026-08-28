@@ -4,6 +4,7 @@ Provides comprehensive search across multiple engines with fallback support.
 """
 
 import asyncio
+import os
 from datetime import datetime
 from typing import Any, Dict
 
@@ -14,6 +15,7 @@ from rival_search_mcp.core.search.engines.duckduckgo.duckduckgo_engine import Du
 from rival_search_mcp.core.search.engines.mojeek.mojeek_engine import MojeekSearchEngine
 from rival_search_mcp.core.search.engines.wikipedia.wikipedia_engine import WikipediaSearchEngine
 from rival_search_mcp.core.search.engines.yahoo.yahoo_engine import YahooSearchEngine
+from rival_search_mcp.core.search.engines.youcom.youcom_engine import YouComSearchEngine
 from rival_search_mcp.logging.logger import logger
 from rival_search_mcp.utils.markdown_formatter import format_multi_search_markdown
 
@@ -30,6 +32,11 @@ class MultiSearchOrchestrator:
             "wikipedia": WikipediaSearchEngine(),
         }
         self.engine_order = ["duckduckgo", "bing", "yahoo", "mojeek", "wikipedia"]
+
+        ydc_api_key = os.getenv("YDC_API_KEY", "").strip()
+        if ydc_api_key:
+            self.engines["youcom"] = YouComSearchEngine(ydc_api_key)
+            self.engine_order.append("youcom")
 
     async def search_all_engines(
         self,

@@ -20,7 +20,7 @@
 
 RivalSearchMCP is a FastMCP 3.x server exposing **9 specialized tools** that search, fetch, score, and compare information across:
 
-- **5 web search engines** (DuckDuckGo, Bing, Yahoo, Mojeek, Wikipedia) — concurrent, deduplicated, with TLS-fingerprint-safe fetches via Scrapling
+- **5 web search engines** (DuckDuckGo, Bing, Yahoo, Mojeek, Wikipedia) plus optional You.com via `YDC_API_KEY` — concurrent, deduplicated, with TLS-fingerprint-safe fetches via Scrapling
 - **9 social platforms** (Reddit, Hacker News, Stack Overflow, Dev.to, Medium, Product Hunt, Bluesky, Lobste.rs, Lemmy) — no authentication
 - **5 news sources** (Google News, Bing News, The Guardian, GDELT, DuckDuckGo News) — with time-range filtering
 - **5 academic databases** (OpenAlex, CrossRef, arXiv, PubMed, Europe PMC) + **4 dataset hubs** (Kaggle, HuggingFace, Dataverse, Zenodo)
@@ -142,7 +142,7 @@ uv sync
 Every tool carries `ToolAnnotations` (`readOnlyHint`, `openWorldHint`, `destructiveHint`, `idempotentHint`) so MCP clients like Claude and ChatGPT can skip confirmation prompts where safe. Every tool has a `timeout=` ceiling so a hung source can't stall the client.
 
 ### Search & Discovery (5 tools)
-- **`web_search`** — concurrent multi-engine search across DuckDuckGo, Bing, Yahoo, Mojeek, and Wikipedia. Scrapling-backed TLS fingerprinting bypasses Cloudflare/Akamai fronting. Per-engine failures don't block the others.
+- **`web_search`** — concurrent multi-engine search across DuckDuckGo, Bing, Yahoo, Mojeek, and Wikipedia, with optional You.com when `YDC_API_KEY` is configured. Scrapling-backed TLS fingerprinting bypasses Cloudflare/Akamai fronting. Per-engine failures don't block the others.
 - **`social_search`** — 9 platforms: Reddit, Hacker News, Stack Overflow, Dev.to, Medium, Product Hunt, Bluesky, Lobste.rs, Lemmy. No authentication.
 - **`news_aggregation`** — 5 sources: Google News, Bing News, The Guardian, GDELT, DuckDuckGo News. Accepts `time_range` (day/week/month/anytime).
 - **`github_search`** — repository search with built-in rate limiting (60/hr unauthenticated), optional README inclusion.
@@ -313,7 +313,7 @@ skills/rival-search-mcp/
 
 ## ⚡ Key Features
 
-- **Multi-Engine Search**: 5 search engines (DuckDuckGo, Bing, Yahoo, Mojeek, Wikipedia) with TLS-fingerprint-safe fetches via Scrapling
+- **Multi-Engine Search**: 5 search engines (DuckDuckGo, Bing, Yahoo, Mojeek, Wikipedia) with optional You.com via `YDC_API_KEY`, and TLS-fingerprint-safe fetches via Scrapling
 - **9-Platform Social Research**: Reddit, Hacker News, Stack Overflow, Dev.to, Medium, Product Hunt, Bluesky, Lobste.rs, Lemmy
 - **5-Source News Aggregation**: Google News, Bing News, The Guardian, GDELT, DuckDuckGo News — with time-range filtering
 - **5 Academic Databases + 4 Dataset Hubs**: OpenAlex, CrossRef, arXiv, PubMed, Europe PMC + Kaggle, HuggingFace, Dataverse, Zenodo
@@ -358,6 +358,12 @@ Deliberately. The server returns deterministic, auditable output so the caller's
 </details>
 
 ## 🤝 Contributing
+
+### Optional You.com search
+
+Set `YDC_API_KEY` to enable You.com as an additional search engine in
+`web_search`. If the key is absent, RivalSearchMCP keeps its original
+zero-key search behavior.
 
 Contributions are welcome! Whether it's fixing bugs, adding new research tools, or improving documentation, your help is appreciated.
 
