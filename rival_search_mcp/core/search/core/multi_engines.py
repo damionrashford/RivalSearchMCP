@@ -65,6 +65,10 @@ class BaseSearchEngine:
         self.base_url = base_url
         self.visited_urls: Set[str] = set()
 
+    def is_configured(self) -> bool:
+        """Whether this engine should participate in the search pool."""
+        return True
+
     async def search(
         self,
         query: str,

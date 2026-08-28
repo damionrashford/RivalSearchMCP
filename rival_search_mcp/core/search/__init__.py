@@ -8,11 +8,12 @@ and for any caller that wants direct access to a single engine.
 """
 
 from .core import BaseSearchEngine, MultiSearchResult
-from .engines import DuckDuckGoSearchEngine, YahooSearchEngine
+from .engines import DuckDuckGoSearchEngine, YahooSearchEngine, YouComSearchEngine
 
 __all__ = [
     "BaseSearchEngine",
     "MultiSearchResult",
     "DuckDuckGoSearchEngine",
     "YahooSearchEngine",
+    "YouComSearchEngine",
 ]

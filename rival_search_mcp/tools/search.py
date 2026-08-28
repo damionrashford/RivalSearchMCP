@@ -1,6 +1,7 @@
 """
 Search tools for FastMCP server.
-Registers web_search across DuckDuckGo, Bing, Yahoo, Mojeek, and Wikipedia.
+Registers web_search across DuckDuckGo, Bing, Yahoo, Mojeek, and
+Wikipedia, with optional You.com support when configured.
 """
 
 from typing import Annotated
@@ -20,7 +21,8 @@ def register_search_tools(mcp: FastMCP):
         name="web_search",
         description=(
             "Concurrent multi-engine web search across DuckDuckGo, Bing, "
-            "Yahoo, Mojeek, and Wikipedia. Results are deduplicated and "
+            "Yahoo, Mojeek, and Wikipedia, with optional You.com support "
+            "when YDC_API_KEY is configured. Results are deduplicated and "
             "merged; failures on any single engine do not block the others."
         ),
         tags={
@@ -31,11 +33,19 @@ def register_search_tools(mcp: FastMCP):
             "yahoo",
             "mojeek",
             "wikipedia",
+            "youcom",
         },
         meta={
             "version": "2.0",
             "category": "Search",
-            "engines": ["duckduckgo", "bing", "yahoo", "mojeek", "wikipedia"],
+            "engines": [
+                "duckduckgo",
+                "bing",
+                "yahoo",
+                "mojeek",
+                "wikipedia",
+                "youcom",
+            ],
         },
         annotations={
             "title": "Web Search",
@@ -69,8 +79,9 @@ def register_search_tools(mcp: FastMCP):
         ] = 2,
     ) -> str:
         """
-        Multi-engine search across DuckDuckGo, Bing, Yahoo, Mojeek, and Wikipedia
-        with input sanitization and rate-limit protection.
+        Multi-engine search across DuckDuckGo, Bing, Yahoo, Mojeek, and
+        Wikipedia, with optional You.com support when configured, plus
+        input sanitization and rate-limit protection.
         """
         from rival_search_mcp.core.security.security import InputValidator
 
