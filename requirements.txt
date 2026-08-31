@@ -227,7 +227,7 @@ propcache==0.4.1
     # via
     #   aiohttp
     #   yarl
-protego==0.6.0
+protego==0.6.2
     # via scrapling
 py-key-value-aio==0.4.4
     # via fastmcp
