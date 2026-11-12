@@ -1,0 +1,30 @@
+# Rival Search MCP — https://github.com/damionrashford/RivalSearchMCP
+
+User-agent: *
+Allow: /
+
+# Traditional search crawlers
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# AI search crawlers (send referral traffic)
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+# Sitemap
+Sitemap: https://rivalsearchmcp.com/sitemap.xml
