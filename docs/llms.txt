@@ -1,0 +1,36 @@
+# Rival Search MCP
+
+> Rival Search MCP is an open-source Model Context Protocol (MCP) server that gives AI assistants like Claude, Cursor, and VS Code real-time web research capabilities. It provides 10 specialized tools across 20+ data sources with zero API keys required. One URL to install.
+
+Rival Search MCP solves the fundamental problem of AI assistants being disconnected from the live internet. By implementing the MCP protocol, it bridges the gap between AI capabilities and real-time web data, enabling deep research, competitor analysis, market intelligence, and academic research — all without any authentication or API keys.
+
+## Tools
+
+- [Web Search](https://github.com/damionrashford/RivalSearchMCP#tools): Multi-engine search across DuckDuckGo, Yahoo, and Wikipedia with automatic fallbacks
+- [Social Search](https://github.com/damionrashford/RivalSearchMCP#tools): Search Reddit, Hacker News, Dev.to, ProductHunt, and Medium without authentication
+- [News Aggregation](https://github.com/damionrashford/RivalSearchMCP#tools): Real-time news from Google News RSS, DuckDuckGo News, and Yahoo News
+- [GitHub Search](https://github.com/damionrashford/RivalSearchMCP#tools): Search GitHub public repositories with rate-limited API access
+- [Website Mapper](https://github.com/damionrashford/RivalSearchMCP#tools): Intelligent website crawling with research, documentation, and mapping modes
+- [Content Operations](https://github.com/damionrashford/RivalSearchMCP#tools): Retrieve, stream, analyze, and extract content from any URL
+- [Research Topic](https://github.com/damionrashford/RivalSearchMCP#tools): End-to-end research workflow with source discovery and key finding extraction
+- [Document Analysis](https://github.com/damionrashford/RivalSearchMCP#tools): Extract text from PDF, Word, Text, and Images with EasyOCR
+- [Scientific Research](https://github.com/damionrashford/RivalSearchMCP#tools): Academic paper search via arXiv and Semantic Scholar; dataset discovery via Kaggle and HuggingFace
+- [Research Agent](https://github.com/damionrashford/RivalSearchMCP#tools): Autonomous AI agent with 7 internal tools generating comprehensive structured reports
+
+## Installation
+
+- [Remote Server](https://RivalSearchMCP.fastmcp.app/mcp): Live hosted MCP endpoint — add this URL to any MCP client for instant access to all 10 tools
+- [GitHub Repository](https://github.com/damionrashford/RivalSearchMCP): Full source code with installation instructions for local self-hosting
+- [Claude Code Setup](https://github.com/damionrashford/RivalSearchMCP#quickstart): Run `claude mcp add RivalSearchMCP --url https://RivalSearchMCP.fastmcp.app/mcp`
+
+## Integrations
+
+- [Claude Desktop](https://github.com/damionrashford/RivalSearchMCP#claude-desktop): Settings → MCP → Add Remote Server
+- [Cursor](https://github.com/damionrashford/RivalSearchMCP#cursor): One-click install or manual MCP config
+- [VS Code](https://github.com/damionrashford/RivalSearchMCP#vs-code): Add to .vscode/mcp.json
+- [Claude Code](https://github.com/damionrashford/RivalSearchMCP#claude-code): Single CLI command
+
+## Optional
+
+- [MIT License](https://github.com/damionrashford/RivalSearchMCP/blob/main/LICENSE): Open source under MIT License
+- [Landing Page](https://rivalsearchmcp.com/): Marketing site with full feature overview

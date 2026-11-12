@@ -169,3 +169,6 @@ docs/**/*.backup
 docs/**/node_modules/
 docs/**/package-lock.json
 docs/**/yarn.lock
+
+# GitHub Pages: keep Jekyll off for the landing page
+!docs/.nojekyll
