@@ -143,6 +143,7 @@ Every tool carries `ToolAnnotations` (`readOnlyHint`, `openWorldHint`, `destruct
 
 ### Search & Discovery (5 tools)
 - **`web_search`** — concurrent multi-engine search across DuckDuckGo, Bing, Yahoo, Mojeek, and Wikipedia. Scrapling-backed TLS fingerprinting bypasses Cloudflare/Akamai fronting. Per-engine failures don't block the others.
+  - Optional: add [You.com](https://you.com/platform?utm_source=damionrashford-rivalsearchmcp&utm_medium=oss_integration&utm_campaign=2026-10-oss-integrations&utm_content=readme) as a sixth engine. It is off by default. Set `RIVAL_SEARCH_YOUCOM=1` to use the keyless API (100 searches/day per IP), or set `YDC_API_KEY` to use the keyed API with higher limits. It is a JSON API, so no scraping is involved.
 - **`social_search`** — 9 platforms: Reddit, Hacker News, Stack Overflow, Dev.to, Medium, Product Hunt, Bluesky, Lobste.rs, Lemmy. No authentication.
 - **`news_aggregation`** — 5 sources: Google News, Bing News, The Guardian, GDELT, DuckDuckGo News. Accepts `time_range` (day/week/month/anytime).
 - **`github_search`** — repository search with built-in rate limiting (60/hr unauthenticated), optional README inclusion.
